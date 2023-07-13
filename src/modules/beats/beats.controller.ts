@@ -1,7 +1,7 @@
 import { Controller, Post, Body, UseGuards, Patch, Param } from "@nestjs/common";
 
 import { CurrentUser } from "modules/users/user.decorator";
-import { Serialize } from "utils/interceptors/serialize.interceptor";
+import { Serialize } from "utils/serialize/serialize.interceptor";
 
 import { AuthGuard } from "guards/auth.guard";
 import { AdminGuard } from "guards/admin.guard";

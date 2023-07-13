@@ -3,7 +3,7 @@ import { Controller, Post, Body, UseGuards, Patch, Param, Get, Query } from "@ne
 import { CurrentUser } from "../users/user.decorator";
 import { User } from "../users/user.entity";
 
-import { Serialize } from "utils/interceptors/serialize.interceptor";
+import { Serialize } from "utils/serialize/serialize.interceptor";
 
 import { AuthGuard } from "guards/auth.guard";
 import { AdminGuard } from "guards/admin.guard";
