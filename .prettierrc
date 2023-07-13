@@ -1,0 +1,12 @@
+{
+  "trailingComma": "all",
+  "tabWidth": 4,
+  "semi": true,
+  "singleQuote": false,
+  "endOfLine": "lf",
+  "printWidth": 110,
+  "bracketSpacing": true,
+  "useTabs": true,
+  "ignored": false,
+  "inferredParser": "json"
+}
