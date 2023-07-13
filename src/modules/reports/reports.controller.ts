@@ -11,7 +11,6 @@ import { AdminGuard } from "guards/admin.guard";
 import { ReportsService } from "./reports.service";
 import { ApproveReportDto, CreateReportDto, GetEstimateDto, ReportDto } from "./report.dto";
 
-
 @Controller("reports")
 export class ReportsController {
 	constructor(private reportsService: ReportsService) {}

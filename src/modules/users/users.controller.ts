@@ -17,7 +17,7 @@ import { CurrentUser } from "modules/users/user.decorator";
 
 import { AuthGuard } from "guards/auth.guard";
 
-import { AuthService } from "./auth/auth.service";
+import { AuthService } from "./user.auth.service";
 
 import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
 import { User } from "./user.entity";
