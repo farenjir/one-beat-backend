@@ -12,8 +12,8 @@ import {
 	UseGuards,
 } from "@nestjs/common";
 
-import { Serialize } from "interceptors/serialize.interceptor";
-import { CurrentUser } from "decorators/user.decorator";
+import { Serialize } from "utils/interceptors/serialize.interceptor";
+import { CurrentUser } from "modules/users/user.decorator";
 
 import { AuthGuard } from "guards/auth.guard";
 
