@@ -2,14 +2,15 @@ import { Module, ValidationPipe, MiddlewareConsumer } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_PIPE } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import * as cookieSession from "cookie-session";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
-import { User } from "modules/users/user.entity";
-import { UsersModule } from "modules/users/users.module";
+import { User } from "modules/user/user.entity";
+import { UsersModule } from "modules/user/user.module";
 
+// eslint-disable-next-line
+const cookieSession = require("cookie-session");
 @Module({
 	imports: [
 		ConfigModule.forRoot({

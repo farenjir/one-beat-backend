@@ -3,7 +3,7 @@ import { Injectable, BadRequestException, NotFoundException } from "@nestjs/comm
 import { promisify } from "util";
 import { randomBytes, scrypt as _scrypt } from "crypto";
 
-import { UsersService } from "./users.service";
+import { UsersService } from "./user.service";
 
 const scrypt = promisify(_scrypt);
 
@@ -13,8 +13,8 @@ export class AuthService {
 	// signup
 	async signup(email: string, password: string) {
 		// See if email is in use
-		const users = await this.usersService.find(email);
-		if (users.length) {
+		const users = await this.usersService.findByEmail(email);
+		if (users) {
 			throw new BadRequestException("email in use");
 		}
 		// Hash the users password and // Generate a salt
@@ -22,7 +22,7 @@ export class AuthService {
 		// Hash the salt and the password together
 		const hash = (await scrypt(password, salt, 32)) as Buffer;
 		// Join the hashed result and the salt together
-		const hashedPassword = salt + "." + hash.toString("hex");
+		const hashedPassword = `${salt}.${hash.toString("hex")}`;
 		// Create a new user and save it
 		const user = await this.usersService.create(email, hashedPassword);
 		// return the user
@@ -30,7 +30,7 @@ export class AuthService {
 	}
 	// signin
 	async signin(email: string, password: string) {
-		const [user] = await this.usersService.find(email);
+		const user = await this.usersService.findByEmail(email);
 		if (!user) {
 			throw new NotFoundException("user not found");
 		}

@@ -8,9 +8,9 @@ export class User {
 	email: string;
 	@Column()
 	password: string;
-	@Column({ default: true })
+	@Column({ default: false })
 	admin: boolean;
-
+	// logs
 	@AfterInsert()
 	logInsert() {
 		console.log("Inserted User with id", this.id);
