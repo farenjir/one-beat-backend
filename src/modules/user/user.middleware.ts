@@ -1,18 +1,24 @@
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
+import { Session } from "express-session";
 
-import { UsersService } from "./user.service";
 import { User } from "./user.entity";
+import { UsersService } from "./user.service";
 
 declare module "express" {
 	interface Request {
 		currentUser?: User;
 	}
 }
-export class CurrentUserMiddleware {
-	constructor(private usersService: UsersService) {}
+interface SessionWithUserId extends Session {
+	userId?: number;
+}
+@Injectable()
+export class CurrentUserMiddleware implements NestMiddleware {
+	constructor(private readonly usersService: UsersService) {}
 	// use
-	async use(req: Request, res: Response, next: NextFunction) {
-		const { userId } = req.session ?? {};
+	async use(req: Request, _res: Response, next: NextFunction) {
+		const { userId } = (req.session as SessionWithUserId) ?? {};
 		if (userId) {
 			req.currentUser = await this.usersService.findById(userId);
 		}

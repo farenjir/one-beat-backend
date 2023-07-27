@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 
+import * as session from "express-session";
 import helmet from "helmet";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
@@ -16,14 +17,13 @@ async function bootstrap() {
 	// etag setup options
 	(<any>app).set("etag", false);
 	// session
-	// import * as session from "express-session";
-	// app.use(
-	// 	session({
-	// 		secret: "my-secret",
-	// 		resave: false,
-	// 		saveUninitialized: false,
-	// 	}),
-	// );
+	app.use(
+		session({
+			secret: "my-secret",
+			resave: false,
+			saveUninitialized: false,
+		}),
+	);
 	// header configs
 	app.use(
 		helmet({

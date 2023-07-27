@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer } from "@nestjs/common";
+import { Module, MiddlewareConsumer, NestModule } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { CurrentUserMiddleware } from "./user.middleware";
@@ -14,7 +14,7 @@ import { UsersService } from "./user.service";
 	controllers: [UsersController],
 	providers: [UsersService, AuthService],
 })
-export class UsersModule {
+export class UsersModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer.apply(CurrentUserMiddleware).forRoutes("*");
 	}

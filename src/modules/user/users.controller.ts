@@ -24,9 +24,9 @@ import { AuthService } from "./users.auth.service";
 @Controller("user")
 @Serialize(UserDto)
 export class UsersController {
-	constructor(private usersService: UsersService, private authService: AuthService) {}
+	constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
 	// return current user
-	@Get("")
+	@Get()
 	@UseGuards(AuthGuard)
 	whoAmI(@CurrentUser() user: User) {
 		return user;
