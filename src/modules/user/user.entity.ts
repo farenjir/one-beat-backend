@@ -1,4 +1,5 @@
 import { AfterInsert, AfterRemove, AfterUpdate, Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Role } from "modules/role/role.enum";
 
 @Entity()
 export class User {
@@ -8,6 +9,8 @@ export class User {
 	email: string;
 	@Column()
 	password: string;
+	@Column("simple-enum", { enum: Role, default: Role.User })
+	role?: string;
 	// logs
 	@AfterInsert()
 	logInsert() {

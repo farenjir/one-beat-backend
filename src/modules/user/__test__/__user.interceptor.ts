@@ -1,7 +1,7 @@
 import { NestInterceptor, ExecutionContext, CallHandler, Injectable } from "@nestjs/common";
 import { Session } from "express-session";
 
-import { UsersService } from "./user.service";
+import { UsersService } from "../user.service";
 
 interface SessionWithUserId extends Session {
 	userId?: number;

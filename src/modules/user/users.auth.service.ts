@@ -21,7 +21,7 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 export class AuthService {
 	constructor(private usersService: UsersService, private jwtService: JwtService) {}
 	async generateToken(user: User): Promise<string> {
-		return this.jwtService.signAsync({ sub: user.id, username: user.email });
+		return this.jwtService.signAsync({ id: user.id, email: user.email });
 	}
 	// signup
 	async signup(email: string, password: string): Promise<User> {
@@ -50,11 +50,11 @@ export class AuthService {
 		if (storedHash !== hash) {
 			throw new UnauthorizedException("Invalid password Or Email");
 		}
+		const token = await this.generateToken(user);
 		// return JWT token
 		return {
-			id: user.id,
-			email: user.email,
-			token: await this.generateToken(user),
+			token,
+			...user,
 		};
 	}
 }

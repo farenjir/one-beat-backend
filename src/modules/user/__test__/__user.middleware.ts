@@ -2,8 +2,8 @@ import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "express-session";
 
-import { User } from "./user.entity";
-import { UsersService } from "./user.service";
+import { User } from "../user.entity";
+import { UsersService } from "../user.service";
 
 declare module "express" {
 	interface Request {
@@ -26,3 +26,8 @@ export class CurrentUserMiddleware implements NestMiddleware {
 		next();
 	}
 }
+// export class UsersModule implements NestModule {
+// 	configure(consumer: MiddlewareConsumer) {
+// 		consumer.apply(CurrentUserMiddleware).forRoutes("*");
+// 	}
+// }

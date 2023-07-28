@@ -1,10 +1,12 @@
+import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { APP_PIPE } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+
+import { RolesGuard } from "guards/role.guard";
 
 import { User } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
@@ -13,7 +15,7 @@ import { UsersModule } from "modules/user/user.module";
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			envFilePath: `.env`,
+			envFilePath: `.env.${process.env.NODE_ENV}`,
 			// load: [ormConfig]
 			// expandVariables: true,
 		}),
@@ -42,6 +44,10 @@ import { UsersModule } from "modules/user/user.module";
 			useValue: new ValidationPipe({
 				whitelist: true,
 			}),
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 	],
 })
