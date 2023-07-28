@@ -1,15 +1,20 @@
 import { NestInterceptor, ExecutionContext, CallHandler, Injectable } from "@nestjs/common";
+import { Session } from "express-session";
+
 import { UsersService } from "./user.service";
 
+interface SessionWithUserId extends Session {
+	userId?: number;
+}
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
 	constructor(private readonly usersService: UsersService) {}
 	// intercept
 	async intercept(context: ExecutionContext, handler: CallHandler) {
-		const request = context.switchToHttp().getRequest();
-		const { userId } = request.session || {};
+		const req = context.switchToHttp().getRequest();
+		const { userId } = (req.session as SessionWithUserId) ?? {};
 		if (userId) {
-			request.currentUser = await this.usersService.findById(userId);
+			req.currentUser = await this.usersService.findById(userId);
 		}
 		// return
 		return handler.handle();

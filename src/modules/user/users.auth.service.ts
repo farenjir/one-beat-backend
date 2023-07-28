@@ -1,48 +1,60 @@
-import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
-
-import { promisify } from "util";
-import { randomBytes, scrypt as _scrypt } from "crypto";
+import { NotFoundException, BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { randomBytes, scrypt } from "crypto";
+import { JwtService } from "@nestjs/jwt";
 
 import { UsersService } from "./user.service";
+import { User } from "./user.entity";
+import { UserDto } from "./user.dto";
 
-const scrypt = promisify(_scrypt);
-
+async function hashPassword(password: string, salt: string): Promise<string> {
+	return new Promise<string>((resolve, reject) => {
+		scrypt(password, salt, 32, (err, derivedKey) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(derivedKey.toString("hex"));
+			}
+		});
+	});
+}
 @Injectable()
 export class AuthService {
-	constructor(private readonly usersService: UsersService) {}
+	constructor(private usersService: UsersService, private jwtService: JwtService) {}
+	async generateToken(user: User): Promise<string> {
+		return this.jwtService.signAsync({ sub: user.id, username: user.email });
+	}
 	// signup
-	async signup(email: string, password: string) {
-		// See if email is in use
-		const users = await this.usersService.findByEmail(email);
-		if (users) {
-			throw new BadRequestException("email in use");
+	async signup(email: string, password: string): Promise<User> {
+		const user = await this.usersService.findByEmail(email);
+		if (user) {
+			throw new BadRequestException("Email is already in use");
 		}
-		// Hash the users password and // Generate a salt
+		// hash with add salt
 		const salt = randomBytes(8).toString("hex");
-		// Hash the salt and the password together
-		const hash = (await scrypt(password, salt, 32)) as Buffer;
-		// Join the hashed result and the salt together
-		const hashedPassword = `${salt}.${hash.toString("hex")}`;
-		// Create a new user and save it
-		const user = await this.usersService.create(email, hashedPassword);
-		// return the user
-		return user;
+		const hash = await hashPassword(password, salt);
+		// hashedPassword
+		const hashedPassword = `${salt}.${hash}`;
+		// return new user
+		return await this.usersService.create(email, hashedPassword);
 	}
 	// signin
-	async signin(email: string, password: string) {
+	async signin(email: string, password: string): Promise<UserDto> {
 		const user = await this.usersService.findByEmail(email);
 		if (!user) {
-			throw new NotFoundException("user not found");
+			throw new NotFoundException("User not found");
 		}
-		// store password
+		// stored password
 		const [salt, storedHash] = user.password.split(".");
-		// hash
-		const hash = (await scrypt(password, salt, 32)) as Buffer;
-		// storedHash
-		if (storedHash !== hash.toString("hex")) {
-			throw new BadRequestException("bad password");
+		const hash = await hashPassword(password, salt);
+		// check password
+		if (storedHash !== hash) {
+			throw new UnauthorizedException("Invalid password Or Email");
 		}
-		// return
-		return user;
+		// return JWT token
+		return {
+			id: user.id,
+			email: user.email,
+			token: await this.generateToken(user),
+		};
 	}
 }

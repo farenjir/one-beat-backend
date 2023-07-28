@@ -12,7 +12,7 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 
-import { Serialize } from "utils/serialize.interceptor";
+import { Serialize } from "utils/interceptors/serialize.interceptor";
 import { AuthGuard } from "guards/auth.guard";
 
 import { User } from "./user.entity";
@@ -62,9 +62,10 @@ export class UsersController {
 	// signin
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Session() session: any) {
-		const user = await this.authService.signin(body.email, body.password);
-		session.userId = user.id;
-		return user;
+		const userWithToken = await this.authService.signin(body.email, body.password);
+		console.log(userWithToken);
+		session.userId = userWithToken.id;
+		return userWithToken;
 	}
 	// updateUser
 	@Patch("updateById")
