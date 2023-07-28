@@ -2,11 +2,12 @@ import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { JwtModule } from "@nestjs/jwt";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
-import { RolesGuard } from "guards/role.guard";
+import { AuthGuard } from "guards/auth.guard";
 
 import { User } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
@@ -34,6 +35,11 @@ import { UsersModule } from "modules/user/user.module";
 				};
 			},
 		}),
+		JwtModule.register({
+			global: true,
+			secret: "process.env.JWT_KEY",
+			signOptions: { expiresIn: "1d" },
+		}),
 		UsersModule,
 	],
 	controllers: [AppController],
@@ -47,7 +53,7 @@ import { UsersModule } from "modules/user/user.module";
 		},
 		{
 			provide: APP_GUARD,
-			useClass: RolesGuard,
+			useClass: AuthGuard,
 		},
 	],
 })

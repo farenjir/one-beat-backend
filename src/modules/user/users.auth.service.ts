@@ -21,7 +21,7 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 export class AuthService {
 	constructor(private usersService: UsersService, private jwtService: JwtService) {}
 	async generateToken(user: User): Promise<string> {
-		return this.jwtService.signAsync({ id: user.id, email: user.email });
+		return this.jwtService.signAsync({ id: user.id, email: user.email, role: user.role });
 	}
 	// signup
 	async signup(email: string, password: string): Promise<User> {

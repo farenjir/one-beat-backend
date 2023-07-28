@@ -23,6 +23,7 @@ import { AuthGuard } from "guards/auth.guard";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
 import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
+import { RolesGuard } from "guards/role.guard";
 
 @Controller("user")
 @Serialize(UserDto)
@@ -37,8 +38,8 @@ export class UsersController {
 	}
 	// findUser
 	@Get("getById")
-	@UseGuards(AuthGuard)
 	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Query("id", ParseIntPipe) id: number) {
 		const user = await this.usersService.findById(id);
 		if (!user) {
@@ -49,21 +50,21 @@ export class UsersController {
 	// findAllUsers
 	@Get("getAll")
 	@Roles(Role.Admin)
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
 	findAllUser() {
 		return this.usersService.findUsers();
 	}
 	// updateUser
 	@Patch("updateById")
 	@Roles(Role.Admin)
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
 	updateUserById(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto) {
 		return this.usersService.updateById(id, body);
 	}
 	// removeUser
 	@Delete("deleteById")
 	@Roles(Role.Admin)
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
 	removeUserById(@Query("id", ParseIntPipe) id: number) {
 		return this.usersService.removeById(id);
 	}
