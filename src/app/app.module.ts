@@ -2,7 +2,7 @@ import { APP_PIPE } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { JwtModule } from "@nestjs/jwt";
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -14,7 +14,6 @@ import { UsersModule } from "modules/user/user.module";
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: `.env.${process.env.NODE_ENV}`,
-			// load: [ormConfig]
 			// expandVariables: true,
 		}),
 		TypeOrmModule.forRootAsync({
@@ -30,10 +29,13 @@ import { UsersModule } from "modules/user/user.module";
 				entities: [User],
 			}),
 		}),
-		JwtModule.register({
-			global: true,
-			secret: "process.env.JWT_KEY",
-			signOptions: { expiresIn: "1d" },
+		JwtModule.registerAsync({
+			inject: [ConfigService],
+			useFactory: (config: ConfigService): JwtModuleOptions => ({
+				global: true,
+				secret: config.get<string>("JWT_KEY"),
+				signOptions: { expiresIn: "1d" },
+			}),
 		}),
 		UsersModule,
 	],

@@ -1,19 +1,7 @@
-import {
-	Controller,
-	Body,
-	Post,
-	Get,
-	Patch,
-	Delete,
-	Query,
-	ParseIntPipe,
-	UseGuards,
-	Res,
-	Req,
-} from "@nestjs/common";
+import { Controller, Body, Post, Get, Patch, Delete, Query, ParseIntPipe, UseGuards, Res, Req } from "@nestjs/common";
 import { Response, Request } from "express";
 
-import { cookieOptions, globalKeys } from "utils/global.configs";
+import { cookieOptions } from "utils/global.configs";
 import { Serialize } from "utils/interceptors/serialize.interceptor";
 
 import { Role } from "modules/role/role.enum";
@@ -68,14 +56,14 @@ export class UsersController {
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response) {
 		const userExtended = await this.authService.signin(body.email, body.password);
-		res.cookie(globalKeys.tokenKey, userExtended.token, cookieOptions);
+		res.cookie("app-token", userExtended.token, cookieOptions);
 		return userExtended;
 	}
 	// signOut
 	@Post("signOut")
 	@UseGuards(AuthGuard)
 	signOut(@Res({ passthrough: true }) res: Response) {
-		res.clearCookie(globalKeys.tokenKey);
+		res.clearCookie("app-token");
 	}
 	// createUser
 	@Post("signUp")

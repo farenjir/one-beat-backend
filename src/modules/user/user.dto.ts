@@ -3,7 +3,7 @@ import { Expose } from "class-transformer";
 
 import { Role } from "modules/role/role.enum";
 
-export { CreateUserDto, UpdateUserDto, UserDto, TokenDto };
+export { CreateUserDto, UpdateUserDto, UserDto, UserTokenDto };
 
 class UserDto {
 	@Expose()
@@ -30,7 +30,7 @@ class UpdateUserDto {
 	password: string;
 }
 
-class TokenDto {
+class UserTokenDto {
 	@IsString()
 	token?: string;
 }
