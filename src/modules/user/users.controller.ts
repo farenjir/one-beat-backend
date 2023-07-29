@@ -1,6 +1,6 @@
 import { Controller, Body, Post, Get, Patch, Delete, Query, ParseIntPipe, UseGuards, Res, Req } from "@nestjs/common";
 import { Response, Request } from "express";
-import { ApiCookieAuth, ApiOkResponse } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { cookieOptions } from "utils/global.configs";
 import { Serialize } from "utils/interceptors/serialize.interceptor";
@@ -15,6 +15,7 @@ import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
 
+@ApiTags("user")
 @Controller("user")
 @Serialize(UserDto)
 export class UsersController {
@@ -29,11 +30,12 @@ export class UsersController {
 	}
 	// signOut
 	@ApiCookieAuth()
+	@ApiOkResponse({ type: UserDto })
 	@Post("signOut")
 	@UseGuards(AuthGuard)
-	signOut(@Res({ passthrough: true }) res: Response): string {
+	signOut(@Res({ passthrough: true }) res: Response, @Req() req: Request): UserDto {
 		res.clearCookie("app-token");
-		return "sign out successfully";
+		return req.user;
 	}
 	// createUser
 	@ApiOkResponse({ type: UserDto })
