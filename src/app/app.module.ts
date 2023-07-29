@@ -1,7 +1,7 @@
 import { APP_PIPE } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { JwtModule } from "@nestjs/jwt";
 
 import { AppController } from "./app.controller";
@@ -9,7 +9,6 @@ import { AppService } from "./app.service";
 
 import { User } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
-
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -20,18 +19,16 @@ import { UsersModule } from "modules/user/user.module";
 		}),
 		TypeOrmModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: (config: ConfigService) => {
-				return {
-					type: "sqlite",
-					database: config.get<string>("DB_NAME"),
-					// host
-					// port
-					// username
-					// password
-					synchronize: true,
-					entities: [User],
-				};
-			},
+			useFactory: (config: ConfigService): TypeOrmModuleOptions => ({
+				type: "postgres",
+				synchronize: true,
+				host: config.get<string>("DB_HOST"),
+				port: config.get<number>("DB_PORT"),
+				username: config.get<string>("DB_USER"),
+				password: config.get<string>("DB_PASS"),
+				// app entities
+				entities: [User],
+			}),
 		}),
 		JwtModule.register({
 			global: true,

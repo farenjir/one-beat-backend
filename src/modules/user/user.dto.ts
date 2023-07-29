@@ -1,6 +1,8 @@
 import { IsEmail, IsOptional, IsString } from "class-validator";
 import { Expose } from "class-transformer";
 
+import { Role } from "modules/role/role.enum";
+
 export { CreateUserDto, UpdateUserDto, UserDto, TokenDto };
 
 class UserDto {
@@ -9,7 +11,7 @@ class UserDto {
 	@Expose()
 	email: string;
 	@Expose()
-	roles?: string[];
+	roles?: Role[];
 }
 
 class CreateUserDto {

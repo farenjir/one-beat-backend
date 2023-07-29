@@ -38,7 +38,7 @@ export class UsersController {
 	}
 	// findUser
 	@Get("getById")
-	@Roles(Role.Admin, Role.User)
+	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Query("id", ParseIntPipe) id: number) {
 		return await this.usersService.findById(id);

@@ -9,8 +9,13 @@ export class User {
 	email: string;
 	@Column()
 	password: string;
-	@Column("simple-enum", { enum: Role, default: Role.User })
-	roles?: string[];
+	@Column({
+		array: true,
+		type: "enum",
+		enum: Role,
+		default: [Role.User],
+	})
+	roles: Role[];
 	// logs
 	@AfterInsert()
 	logInsert() {
