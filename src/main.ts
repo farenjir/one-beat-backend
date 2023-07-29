@@ -1,5 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
+
 import helmet from "helmet";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
@@ -13,18 +16,17 @@ async function bootstrap() {
 		// httpsOptions
 		// abortOnError
 	});
-	// etag setup options
-	(<any>app).set("etag", false);
+	// cookieParser
+	app.use(cookieParser());
 	// session
-	// import * as session from "express-session";
-	// app.use(
-	// 	session({
-	// 		secret: "my-secret",
-	// 		resave: false,
-	// 		saveUninitialized: false,
-	// 	}),
-	// );
-	// header configs
+	app.use(
+		session({
+			secret: process.env.SESSION_KEY,
+			resave: false,
+			saveUninitialized: false,
+		}),
+	);
+	// headers
 	app.use(
 		helmet({
 			crossOriginEmbedderPolicy: false,
@@ -47,6 +49,8 @@ async function bootstrap() {
 		.build();
 	// swagger apply on app
 	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, config));
+	// etag setup options
+	(<any>app).set("etag", false);
 	// listen
 	await app.listen(3000);
 }
