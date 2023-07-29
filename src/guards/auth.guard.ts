@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { globalKeys } from "utils/global.configs";
 
 declare module "express" {
 	interface Request {
@@ -15,7 +16,7 @@ export class AuthGuard implements CanActivate {
 	// canActivate
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
-		const token = request.cookies["app-token"];
+		const token = request.cookies[globalKeys.tokenKey];
 		if (!token) {
 			throw new UnauthorizedException();
 		}

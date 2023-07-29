@@ -4,7 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 
 import { UsersService } from "./user.service";
 import { User } from "./user.entity";
-import { UserDto } from "./user.dto";
+import { TokenDto, UserDto } from "./user.dto";
 
 async function hashPassword(password: string, salt: string): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
@@ -17,11 +17,13 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 		});
 	});
 }
+
 @Injectable()
 export class AuthService {
 	constructor(private usersService: UsersService, private jwtService: JwtService) {}
+	// generateToken
 	async generateToken(user: User): Promise<string> {
-		return this.jwtService.signAsync({ id: user.id, email: user.email, role: user.role });
+		return this.jwtService.signAsync({ id: user.id, email: user.email, roles: user.roles });
 	}
 	// signup
 	async signup(email: string, password: string): Promise<User> {
@@ -38,7 +40,7 @@ export class AuthService {
 		return await this.usersService.create(email, hashedPassword);
 	}
 	// signin
-	async signin(email: string, password: string): Promise<UserDto> {
+	async signin(email: string, password: string): Promise<UserDto & TokenDto> {
 		const user = await this.usersService.findByEmail(email);
 		if (!user) {
 			throw new NotFoundException("User not found");
@@ -50,10 +52,9 @@ export class AuthService {
 		if (storedHash !== hash) {
 			throw new UnauthorizedException("Invalid password Or Email");
 		}
-		const token = await this.generateToken(user);
 		// return JWT token
 		return {
-			token,
+			token: await this.generateToken(user),
 			...user,
 		};
 	}

@@ -1,36 +1,36 @@
 import {
-	Body,
 	Controller,
+	Body,
 	Post,
 	Get,
 	Patch,
 	Delete,
 	Query,
-	UseGuards,
 	ParseIntPipe,
-	NotFoundException,
+	UseGuards,
 	Res,
 	Req,
 } from "@nestjs/common";
 import { Response, Request } from "express";
 
+import { cookieOptions, globalKeys } from "utils/global.configs";
+import { Serialize } from "utils/interceptors/serialize.interceptor";
+
 import { Role } from "modules/role/role.enum";
 import { Roles } from "modules/role/roles.decorator";
-
-import { Serialize } from "utils/interceptors/serialize.interceptor";
 import { AuthGuard } from "guards/auth.guard";
+import { RolesGuard } from "guards/role.guard";
 
+import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
-import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
-import { RolesGuard } from "guards/role.guard";
 
 @Controller("user")
 @Serialize(UserDto)
 export class UsersController {
 	constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
 	// return current user
-	@Get()
+	@Get("")
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request) {
 		const userId = req.user.id;
@@ -38,32 +38,28 @@ export class UsersController {
 	}
 	// findUser
 	@Get("getById")
-	@Roles(Role.Admin)
+	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Query("id", ParseIntPipe) id: number) {
-		const user = await this.usersService.findById(id);
-		if (!user) {
-			throw new NotFoundException("user not found");
-		}
-		return user;
+		return await this.usersService.findById(id);
 	}
 	// findAllUsers
 	@Get("getAll")
-	@Roles(Role.Admin)
+	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	findAllUser() {
 		return this.usersService.findUsers();
 	}
 	// updateUser
 	@Patch("updateById")
-	@Roles(Role.Admin)
+	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	updateUserById(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto) {
 		return this.usersService.updateById(id, body);
 	}
 	// removeUser
 	@Delete("deleteById")
-	@Roles(Role.Admin)
+	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	removeUserById(@Query("id", ParseIntPipe) id: number) {
 		return this.usersService.removeById(id);
@@ -71,19 +67,15 @@ export class UsersController {
 	// signin of auth services
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response) {
-		const userWithToken = await this.authService.signin(body.email, body.password);
-		res.cookie("app-token", userWithToken.token, {
-			path: "/",
-			httpOnly: true,
-			maxAge: 24 * 24 * 3600,
-			secure: process.env.NODE_ENV === "production",
-		});
-		return userWithToken;
+		const userExtended = await this.authService.signin(body.email, body.password);
+		res.cookie(globalKeys.tokenKey, userExtended.token, cookieOptions);
+		return userExtended;
 	}
 	// signOut
 	@Post("signOut")
+	@UseGuards(AuthGuard)
 	signOut(@Res({ passthrough: true }) res: Response) {
-		res.cookie("app-token", "");
+		res.clearCookie(globalKeys.tokenKey);
 	}
 	// createUser
 	@Post("signUp")

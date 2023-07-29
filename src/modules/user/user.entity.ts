@@ -10,7 +10,7 @@ export class User {
 	@Column()
 	password: string;
 	@Column("simple-enum", { enum: Role, default: Role.User })
-	role?: string;
+	roles?: string[];
 	// logs
 	@AfterInsert()
 	logInsert() {
