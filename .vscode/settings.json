@@ -3,6 +3,7 @@
         "resave",
         "signin",
         "signout",
+        "ssword",
         "typeorm"
     ]
 }
