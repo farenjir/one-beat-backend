@@ -1,10 +1,11 @@
 import { NotFoundException, BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
-import { randomBytes, scrypt } from "crypto";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { randomBytes, scrypt } from "crypto";
 
 import { UsersService } from "./user.service";
 import { User } from "./user.entity";
-import { TokenDto, UserDto } from "./user.dto";
+import { UserTokenDto, UserDto } from "./user.dto";
 
 async function hashPassword(password: string, salt: string): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
@@ -20,10 +21,13 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService, private jwtService: JwtService) {}
+	constructor(private usersService: UsersService, private jwtService: JwtService, private config: ConfigService) {}
 	// generateToken
 	async generateToken(user: User): Promise<string> {
-		return this.jwtService.signAsync({ id: user.id, email: user.email, roles: user.roles });
+		return this.jwtService.signAsync(
+			{ id: user.id, email: user.email, roles: user.roles },
+			{ secret: this.config.get<string>("JWT_KEY") },
+		);
 	}
 	// signup
 	async signup(email: string, password: string): Promise<User> {
@@ -40,7 +44,7 @@ export class AuthService {
 		return await this.usersService.create(email, hashedPassword);
 	}
 	// signin
-	async signin(email: string, password: string): Promise<UserDto & TokenDto> {
+	async signin(email: string, password: string): Promise<UserDto & UserTokenDto> {
 		const user = await this.usersService.findByEmail(email);
 		if (!user) {
 			throw new NotFoundException("User not found");

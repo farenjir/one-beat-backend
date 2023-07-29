@@ -1,19 +1,8 @@
-import {
-	Controller,
-	Body,
-	Post,
-	Get,
-	Patch,
-	Delete,
-	Query,
-	ParseIntPipe,
-	UseGuards,
-	Res,
-	Req,
-} from "@nestjs/common";
+import { Controller, Body, Post, Get, Patch, Delete, Query, ParseIntPipe, UseGuards, Res, Req } from "@nestjs/common";
 import { Response, Request } from "express";
+import { ApiCookieAuth } from "@nestjs/swagger";
 
-import { cookieOptions, globalKeys } from "utils/global.configs";
+import { cookieOptions } from "utils/global.configs";
 import { Serialize } from "utils/interceptors/serialize.interceptor";
 
 import { Role } from "modules/role/role.enum";
@@ -29,8 +18,28 @@ import { AuthService } from "./users.auth.service";
 @Serialize(UserDto)
 export class UsersController {
 	constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
+	// signin of auth services
+	@Post("signIn")
+	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response) {
+		const userExtended = await this.authService.signin(body.email, body.password);
+		res.cookie("app-token", userExtended.token, cookieOptions);
+		return userExtended;
+	}
+	// signOut
+	@Post("signOut")
+	@ApiCookieAuth()
+	@UseGuards(AuthGuard)
+	signOut(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie("app-token");
+	}
+	// createUser
+	@Post("signUp")
+	async createUser(@Body() body: CreateUserDto) {
+		return await this.authService.signup(body.email, body.password);
+	}
 	// return current user
 	@Get("")
+	@ApiCookieAuth()
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request) {
 		const userId = req.user.id;
@@ -38,6 +47,7 @@ export class UsersController {
 	}
 	// findUser
 	@Get("getById")
+	@ApiCookieAuth()
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Query("id", ParseIntPipe) id: number) {
@@ -45,6 +55,7 @@ export class UsersController {
 	}
 	// findAllUsers
 	@Get("getAll")
+	@ApiCookieAuth()
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	findAllUser() {
@@ -52,6 +63,7 @@ export class UsersController {
 	}
 	// updateUser
 	@Patch("updateById")
+	@ApiCookieAuth()
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	updateUserById(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto) {
@@ -59,27 +71,10 @@ export class UsersController {
 	}
 	// removeUser
 	@Delete("deleteById")
+	@ApiCookieAuth()
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	removeUserById(@Query("id", ParseIntPipe) id: number) {
 		return this.usersService.removeById(id);
-	}
-	// signin of auth services
-	@Post("signIn")
-	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response) {
-		const userExtended = await this.authService.signin(body.email, body.password);
-		res.cookie(globalKeys.tokenKey, userExtended.token, cookieOptions);
-		return userExtended;
-	}
-	// signOut
-	@Post("signOut")
-	@UseGuards(AuthGuard)
-	signOut(@Res({ passthrough: true }) res: Response) {
-		res.clearCookie(globalKeys.tokenKey);
-	}
-	// createUser
-	@Post("signUp")
-	async createUser(@Body() body: CreateUserDto) {
-		return await this.authService.signup(body.email, body.password);
 	}
 }
