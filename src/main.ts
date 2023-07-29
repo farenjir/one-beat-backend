@@ -43,7 +43,12 @@ async function bootstrap() {
 		}),
 	);
 	// swagger
-	const config = new DocumentBuilder().setTitle("1BEAT").setDescription("api of 1BEAT").setVersion("1.0").build();
+	const config = new DocumentBuilder()
+		.setTitle("1BEAT")
+		.setDescription("api of 1BEAT")
+		.setVersion("1.0")
+		.addCookieAuth("app-token")
+		.build();
 	// swagger apply on app
 	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, config));
 	// etag setup options
