@@ -7,7 +7,7 @@ import { UsersService } from "./user.service";
 import { User } from "./user.entity";
 import { UserTokenDto, UserDto } from "./user.dto";
 
-async function hashPassword(password: string, salt: string): Promise<string> {
+export async function hashPassword(password: string, salt: string): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
 		scrypt(password, salt, 32, (err, derivedKey) => {
 			if (err) {

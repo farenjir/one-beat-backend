@@ -7,32 +7,39 @@ import { ApiProperty } from "@nestjs/swagger";
 export { CreateUserDto, UpdateUserDto, UserDto, UserTokenDto };
 
 class UserDto {
+	@ApiProperty()
 	@Expose()
 	id: number;
+	@ApiProperty({ default: "test@test.com" })
 	@Expose()
 	email: string;
+	@ApiProperty({
+		name: "roles",
+		enum: Role,
+		default: [Role.User],
+	})
 	@Expose()
 	@IsOptional()
 	roles?: Role[];
 }
 
 class CreateUserDto {
+	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@ApiProperty({})
 	email: string;
+	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@ApiProperty({})
 	password: string;
 }
 
 class UpdateUserDto {
+	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	@IsOptional()
-	@ApiProperty({})
 	email?: string;
+	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
 	@IsOptional()
-	@ApiProperty({})
 	password?: string;
 	@IsArray()
 	@IsOptional()
