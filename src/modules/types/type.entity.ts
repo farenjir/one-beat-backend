@@ -2,7 +2,7 @@ import { Entity, Tree, Column, PrimaryGeneratedColumn, TreeChildren, TreeParent 
 import DefaultEntity from "./type.entity.default";
 
 @Entity()
-@Tree("materialized-path")
+@Tree("closure-table")
 export class Types extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -12,10 +12,10 @@ export class Types extends DefaultEntity {
 	name: string;
 	@Column()
 	title: string;
-	// TreeParent
-	@TreeParent()
-	parent: Types;
 	// TreeChildren
 	@TreeChildren()
 	children: Types[];
+	// TreeParent
+	@TreeParent()
+	parent: Types;
 }

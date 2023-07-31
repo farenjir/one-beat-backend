@@ -3,16 +3,17 @@ import { IsArray, IsOptional, IsString } from "class-validator";
 import { Expose } from "class-transformer";
 
 import { Types } from "./type.entity";
+import DefaultEntity from "./type.entity.default";
 
 export { TypeDto, CreateTypeDto, UpdateTypeDto };
 
 class TypeDto {
-	@ApiProperty({ default: "code" })
-	@Expose()
-	code: string;
 	@ApiProperty()
 	@Expose()
 	id: number;
+	@ApiProperty({ default: "code" })
+	@Expose()
+	code: string;
 	@ApiProperty({ default: "name" })
 	@Expose()
 	name: string;

@@ -1,25 +1,20 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOneOptions, Repository } from "typeorm";
+import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
 
 import { Types } from "./type.entity";
 import { CreateTypeDto } from "./type.dto";
 
 @Injectable()
 export class TypesService {
-	constructor(@InjectRepository(Types) private repo: Repository<Types>) {}
+	constructor(@InjectRepository(Types) private repo: TreeRepository<Types>) {}
 	// findAll
 	async findTypes(): Promise<Types[]> {
-		return await this.repo.find();
+		const options: FindTreeOptions = { depth: 2 };
+		return await this.repo.findTrees(options);
 	}
 	// create
-	async create({ code = "", name = "", title = "", children = [] }: CreateTypeDto): Promise<Types> {
-		const typeParams = {
-			code,
-			name,
-			title,
-			children,
-		};
+	async create(typeParams: CreateTypeDto): Promise<Types> {
 		const type = this.repo.create(typeParams);
 		return this.repo.save(type);
 	}

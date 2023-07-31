@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { AuthGuard } from "guards/auth.guard";
@@ -20,6 +20,12 @@ export class TypesController {
 	@Get("getAll")
 	async getTypes(): Promise<TypeDto[]> {
 		return await this.typeService.findTypes();
+	}
+	@ApiCookieAuth()
+	@ApiOkResponse({ type: TypeDto })
+	@Get("getById")
+	async getTypeById(@Query("id", ParseIntPipe) id: number): Promise<TypeDto> {
+		return await this.typeService.findById(id);
 	}
 	// add new types
 	@ApiCookieAuth()
