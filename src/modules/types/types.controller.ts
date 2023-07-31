@@ -1,51 +1,52 @@
-import { Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
 
-import { Roles } from "modules/role/roles.decorator";
-import { Role } from "modules/role/role.enum";
+import { Roles } from "guards/role/roles.decorator";
+import { Role } from "guards/role/role.enum";
 
-import { TypeDto } from "./type.dto";
+import { CreateTypeDto, TypeDto, UpdateTypeDto } from "./type.dto";
 import { TypesService } from "./types.service";
 
-@ApiTags("type")
+@ApiTags("Type")
 @Controller("type")
 export class TypesController {
 	constructor(private readonly typeService: TypesService) {}
 	// get all types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: TypeDto })
-	@Get("")
-	async getTypes(): Promise<TypeDto> {
-		return;
+	@Get("getAll")
+	async getTypes(): Promise<TypeDto[]> {
+		return await this.typeService.findTypes();
 	}
 	// add new types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: TypeDto })
 	@Post("addNew")
-	@Roles(Role.Admin)
-	@UseGuards(AuthGuard, RolesGuard)
-	async addNewType(): Promise<TypeDto> {
-		return;
+	// @Roles(Role.Admin)
+	// @UseGuards(AuthGuard, RolesGuard)
+	async addNewType(@Body() body: CreateTypeDto): Promise<TypeDto> {
+		return await this.typeService.create(body);
 	}
 	// update pre types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: TypeDto })
 	@Patch("updateById")
-	@Roles(Role.Admin)
-	@UseGuards(AuthGuard, RolesGuard)
-	async updateType(): Promise<TypeDto> {
-		return;
+	// @Roles(Role.Admin)
+	// @UseGuards(AuthGuard, RolesGuard)
+	async updateType(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateTypeDto): Promise<TypeDto> {
+		return await this.typeService.updateById(id, body);
 	}
 	// delete types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: TypeDto })
 	@Delete("deleteById")
-	@Roles(Role.Admin)
-	@UseGuards(AuthGuard, RolesGuard)
-	async deleteType(): Promise<TypeDto> {
-		return;
+	// @Roles(Role.Admin)
+	// @UseGuards(AuthGuard, RolesGuard)
+	async deleteType(@Query("id", ParseIntPipe) id: number): Promise<TypeDto> {
+		const typeRemoved = await this.typeService.removeById(id);
+		return { id, ...typeRemoved };
 	}
 }

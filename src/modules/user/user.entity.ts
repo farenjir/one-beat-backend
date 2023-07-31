@@ -1,7 +1,7 @@
 import { AfterInsert, AfterRemove, AfterUpdate, Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 import DefaultEntity from "./user.entity.default";
-import { Role } from "modules/role/role.enum";
+import { Role } from "guards/role/role.enum";
 @Entity()
 export class User extends DefaultEntity {
 	@PrimaryGeneratedColumn()

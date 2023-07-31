@@ -22,7 +22,6 @@ class TypeDto {
 	// TreeChildren
 	@ApiProperty({ type: [Types] })
 	@Expose()
-	@IsOptional()
 	children: Types[];
 }
 
