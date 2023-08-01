@@ -1,9 +1,27 @@
-import { AfterInsert, AfterRemove, AfterUpdate, Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-
-import DefaultEntity from "./user.entity.default";
+import {
+	AfterInsert,
+	AfterRemove,
+	AfterUpdate,
+	Entity,
+	Column,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+	UpdateDateColumn,
+	DeleteDateColumn,
+} from "typeorm";
 import { Role } from "guards/role/role.enum";
+
+abstract class DefaultEntity {
+	@CreateDateColumn({ name: "createdAt" })
+	createdAt: Date;
+	@UpdateDateColumn({ name: "updatedAt" })
+	updatedAt: Date;
+	@DeleteDateColumn({ name: "deletedAt" })
+	deletedAt: Date;
+}
+
 @Entity()
-export class User extends DefaultEntity {
+export class Users extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 	@Column()

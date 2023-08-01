@@ -15,8 +15,8 @@ import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
 
-@ApiTags("User")
-@Controller("user")
+@ApiTags("Users")
+@Controller("users")
 @Serialize(UserDto)
 export class UsersController {
 	constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
