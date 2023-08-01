@@ -5,8 +5,8 @@ import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { cookieOptions } from "utils/global.configs";
 import { Serialize } from "utils/interceptors/serialize.interceptor";
 
-import { Role } from "modules/role/role.enum";
-import { Roles } from "modules/role/roles.decorator";
+import { Role } from "guards/role/role.enum";
+import { Roles } from "guards/role/roles.decorator";
 
 import { RolesGuard } from "guards/role.guard";
 import { AuthGuard } from "guards/auth.guard";
@@ -15,7 +15,7 @@ import { CreateUserDto, UpdateUserDto, UserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
 
-@ApiTags("user")
+@ApiTags("User")
 @Controller("user")
 @Serialize(UserDto)
 export class UsersController {

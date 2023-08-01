@@ -7,8 +7,12 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
+import { Types } from "modules/types/type.entity";
+import { TypesModule } from "modules/types/types.module";
+
 import { User } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -27,7 +31,7 @@ import { UsersModule } from "modules/user/user.module";
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				// app entities
-				entities: [User],
+				entities: [Types, User],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -38,6 +42,7 @@ import { UsersModule } from "modules/user/user.module";
 				signOptions: { expiresIn: "1d" },
 			}),
 		}),
+		TypesModule,
 		UsersModule,
 	],
 	controllers: [AppController],
