@@ -2,12 +2,12 @@ import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
 import { Session } from "express-session";
 
-import { User } from "../user.entity";
+import { Users } from "../user.entity";
 import { UsersService } from "../user.service";
 
 declare module "express" {
 	interface Request {
-		currentUser?: User;
+		currentUser?: Users;
 	}
 }
 interface SessionWithUserId extends Session {

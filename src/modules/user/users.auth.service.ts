@@ -4,7 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import { randomBytes, scrypt } from "crypto";
 
 import { UsersService } from "./user.service";
-import { User } from "./user.entity";
+import { Users } from "./user.entity";
 import { UserTokenDto, UserDto } from "./user.dto";
 
 export async function hashPassword(password: string, salt: string): Promise<string> {
@@ -23,14 +23,14 @@ export async function hashPassword(password: string, salt: string): Promise<stri
 export class AuthService {
 	constructor(private usersService: UsersService, private jwtService: JwtService, private config: ConfigService) {}
 	// generateToken
-	async generateToken(user: User): Promise<string> {
+	async generateToken(user: Users): Promise<string> {
 		return this.jwtService.signAsync(
 			{ id: user.id, email: user.email, roles: user.roles },
 			{ secret: this.config.get<string>("JWT_KEY") },
 		);
 	}
 	// signup
-	async signup(email: string, password: string): Promise<User> {
+	async signup(email: string, password: string): Promise<Users> {
 		const user = await this.usersService.findByEmail(email);
 		if (user) {
 			throw new BadRequestException("Email is already in use");

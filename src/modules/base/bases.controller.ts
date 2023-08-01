@@ -1,57 +1,59 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
+import { Serialize } from "utils/interceptors/serialize.interceptor";
+
 import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
 
 import { Roles } from "guards/role/roles.decorator";
 import { Role } from "guards/role/role.enum";
 
-import { CreateTypeDto, TypeDto, UpdateTypeDto } from "./type.dto";
-import { TypesService } from "./types.service";
+import { CreateBaseDto, BaseDto, UpdateBaseDto } from "./base.dto";
+import { BaseService } from "./bases.service";
 
-@ApiTags("Type")
-@Controller("type")
-export class TypesController {
-	constructor(private readonly typeService: TypesService) {}
+@ApiTags("Bases")
+@Controller("bases")
+export class BaseController {
+	constructor(private readonly typeService: BaseService) {}
 	// get all types
 	@ApiCookieAuth()
-	@ApiOkResponse({ type: TypeDto })
+	@ApiOkResponse({ type: BaseDto })
 	@Get("getAll")
-	async getTypes(): Promise<TypeDto[]> {
-		return await this.typeService.findTypes();
+	async getBases(): Promise<BaseDto[]> {
+		return await this.typeService.findBases();
 	}
 	@ApiCookieAuth()
-	@ApiOkResponse({ type: TypeDto })
+	@ApiOkResponse({ type: BaseDto })
 	@Get("getById")
-	async getTypeById(@Query("id", ParseIntPipe) id: number): Promise<TypeDto> {
+	async getBaseById(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
 		return await this.typeService.findById(id);
 	}
 	// add new types
 	@ApiCookieAuth()
-	@ApiOkResponse({ type: TypeDto })
+	@ApiOkResponse({ type: BaseDto })
 	@Post("addNew")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async addNewType(@Body() body: CreateTypeDto): Promise<TypeDto> {
+	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
 		return await this.typeService.create(body);
 	}
 	// update pre types
 	@ApiCookieAuth()
-	@ApiOkResponse({ type: TypeDto })
+	@ApiOkResponse({ type: BaseDto })
 	@Patch("updateById")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async updateType(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateTypeDto): Promise<TypeDto> {
+	async updateBase(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
 		return await this.typeService.updateById(id, body);
 	}
 	// delete types
 	@ApiCookieAuth()
-	@ApiOkResponse({ type: TypeDto })
+	@ApiOkResponse({ type: BaseDto })
 	@Delete("deleteById")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async deleteType(@Query("id", ParseIntPipe) id: number): Promise<TypeDto> {
+	async deleteBase(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
 		const typeRemoved = await this.typeService.removeById(id);
 		return { id, ...typeRemoved };
 	}
