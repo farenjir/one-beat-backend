@@ -40,11 +40,20 @@ export class BaseService {
 	}
 	// findOne
 	async findById(id: number): Promise<Bases> {
-		const options: FindOneOptions<Bases> = { where: { id } }; // FindManyOptions
+		const options: FindOneOptions<Bases> = { where: { id } }; 
 		const base = await this.repo.findOne(options);
 		if (!base) {
 			throw new NotFoundException("base not found");
 		}
 		return base;
 	}
+	// findMany
+	// async findBaseByTag(tagName: string): Promise<Bases> {
+	// 	const options: FindOneOptions<Bases> = { where: { tag: tagName} }; // FindManyOptions
+	// 	const base = await this.repo.findAncestorsTree();
+	// 	if (!base) {
+	// 		throw new NotFoundException("base not found");
+	// 	}
+	// 	return base;
+	// }
 }

@@ -13,17 +13,15 @@ import { CreateBaseDto, BaseDto, UpdateBaseDto } from "./base.dto";
 import { BaseService } from "./bases.service";
 
 @ApiTags("Bases")
-@Controller("bases")
+@Controller("base")
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
-	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Get("getAll")
 	async getBases(): Promise<BaseDto[]> {
 		return await this.typeService.findBases();
 	}
-	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Get("getById")
 	async getBaseById(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
@@ -33,8 +31,8 @@ export class BaseController {
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Post("addNew")
-	// @Roles(Role.Admin)
-	// @UseGuards(AuthGuard, RolesGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
 		return await this.typeService.create(body);
 	}
@@ -42,8 +40,8 @@ export class BaseController {
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Patch("updateById")
-	// @Roles(Role.Admin)
-	// @UseGuards(AuthGuard, RolesGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	async updateBase(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
 		return await this.typeService.updateById(id, body);
 	}
@@ -51,8 +49,8 @@ export class BaseController {
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Delete("deleteById")
-	// @Roles(Role.Admin)
-	// @UseGuards(AuthGuard, RolesGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	async deleteBase(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
 		const typeRemoved = await this.typeService.removeById(id);
 		return { id, ...typeRemoved };
