@@ -18,7 +18,7 @@ export class BaseService {
 		if (!parentId && !type) {
 			throw new BadRequestException("Invalid Query");
 		}
-		const parent = await this.findParent(parentId, type);
+		const parent = await this.findBase(parentId, type);
 		const options: FindTreeOptions = { relations: ["parent", "children"] };
 		const { children } = await this.repo.findDescendantsTree(parent, options);
 		return children;
@@ -26,7 +26,7 @@ export class BaseService {
 	// create
 	async create({ parentId, ...baseParams }: CreateBaseDto): Promise<Bases> {
 		if (parentId) {
-			const parent = await this.findParent(parentId);
+			const parent = await this.findBase(parentId);
 			Object.assign(baseParams, { parent });
 		}
 		const base = this.repo.create(baseParams);
@@ -39,7 +39,7 @@ export class BaseService {
 			throw new NotFoundException("base not found");
 		}
 		if (parentId) {
-			const parent = await this.findParent(parentId);
+			const parent = await this.findBase(parentId);
 			Object.assign(baseParams, { parent });
 		}
 		Object.assign(base, baseParams);
@@ -53,18 +53,12 @@ export class BaseService {
 		}
 		return await this.repo.remove(base);
 	}
-	// findParent
-	async findParent(id?: number, type?: string): Promise<Bases> {
-		const baseParent = await this.findBase(id, type);
-		if (!baseParent) {
-			throw new NotFoundException("patent not found");
-		}
-		return baseParent;
-	}
 	// findOne
 	async findBase(id?: number, type?: string): Promise<Bases> {
-		const where = { id, type };
-		const options: FindOneOptions<Bases> = { where };
+		if (!id && !type) {
+			throw new BadRequestException("Invalid Query");
+		}
+		const options: FindOneOptions<Bases> = { where: { id, type } };
 		const base = await this.repo.findOne(options);
 		if (!base) {
 			throw new NotFoundException("base not found");
