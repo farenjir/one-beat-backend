@@ -17,6 +17,8 @@ class BaseDto {
 	@ApiProperty({ default: "NameFa" })
 	@Expose()
 	nameFa: string;
+	@Expose()
+	parent?: BaseDto;
 	@ApiProperty({ default: [BaseDto] })
 	@Expose()
 	children: BaseDto[];
@@ -38,6 +40,9 @@ class CreateBaseDto {
 }
 
 class UpdateBaseDto {
+	@ApiProperty({ default: 0 })
+	@IsInt()
+	parentId?: number;
 	@ApiProperty({ default: "type" })
 	@IsString()
 	@IsOptional()
