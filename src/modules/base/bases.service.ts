@@ -14,7 +14,7 @@ export class BaseService {
 		return await this.repo.findTrees(options);
 	}
 	// findChildrenByParentId
-	async findBaseParent(parentId?: number, type?: string): Promise<Bases[]> {
+	async findBaseChildren(parentId?: number, type?: string): Promise<Bases[]> {
 		if (!parentId && !type) {
 			throw new BadRequestException("Invalid Query");
 		}

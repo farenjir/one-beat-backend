@@ -63,10 +63,10 @@ export class BaseController {
 		required: false,
 		type: String,
 	})
-	@Get("getChildren")
+	@Get("getBaseChildren")
 	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQueries = {}): Promise<BaseDto[]> {
 		const { parentId, type } = query;
-		return await this.typeService.findBaseParent(parentId, type);
+		return await this.typeService.findBaseChildren(parentId, type);
 	}
 	// add new types
 	@ApiCookieAuth()
