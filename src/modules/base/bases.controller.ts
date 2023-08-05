@@ -80,8 +80,8 @@ export class BaseController {
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
 	@Delete("deleteById")
-	// @Roles(Role.Admin)
-	// @UseGuards(AuthGuard, RolesGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	async deleteBase(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
 		const typeRemoved = await this.typeService.removeById(id);
 		return { id, ...typeRemoved };
