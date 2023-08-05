@@ -1,15 +1,4 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	ParseIntPipe,
-	Patch,
-	Post,
-	Query,
-	ParseArrayPipe,
-	UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
 import { Serialize } from "utils/interceptors/serialize.interceptor";
@@ -20,7 +9,7 @@ import { RolesGuard } from "guards/role.guard";
 import { Roles } from "guards/role/roles.decorator";
 import { Role } from "guards/role/role.enum";
 
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQueries } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
 import { ValidationQueryPipe } from "./base.pipe";
 import { BaseService } from "./bases.service";
 
@@ -32,41 +21,41 @@ export class BaseController {
 	@ApiOkResponse({ type: BaseDto })
 	@Get("getAll")
 	async getBases(): Promise<BaseDto[]> {
-		return await this.typeService.findBases();
+		return await this.typeService.findAllBases();
 	}
 	// get one type
 	@ApiOkResponse({ type: BaseDto })
-	@ApiQuery({
-		name: "baseId",
-		required: false,
-		type: Number,
-	})
 	@ApiQuery({
 		name: "type",
 		required: false,
 		type: String,
 	})
+	@ApiQuery({
+		name: "baseId",
+		required: false,
+		type: Number,
+	})
 	@Get("getBase")
-	async getBase(@Query(new ValidationQueryPipe()) query: BaseQueries = {}): Promise<BaseDto> {
+	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto> {
 		const { baseId, type } = query;
 		return await this.typeService.findBase(baseId, type);
 	}
 	// get children of type
 	@ApiOkResponse({ type: [BaseDto] })
 	@ApiQuery({
+		name: "parentType",
+		required: false,
+		type: String,
+	})
+	@ApiQuery({
 		name: "parentId",
 		required: false,
 		type: Number,
 	})
-	@ApiQuery({
-		name: "type",
-		required: false,
-		type: String,
-	})
 	@Get("getBaseChildren")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQueries = {}): Promise<BaseDto[]> {
-		const { parentId, type } = query;
-		return await this.typeService.findBaseChildren(parentId, type);
+	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto[]> {
+		const { parentId, parentType } = query;
+		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// add new types
 	@ApiCookieAuth()

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
+// import _object from "lodash/fp/object"
 
 import { Bases } from "./base.entity";
 import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
@@ -8,21 +9,6 @@ import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
 @Injectable()
 export class BaseService {
 	constructor(@InjectRepository(Bases) private repo: TreeRepository<Bases>) {}
-	// findAll
-	async findBases(): Promise<Bases[]> {
-		const options: FindTreeOptions = { relations: ["children"] };
-		return await this.repo.findTrees(options);
-	}
-	// findChildrenByParentId
-	async findBaseChildren(parentId?: number, type?: string): Promise<Bases[]> {
-		if (!parentId && !type) {
-			throw new BadRequestException("Invalid Query");
-		}
-		const parent = await this.findBase(parentId, type);
-		const options: FindTreeOptions = { relations: ["parent", "children"] };
-		const { children } = await this.repo.findDescendantsTree(parent, options);
-		return children;
-	}
 	// create
 	async create({ parentId, ...baseParams }: CreateBaseDto): Promise<Bases> {
 		if (parentId) {
@@ -53,11 +39,17 @@ export class BaseService {
 		}
 		return await this.repo.remove(base);
 	}
+	// findAll
+	async findAllBases(): Promise<Bases[]> {
+		const options: FindTreeOptions = { relations: ["children"] };
+		return await this.repo.findTrees(options);
+	}
 	// findOne
 	async findBase(id?: number, type?: string): Promise<Bases> {
 		if (!id && !type) {
 			throw new BadRequestException("Invalid Query");
 		}
+		// const options: FindOneOptions<Bases> = { where: _object.pickBy({ id, type }, isTruthy => !!isTruthy) };
 		const options: FindOneOptions<Bases> = { where: { id, type } };
 		const base = await this.repo.findOne(options);
 		if (!base) {
@@ -65,13 +57,14 @@ export class BaseService {
 		}
 		return base;
 	}
-	// findMany
-	// async findBaseByTag(tagName: string): Promise<Bases> {
-	// 	const options: FindOneOptions<Bases> = { where: { tag: tagName} }; // FindManyOptions
-	// 	const base = await this.repo.findAncestorsTree();
-	// 	if (!base) {
-	// 		throw new NotFoundException("base not found");
-	// 	}
-	// 	return base;
-	// }
+	// findChildren
+	async findBaseChildren(parentId?: number, parentType?: string): Promise<Bases[]> {
+		if (!parentId && !parentType) {
+			throw new BadRequestException("Invalid Query");
+		}
+		const parent = await this.findBase(parentId, parentType);
+		const options: FindTreeOptions = { relations: ["parent", "children"] };
+		const { children } = await this.repo.findDescendantsTree(parent, options);
+		return children;
+	}
 }

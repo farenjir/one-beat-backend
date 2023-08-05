@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, IsString } from "class-validator";
 import { Expose, Type } from "class-transformer";
 
-export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQueries };
+export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQuery };
 
 class BaseDto {
 	@ApiProperty()
@@ -57,7 +57,7 @@ class UpdateBaseDto {
 	nameFa: string;
 }
 
-class BaseQueries {
+class BaseQuery {
 	@Type(() => Number)
 	@IsInt()
 	@IsOptional()
@@ -69,4 +69,7 @@ class BaseQueries {
 	@IsString()
 	@IsOptional()
 	type?: string;
+	@IsString()
+	@IsOptional()
+	parentType?: string;
 }
