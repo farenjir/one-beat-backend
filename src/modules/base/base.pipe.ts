@@ -2,14 +2,14 @@ import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 
-import { BaseQueries } from "./base.dto";
+import { BaseQuery } from "./base.dto";
 
 type AllowedTypes = string | boolean | number | Array<any> | object;
 
 @Injectable()
 export class ValidationQueryPipe implements PipeTransform<any> {
 	// transform
-	async transform(value: BaseQueries, { metatype }: ArgumentMetadata) {
+	async transform(value: BaseQuery, { metatype }: ArgumentMetadata) {
 		if (!metatype || !this.toValidate(metatype)) {
 			return value;
 		}

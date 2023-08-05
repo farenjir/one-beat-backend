@@ -7,16 +7,16 @@ interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
 }
 
-export function Serialize(dto: ClassConstructor): ReturnType<typeof UseInterceptors> {
-	return UseInterceptors(new SerializeInterceptor(dto));
-}
-
-export class SerializeInterceptor implements NestInterceptor {
-	constructor(private dto: ClassConstructor<any>) {}
+class SerializeInterceptor implements NestInterceptor {
+	constructor(private dto: ClassConstructor<any>, private exClude: boolean = true) {}
 	// intercept
 	intercept(_context: ExecutionContext, handler: CallHandler): Observable<any> {
 		return handler
 			.handle()
-			.pipe(rxMap((data: any) => plainToClass(this.dto, data, { excludeExtraneousValues: true })));
+			.pipe(rxMap((data: any) => plainToClass(this.dto, data, { excludeExtraneousValues: this.exClude })));
 	}
+}
+
+export function Serialize(dto: ClassConstructor, exClude?: boolean): ReturnType<typeof UseInterceptors> {
+	return UseInterceptors(new SerializeInterceptor(dto, exClude));
 }
