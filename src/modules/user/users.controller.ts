@@ -46,7 +46,7 @@ export class UsersController {
 	// return current user
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: UserDto })
-	@Get("")
+	@Get("whoAmI")
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request): Promise<UserDto> {
 		const userId = req.user.id;

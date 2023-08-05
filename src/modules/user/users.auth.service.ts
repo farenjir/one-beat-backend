@@ -31,7 +31,8 @@ export class AuthService {
 	}
 	// signup
 	async signup(email: string, password: string): Promise<Users> {
-		const user = await this.usersService.findByEmail(email);
+		const validationEmail = email.toLowerCase();
+		const user = await this.usersService.findByEmail(validationEmail);
 		if (user) {
 			throw new BadRequestException("Email is already in use");
 		}
@@ -41,11 +42,12 @@ export class AuthService {
 		// hashedPassword
 		const hashedPassword = `${salt}.${hash}`;
 		// return new user
-		return await this.usersService.create(email, hashedPassword);
+		return await this.usersService.create(validationEmail, hashedPassword);
 	}
 	// signin
 	async signin(email: string, password: string): Promise<UserDto & UserTokenDto> {
-		const user = await this.usersService.findByEmail(email);
+		const validationEmail = email.toLowerCase();
+		const user = await this.usersService.findByEmail(validationEmail);
 		if (!user) {
 			throw new NotFoundException("User not found");
 		}
