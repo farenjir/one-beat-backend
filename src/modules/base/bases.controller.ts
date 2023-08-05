@@ -6,15 +6,16 @@ import { Serialize } from "utils/interceptors/serialize.interceptor";
 import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
 
-import { Roles } from "guards/role/roles.decorator";
 import { Role } from "guards/role/role.enum";
+import { Roles } from "guards/role/roles.decorator";
 
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto } from "./base.dto";
 import { ValidationQueryPipe } from "./base.pipe";
 import { BaseService } from "./bases.service";
 
 @ApiTags("Bases")
 @Controller("base")
+@Serialize(IgnoredBaseDto, false)
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
@@ -26,7 +27,7 @@ export class BaseController {
 	// get one type
 	@ApiOkResponse({ type: BaseDto })
 	@ApiQuery({
-		name: "type",
+		name: "baseType",
 		required: false,
 		type: String,
 	})
@@ -37,8 +38,8 @@ export class BaseController {
 	})
 	@Get("getBase")
 	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto> {
-		const { baseId, type } = query;
-		return await this.typeService.findBase(baseId, type);
+		const { baseId, baseType } = query;
+		return await this.typeService.findBase(baseId, baseType);
 	}
 	// get children of type
 	@ApiOkResponse({ type: [BaseDto] })
@@ -52,7 +53,7 @@ export class BaseController {
 		required: false,
 		type: Number,
 	})
-	@Get("getBaseChildren")
+	@Get("getChildren")
 	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto[]> {
 		const { parentId, parentType } = query;
 		return await this.typeService.findBaseChildren(parentId, parentType);

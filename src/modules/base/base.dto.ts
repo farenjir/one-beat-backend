@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, IsString } from "class-validator";
-import { Expose, Type } from "class-transformer";
+import { Expose, Type,Exclude } from "class-transformer";
 
-export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQuery };
+export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto };
 
 class BaseDto {
 	@ApiProperty()
@@ -62,14 +62,23 @@ class BaseQuery {
 	@IsInt()
 	@IsOptional()
 	baseId?: number;
+	@IsString()
+	@IsOptional()
+	baseType?: string;
 	@Type(() => Number)
 	@IsInt()
 	@IsOptional()
 	parentId?: number;
 	@IsString()
 	@IsOptional()
-	type?: string;
-	@IsString()
-	@IsOptional()
 	parentType?: string;
+}
+
+class IgnoredBaseDto {
+	@Exclude()
+	createdAt: Date;
+	@Exclude()
+	updatedAt: Date;
+	@Exclude()
+	deletedAt: Date;
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
-// import _object from "lodash/fp/object"
+import { pickBy } from "lodash";
 
 import { Bases } from "./base.entity";
 import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
@@ -22,7 +22,7 @@ export class BaseService {
 	async updateById(id: number, { parentId, ...baseParams }: Partial<UpdateBaseDto>): Promise<Bases> {
 		const base = await this.findBase(id);
 		if (!base) {
-			throw new NotFoundException("base not found");
+			throw new NotFoundException("Base not found");
 		}
 		if (parentId) {
 			const parent = await this.findBase(parentId);
@@ -35,7 +35,7 @@ export class BaseService {
 	async removeById(id: number): Promise<Bases> {
 		const base = await this.findBase(id);
 		if (!base) {
-			throw new NotFoundException("base not found");
+			throw new NotFoundException("Base not found");
 		}
 		return await this.repo.remove(base);
 	}
@@ -49,11 +49,12 @@ export class BaseService {
 		if (!id && !type) {
 			throw new BadRequestException("Invalid Query");
 		}
-		// const options: FindOneOptions<Bases> = { where: _object.pickBy({ id, type }, isTruthy => !!isTruthy) };
-		const options: FindOneOptions<Bases> = { where: { id, type } };
+		const options: FindOneOptions<Bases> = {
+			where: pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),
+		};
 		const base = await this.repo.findOne(options);
 		if (!base) {
-			throw new NotFoundException("base not found");
+			throw new NotFoundException("Base not found");
 		}
 		return base;
 	}
