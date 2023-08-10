@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
 import { Serialize } from "utils/interceptors/serialize.interceptor";
@@ -7,7 +7,7 @@ import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
 
 import { Role } from "guards/role/role.enum";
-import { Roles } from "guards/role/roles.decorator";
+import { Roles } from "guards/role/role.decorator";
 
 import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto } from "./base.dto";
 import { ValidationQueryPipe } from "./base.pipe";
@@ -70,19 +70,19 @@ export class BaseController {
 	// update pre types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
-	@Patch("updateById")
+	@Patch("updateBy/:id")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async updateBase(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
+	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
 		return await this.typeService.updateById(id, body);
 	}
 	// delete types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
-	@Delete("deleteById")
+	@Delete("deleteBy/:id")
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
-	async deleteBase(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
+	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<BaseDto> {
 		const typeRemoved = await this.typeService.removeById(id);
 		return { id, ...typeRemoved };
 	}
