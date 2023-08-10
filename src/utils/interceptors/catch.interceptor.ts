@@ -1,13 +1,24 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
-import { Observable, of } from "rxjs";
+import { ExecutionContext, Injectable } from "@nestjs/common";
+import { CacheInterceptor } from "@nestjs/cache-manager";
 
 @Injectable()
-export class CacheInterceptor implements NestInterceptor {
-	intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
-		const isCached = true;
-		if (isCached) {
-			return of([]);
+export class HttpCacheInterceptor extends CacheInterceptor {
+	private readonly excludePaths: Array<string> = ["user"];
+	// trackBy
+	trackBy(context: ExecutionContext): string | undefined {
+		const request = context.switchToHttp().getRequest();
+		const { httpAdapter } = this.httpAdapterHost;
+		// info
+		const path = httpAdapter.getRequestUrl(request);
+		const method = httpAdapter.getRequestMethod(request);
+		// check conditions
+		const isNotGetRequest = method !== "GET";
+		const excludePath = this.excludePaths.some((ex) => path.includes(ex));
+		// return
+		if (excludePath || isNotGetRequest) {
+			return undefined;
+		} else {
+			return httpAdapter.getRequestUrl(request);
 		}
-		return next.handle();
 	}
 }

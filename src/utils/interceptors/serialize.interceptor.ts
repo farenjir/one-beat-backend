@@ -8,15 +8,15 @@ interface ClassConstructor<T = any> {
 }
 
 class SerializeInterceptor implements NestInterceptor {
-	constructor(private dto: ClassConstructor<any>, private exClude: boolean = true) {}
+	constructor(private dto: ClassConstructor<any>, private inClude: boolean = true) {}
 	// intercept
 	intercept(_context: ExecutionContext, handler: CallHandler): Observable<any> {
 		return handler
 			.handle()
-			.pipe(rxMap((data: any) => plainToClass(this.dto, data, { excludeExtraneousValues: this.exClude })));
+			.pipe(rxMap((data: any) => plainToClass(this.dto, data, { excludeExtraneousValues: this.inClude })));
 	}
 }
 
-export function Serialize(dto: ClassConstructor, exClude?: boolean): ReturnType<typeof UseInterceptors> {
-	return UseInterceptors(new SerializeInterceptor(dto, exClude));
+export function Serialize(dto: ClassConstructor, inClude?: boolean): ReturnType<typeof UseInterceptors> {
+	return UseInterceptors(new SerializeInterceptor(dto, inClude));
 }
