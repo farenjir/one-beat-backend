@@ -3,7 +3,6 @@ import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
 import { IAppResponse, appResponse } from "utils/response.handle";
-import { cookieOptions } from "utils/global.configs";
 import { Serialize } from "utils/serialize.interceptor";
 
 import { Role } from "guards/role/role.enum";
@@ -12,7 +11,7 @@ import { Roles } from "guards/role/role.decorator";
 import { RolesGuard } from "guards/role.guard";
 import { AuthGuard } from "guards/auth.guard";
 
-import { CreateUserDto, UpdateUserDto, UserDto, UserTokenDto } from "./user.dto";
+import { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { AuthService } from "./users.auth.service";
 
@@ -25,9 +24,12 @@ export class UsersController {
 	@ApiOkResponse({ type: UserDto })
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<IAppResponse> {
-		const userExtendedWithToken: UserDto & UserTokenDto = await this.authService.signin(body.email, body.password);
-		res.cookie("app-token", userExtendedWithToken.token, cookieOptions);
-		return appResponse(userExtendedWithToken, "2002");
+		const { token, cookieOptions, ...user }: UserDto & UserExtraDto = await this.authService.signin(
+			body.email,
+			body.password,
+		);
+		res.cookie("app-token", token, cookieOptions);
+		return appResponse({ ...user }, "2002");
 	}
 	// createUser
 	@ApiOkResponse({ type: UserDto })
