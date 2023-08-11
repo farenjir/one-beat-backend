@@ -1,4 +1,4 @@
-import { NotFoundException, BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { randomBytes, scrypt } from "crypto";
@@ -32,9 +32,9 @@ export class AuthService {
 	// signup
 	async signup(email: string, password: string): Promise<Users> {
 		const validationEmail = email.toLowerCase();
-		const user = await this.usersService.findByEmail(validationEmail);
+		const user = await this.usersService.findBy(null, validationEmail);
 		if (user) {
-			throw new BadRequestException("Email is already in use");
+			throw new BadRequestException("4002");
 		}
 		// hash with add salt
 		const salt = randomBytes(16).toString("hex");
@@ -47,16 +47,13 @@ export class AuthService {
 	// signin
 	async signin(email: string, password: string): Promise<UserDto & UserTokenDto> {
 		const validationEmail = email.toLowerCase();
-		const user = await this.usersService.findByEmail(validationEmail);
-		if (!user) {
-			throw new NotFoundException("User not found");
-		}
+		const user = await this.usersService.findBy(null, validationEmail);
 		// stored password
 		const [salt, storedHash] = user.password.split(".");
 		const hash = await hashPassword(password, salt);
 		// check password
 		if (storedHash !== hash) {
-			throw new UnauthorizedException("Invalid password Or Email");
+			throw new UnauthorizedException("4003");
 		}
 		// return JWT token
 		return {

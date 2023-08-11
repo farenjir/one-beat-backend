@@ -16,27 +16,19 @@ export const appResponse = (data?: any, code = 2000, message?: string, descripti
 	};
 };
 
-export const responseMessage = (statusCode: number) => {
-	switch (statusCode) {
-		case 2000:
-			return "Success";
-		case 2001:
-			return "User Created";
-		case 2002:
-			return "User SignIn";
-		case 2003:
-			return "User SignUp";
-		case 2004:
-			return "User SignOut";
-		case 2005:
-			return "User Updated";
-		case 2006:
-			return "User Deleted";
-		case 2007:
-			return "Base Created";
-		case 2008:
-			return "Base Updated";
-		default:
-			return "Please Initialize Custom Message";
-	}
+export const responseMessage = (statusCode: number | string) => {
+	const messages = {
+		2000: "Success",
+		2001: "User Created",
+		2002: "User SignIn",
+		2003: "User SignUp",
+		2004: "User SignOut",
+		2005: "User Updated",
+		2006: "User Deleted",
+		2007: "Base Created",
+		2008: "Base Updated",
+		default: "Please Initialize Custom Message",
+	};
+	// return
+	return messages[statusCode] || messages.default;
 };

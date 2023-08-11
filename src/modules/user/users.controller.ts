@@ -52,7 +52,7 @@ export class UsersController {
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request): Promise<IAppResponse> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findById(userId);
+		const currentUser: UserDto = await this.usersService.findBy(userId);
 		return appResponse(currentUser, 2002);
 	}
 	// findAllUsers
@@ -72,7 +72,7 @@ export class UsersController {
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
-		const user: UserDto = await this.usersService.findById(id);
+		const user: UserDto = await this.usersService.findBy(id);
 		return appResponse(user);
 	}
 	// updateUser
