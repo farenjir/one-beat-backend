@@ -1,12 +1,12 @@
-export interface IResponse {
-	code: number;
+export interface IAppResponse {
+	code?: number;
 	message?: string;
 	description?: string;
 	data?: any;
-	timestamp: string;
+	timestamp?: string;
 }
 
-export const responseHandler = (data?: any, code = 2000, message?: string, description?: string): IResponse => {
+export const appResponse = (data?: any, code = 2000, message?: string, description?: string): IAppResponse => {
 	return {
 		code,
 		message: message || responseMessage(code),
@@ -32,6 +32,10 @@ export const responseMessage = (statusCode: number) => {
 			return "User Updated";
 		case 2006:
 			return "User Deleted";
+		case 2007:
+			return "Base Created";
+		case 2008:
+			return "Base Updated";
 		default:
 			return "Please Initialize Custom Message";
 	}

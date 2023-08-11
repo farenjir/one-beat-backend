@@ -3,6 +3,7 @@ import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { CacheModule } from "@nestjs/cache-manager";
+import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { HttpCacheInterceptor } from "utils/interceptors/catch.interceptor";
@@ -55,8 +56,9 @@ import { UsersModule } from "modules/user/user.module";
 				max: +config.get<number>("CACHE_MAX"),
 			}),
 		}),
-		LoggerModule,
+		ScheduleModule.forRoot(),
 		// app modules
+		LoggerModule,
 		BasesModule,
 		UsersModule,
 	],

@@ -4,25 +4,25 @@ import { plainToClass } from "class-transformer";
 import { Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 
-import { IResponse } from "utils/response.message";
+import { IAppResponse } from "utils/response.handle";
 
 interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
 }
 
 class SerializeInterceptor implements NestInterceptor {
-	constructor(private dto: ClassConstructor<any>, private inClude: boolean = true) {}
+	constructor(private dto: ClassConstructor<any>, private inCludes: boolean = true) {}
 	// intercept
 	intercept(_context: ExecutionContext, handler: CallHandler): Observable<any> {
 		return handler.handle().pipe(
-			rxMap(({ data = {}, ...other }: IResponse) => ({
+			rxMap(({ data = {}, ...other }: IAppResponse) => ({
 				...other,
-				data: plainToClass(this.dto, data, { excludeExtraneousValues: this.inClude }),
+				data: plainToClass(this.dto, data, { excludeExtraneousValues: this.inCludes }),
 			})),
 		);
 	}
 }
 
-export function Serialize(dto: ClassConstructor, inClude?: boolean): ReturnType<typeof UseInterceptors> {
-	return UseInterceptors(new SerializeInterceptor(dto, inClude));
+export function Serialize(dto: ClassConstructor, inCludes?: boolean): ReturnType<typeof UseInterceptors> {
+	return UseInterceptors(new SerializeInterceptor(dto, inCludes));
 }
