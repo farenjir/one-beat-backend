@@ -26,9 +26,9 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		}
 		// responseBody
 		const responseBody = {
-			statusCode,
 			code: Number(code),
-			message,
+			message, 
+			statusCode,
 			timestamp: new Date().toISOString(),
 			path: httpAdapter.getRequestUrl(ctx.getRequest()),
 		};
