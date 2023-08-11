@@ -58,5 +58,5 @@ export const globalFilterMessages = (stringCode: string | number) => {
 		default: "Unknown_Server_Error",
 	};
 	// return
-	return messages[stringCode] || messages.default;
+	return messages[stringCode] || stringCode || messages.default;
 };
