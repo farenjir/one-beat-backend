@@ -35,7 +35,7 @@ export class BaseService {
 	async removeById(id: number): Promise<Bases> {
 		const base = await this.findBase(id);
 		if (!base) {
-			throw new NotFoundException("Base not found");
+			throw new NotFoundException("Base not found"); //HttpException
 		}
 		return await this.repo.remove(base);
 	}
@@ -47,7 +47,7 @@ export class BaseService {
 	// findOne
 	async findBase(id?: number, type?: string): Promise<Bases> {
 		if (!id && !type) {
-			throw new BadRequestException("Invalid Query");
+			throw new BadRequestException("Invalid Query"); //HttpException
 		}
 		const options: FindOneOptions<Bases> = {
 			where: pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),

@@ -11,7 +11,6 @@ import { AppModule } from "app/app.module";
 
 async function bootstrap() {
 	const app = await NestFactory.create<INestApplication<any>>(AppModule, {
-		// logger: WinstonModule.createLogger({}), // ["debug", "error", "log", "warn", "verbose"]
 		// cors
 		// bodyParser
 		// httpsOptions
