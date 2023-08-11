@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 
 import { IAppResponse, appResponse } from "utils/response.handle";
 import { cookieOptions } from "utils/global.configs";
-import { Serialize } from "utils/interceptors/serialize.interceptor";
+import { Serialize } from "utils/serialize.interceptor";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";

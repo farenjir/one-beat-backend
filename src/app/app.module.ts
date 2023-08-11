@@ -6,8 +6,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
-import { HttpCacheInterceptor } from "utils/interceptors/catch.interceptor";
-
+import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -72,12 +71,16 @@ import { UsersModule } from "modules/user/user.module";
 			}),
 		},
 		{
+			provide: APP_FILTER,
+			useClass: AppExceptionsFilter,
+		},
+		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,
 		},
 		{
-			provide: APP_FILTER,
-			useClass: AppExceptionsFilter,
+			provide: APP_INTERCEPTOR,
+			useClass: TimeoutInterceptor,
 		},
 	],
 })
