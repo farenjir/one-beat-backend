@@ -1,12 +1,14 @@
-import { APP_PIPE, APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { CacheModule } from "@nestjs/cache-manager";
+import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { HttpCacheInterceptor } from "utils/interceptors/catch.interceptor";
 
+import { AppExceptionsFilter } from "./app.filter";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -54,8 +56,9 @@ import { UsersModule } from "modules/user/user.module";
 				max: +config.get<number>("CACHE_MAX"),
 			}),
 		}),
-		LoggerModule,
+		ScheduleModule.forRoot(),
 		// app modules
+		LoggerModule,
 		BasesModule,
 		UsersModule,
 	],
@@ -71,6 +74,10 @@ import { UsersModule } from "modules/user/user.module";
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: AppExceptionsFilter,
 		},
 	],
 })

@@ -25,7 +25,7 @@ export class AuthService {
 	// generateToken
 	async generateToken(user: Users): Promise<string> {
 		return this.jwtService.signAsync(
-			{ id: user.id, email: user.email, roles: user.roles },
+			{ id: user.id, roles: user.roles },
 			{ secret: this.config.get<string>("JWT_KEY") },
 		);
 	}
@@ -37,7 +37,7 @@ export class AuthService {
 			throw new BadRequestException("Email is already in use");
 		}
 		// hash with add salt
-		const salt = randomBytes(8).toString("hex");
+		const salt = randomBytes(16).toString("hex");
 		const hash = await hashPassword(password, salt);
 		// hashedPassword
 		const hashedPassword = `${salt}.${hash}`;

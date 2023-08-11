@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
+import { IAppResponse, appResponse } from "utils/response.handle";
 import { Serialize } from "utils/interceptors/serialize.interceptor";
 
 import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
 
 import { Role } from "guards/role/role.enum";
-import { Roles } from "guards/role/roles.decorator";
+import { Roles } from "guards/role/role.decorator";
 
 import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto } from "./base.dto";
 import { ValidationQueryPipe } from "./base.pipe";
@@ -21,8 +22,9 @@ export class BaseController {
 	// get all types
 	@ApiOkResponse({ type: BaseDto })
 	@Get("getAll")
-	async getBases(): Promise<BaseDto[]> {
-		return await this.typeService.findAllBases();
+	async getBases(): Promise<IAppResponse> {
+		const bases: BaseDto[] = await this.typeService.findAllBases();
+		return appResponse(bases);
 	}
 	// get one type
 	@ApiOkResponse({ type: BaseDto })
@@ -37,9 +39,10 @@ export class BaseController {
 		type: Number,
 	})
 	@Get("getBase")
-	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto> {
+	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<IAppResponse> {
 		const { baseId, baseType } = query;
-		return await this.typeService.findBase(baseId, baseType);
+		const base: BaseDto = await this.typeService.findBase(baseId, baseType);
+		return appResponse(base);
 	}
 	// get children of type
 	@ApiOkResponse({ type: [BaseDto] })
@@ -54,9 +57,10 @@ export class BaseController {
 		type: Number,
 	})
 	@Get("getChildren")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<BaseDto[]> {
+	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<IAppResponse> {
 		const { parentId, parentType } = query;
-		return await this.typeService.findBaseChildren(parentId, parentType);
+		const children: BaseDto[] = await this.typeService.findBaseChildren(parentId, parentType);
+		return appResponse(children);
 	}
 	// add new types
 	@ApiCookieAuth()
@@ -64,26 +68,28 @@ export class BaseController {
 	@Post("addNewBase")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
-		return await this.typeService.create(body);
+	async addNewBase(@Body() body: CreateBaseDto): Promise<IAppResponse> {
+		const createdBase: BaseDto = await this.typeService.create(body);
+		return appResponse(createdBase, 2007);
 	}
 	// update pre types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
-	@Patch("updateById")
+	@Patch("updateBy/:id")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
-	async updateBase(@Query("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
-		return await this.typeService.updateById(id, body);
+	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<IAppResponse> {
+		const updatedBase: BaseDto = await this.typeService.updateById(id, body);
+		return appResponse(updatedBase, 2008);
 	}
 	// delete types
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: BaseDto })
-	@Delete("deleteById")
+	@Delete("deleteBy/:id")
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
-	async deleteBase(@Query("id", ParseIntPipe) id: number): Promise<BaseDto> {
-		const typeRemoved = await this.typeService.removeById(id);
-		return { id, ...typeRemoved };
+	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
+		const deletedBase: BaseDto = await this.typeService.removeById(id);
+		return appResponse(Object.assign(deletedBase, { id }), 2008);
 	}
 }
