@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param,
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
 import { IAppResponse, appResponse } from "utils/response.handle";
-import { Serialize } from "utils/interceptors/serialize.interceptor";
+import { Serialize } from "utils/serialize.interceptor";
 
 import { AuthGuard } from "guards/auth.guard";
 import { RolesGuard } from "guards/role.guard";
