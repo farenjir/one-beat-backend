@@ -1,42 +1,41 @@
 export interface IAppResponse {
-	code?: number;
+	code?: number | string;
 	message?: string;
 	description?: string;
 	data?: any;
 	timestamp?: string;
 }
 
-export const appResponse = (data?: any, code = 2000, message?: string, description?: string): IAppResponse => {
+type Code = number | string;
+
+export const appResponse = (data?: any, code?: Code, descriptionCode?: Code): IAppResponse => {
 	return {
 		code,
-		message: message || responseMessage(code),
-		description,
-		data,
+		message: responseMessage(code),
+		description: descriptionMessage(descriptionCode),
 		timestamp: new Date().toISOString(),
+		data,
 	};
 };
 
-export const responseMessage = (statusCode: number) => {
-	switch (statusCode) {
-		case 2000:
-			return "Success";
-		case 2001:
-			return "User Created";
-		case 2002:
-			return "User SignIn";
-		case 2003:
-			return "User SignUp";
-		case 2004:
-			return "User SignOut";
-		case 2005:
-			return "User Updated";
-		case 2006:
-			return "User Deleted";
-		case 2007:
-			return "Base Created";
-		case 2008:
-			return "Base Updated";
-		default:
-			return "Please Initialize Custom Message";
-	}
+export const responseMessage = (statusCode: Code) => {
+	const messages = {
+		2001: "User Created",
+		2002: "User SignIn",
+		2003: "User SignUp",
+		2004: "User SignOut",
+		2005: "User Updated",
+		2006: "User Deleted",
+		2007: "Base Created",
+		2008: "Base Updated",
+		default: "Succeed",
+	};
+	// return
+	return messages[statusCode] || messages.default;
+};
+
+export const descriptionMessage = (descriptionCode: Code) => {
+	const messages = {};
+	// return
+	return messages[descriptionCode] || "";
 };

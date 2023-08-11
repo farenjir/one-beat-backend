@@ -1,105 +1,62 @@
-
-export const globalFilterMessages = (statusCode: number) => {
-	switch (statusCode) {
-		case 100:
-			return "CONTINUE";
-		case 101:
-			return "SWITCHING_PROTOCOLS";
-		case 102:
-			return "PROCESSING";
-		case 103:
-			return "EARLY_HINTS";
-		case 200:
-			return "OK";
-		case 201:
-			return "CREATED";
-		case 202:
-			return "ACCEPTED";
-		case 203:
-			return "NON_AUTHORITATIVE_INFORMATION";
-		case 204:
-			return "NO_CONTENT";
-		case 205:
-			return "RESET_CONTENT";
-		case 206:
-			return "PARTIAL_CONTENT";
-		case 300:
-			return "AMBIGUOUS";
-		case 301:
-			return "MOVED_PERMANENTLY";
-		case 301:
-			return "MOVED_PERMANENTLY";
-		case 302:
-			return "FOUND";
-		case 303:
-			return "SEE_OTHER";
-		case 304:
-			return "MOVED_PERMANENTLY";
-		case 307:
-			return "TEMPORARY_REDIRECT";
-		case 308:
-			return "PERMANENT_REDIRECT";
-		case 400:
-			return "BAD_REQUEST";
-		case 401:
-			return "UNAUTHORIZED";
-		case 402:
-			return "PAYMENT_REQUIRED";
-		case 403:
-			return "FORBIDDEN";
-		case 404:
-			return "NOT_FOUND";
-		case 405:
-			return "METHOD_NOT_ALLOWED";
-		case 406:
-			return "NOT_ACCEPTABLE";
-		case 407:
-			return "PROXY_AUTHENTICATION_REQUIRED";
-		case 408:
-			return "REQUEST_TIMEOUT";
-		case 409:
-			return "CONFLICT";
-		case 410:
-			return "GONE";
-		case 411:
-			return "LENGTH_REQUIRED";
-		case 412:
-			return "PRECONDITION_FAILED";
-		case 413:
-			return "PAYLOAD_TOO_LARGE";
-		case 414:
-			return "URI_TOO_LONG";
-		case 415:
-			return "UNSUPPORTED_MEDIA_TYPE";
-		case 416:
-			return "REQUESTED_RANGE_NOT_SATISFIABLE";
-		case 417:
-			return "EXPECTATION_FAILED";
-		case 418:
-			return "I_AM_A_TEAPOT";
-		case 421:
-			return "MISDIRECTED";
-		case 422:
-			return "UNPROCESSABLE_ENTITY";
-		case 424:
-			return "FAILED_DEPENDENCY";
-		case 428:
-			return "PRECONDITION_REQUIRED";
-		case 429:
-			return "TOO_MANY_REQUESTS";
-		case 500:
-			return "INTERNAL_SERVER_ERROR";
-		case 501:
-			return "NOT_IMPLEMENTED";
-		case 502:
-			return "BAD_GATEWAY";
-		case 503:
-			return "SERVICE_UNAVAILABLE";
-		case 504:
-			return "GATEWAY_TIMEOUT";
-		case 505:
-			return "HTTP_VERSION_NOT_SUPPORTED";
-		default:
-			return "Unknown_Server_Error";
-	}
+export const globalFilterMessages = (stringCode: string | number) => {
+	const messages = {
+		// custom codes
+		4000: "Invalid Query or Params",
+		4001: "User Not Found",
+		4002: "Email is Already in Use",
+		4003: "Invalid Password or Email",
+		4004: "Base Not Found",
+		// default status http codes
+		100: "CONTINUE",
+		101: "SWITCHING_PROTOCOLS",
+		102: "PROCESSING",
+		103: "EARLY_HINTS",
+		200: "OK",
+		201: "CREATED",
+		202: "ACCEPTED",
+		203: "NON_AUTHORITATIVE_INFORMATION",
+		204: "NO_CONTENT",
+		205: "RESET_CONTENT",
+		206: "PARTIAL_CONTENT",
+		300: "AMBIGUOUS",
+		301: "MOVED_PERMANENTLY",
+		302: "FOUND",
+		303: "SEE_OTHER",
+		304: "NOT_MODIFIED",
+		307: "TEMPORARY_REDIRECT",
+		308: "PERMANENT_REDIRECT",
+		400: "BAD_REQUEST",
+		401: "UNAUTHORIZED",
+		402: "PAYMENT_REQUIRED",
+		403: "FORBIDDEN",
+		404: "NOT_FOUND",
+		405: "METHOD_NOT_ALLOWED",
+		406: "NOT_ACCEPTABLE",
+		407: "PROXY_AUTHENTICATION_REQUIRED",
+		408: "REQUEST_TIMEOUT",
+		409: "CONFLICT",
+		410: "GONE",
+		411: "LENGTH_REQUIRED",
+		412: "PRECONDITION_FAILED",
+		413: "PAYLOAD_TOO_LARGE",
+		414: "URI_TOO_LONG",
+		415: "UNSUPPORTED_MEDIA_TYPE",
+		416: "REQUESTED_RANGE_NOT_SATISFIABLE",
+		417: "EXPECTATION_FAILED",
+		418: "I_AM_A_TEAPOT",
+		421: "MISDIRECTED",
+		422: "UNPROCESSABLE_ENTITY",
+		424: "FAILED_DEPENDENCY",
+		428: "PRECONDITION_REQUIRED",
+		429: "TOO_MANY_REQUESTS",
+		500: "INTERNAL_SERVER_ERROR",
+		501: "NOT_IMPLEMENTED",
+		502: "BAD_GATEWAY",
+		503: "SERVICE_UNAVAILABLE",
+		504: "GATEWAY_TIMEOUT",
+		505: "HTTP_VERSION_NOT_SUPPORTED",
+		default: "Unknown_Server_Error",
+	};
+	// return
+	return messages[stringCode] || messages.default;
 };

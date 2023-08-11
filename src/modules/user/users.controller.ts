@@ -27,14 +27,14 @@ export class UsersController {
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<IAppResponse> {
 		const userExtendedWithToken: UserDto & UserTokenDto = await this.authService.signin(body.email, body.password);
 		res.cookie("app-token", userExtendedWithToken.token, cookieOptions);
-		return appResponse(userExtendedWithToken, 2002);
+		return appResponse(userExtendedWithToken, "2002");
 	}
 	// createUser
 	@ApiOkResponse({ type: UserDto })
 	@Post("signUp")
 	async createUser(@Body() body: CreateUserDto): Promise<IAppResponse> {
 		const userCreated: UserDto = await this.authService.signup(body.email, body.password);
-		return appResponse(userCreated, 2003);
+		return appResponse(userCreated, "2003");
 	}
 	// signOut
 	@ApiCookieAuth()
@@ -43,7 +43,7 @@ export class UsersController {
 	@UseGuards(AuthGuard)
 	signOut(@Res({ passthrough: true }) res: Response, @Req() req: Request): IAppResponse {
 		res.clearCookie("app-token");
-		return appResponse(req.user, 2004);
+		return appResponse(req.user, "2004");
 	}
 	// return current user
 	@ApiCookieAuth()
@@ -52,8 +52,8 @@ export class UsersController {
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request): Promise<IAppResponse> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findById(userId);
-		return appResponse(currentUser, 2002);
+		const currentUser: UserDto = await this.usersService.findBy(userId);
+		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
 	@ApiCookieAuth()
@@ -72,7 +72,7 @@ export class UsersController {
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
-		const user: UserDto = await this.usersService.findById(id);
+		const user: UserDto = await this.usersService.findBy(id);
 		return appResponse(user);
 	}
 	// updateUser
@@ -83,7 +83,7 @@ export class UsersController {
 	@UseGuards(AuthGuard, RolesGuard)
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<IAppResponse> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
-		return appResponse(updatedUser, 2005);
+		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
 	@ApiCookieAuth()
@@ -93,6 +93,6 @@ export class UsersController {
 	@UseGuards(AuthGuard, RolesGuard)
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
-		return appResponse(Object.assign(removedUser, { id }), 2006);
+		return appResponse(Object.assign(removedUser, { id }), "2006");
 	}
 }

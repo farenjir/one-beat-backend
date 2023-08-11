@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
+
+import { pickBy } from "lodash";
 
 import { Users } from "./user.entity";
 
@@ -17,34 +19,26 @@ export class UsersService {
 		return await this.repo.find();
 	}
 	// findOne
-	async findById(id: number): Promise<Users> {
-		const options: FindOneOptions<Users> = { where: { id } };
+	async findBy(id?: number, email?: string): Promise<Users> {
+		if (!id && !email) {
+			throw new BadRequestException("Invalid Query"); //HttpException
+		}
+		const options: FindOneOptions<Users> = { where: pickBy<object>({ id, email }, (isTruthy: any) => isTruthy) };
 		const user = await this.repo.findOne(options);
 		if (!user) {
-			throw new NotFoundException("user not found");
+			throw new NotFoundException("4001");
 		}
 		return user;
 	}
-	// findOne
-	async findByEmail(email: string): Promise<Users> {
-		const options: FindManyOptions<Users> = { where: { email } };
-		return await this.repo.findOne(options);
-	}
 	// update
 	async updateById(id: number, attrs: Partial<Users>): Promise<Users> {
-		const user = await this.findById(id);
-		if (!user) {
-			throw new NotFoundException("user not found");
-		}
+		const user = await this.findBy(id);
 		Object.assign(user, attrs);
 		return await this.repo.save(user);
 	}
 	// remove
 	async removeById(id: number): Promise<Users> {
-		const user = await this.findById(id);
-		if (!user) {
-			throw new NotFoundException("user not found");
-		}
+		const user = await this.findBy(id);
 		return await this.repo.remove(user);
 	}
 }

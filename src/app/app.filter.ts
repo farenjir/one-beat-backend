@@ -13,18 +13,22 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		// variables
 		let statusCode: number;
 		let message: string;
+		let code: string | number;
 		// init variables
 		if (exception instanceof HttpException) {
 			statusCode = exception.getStatus();
-			message = exception.message || globalFilterMessages(statusCode);
+			code = exception.message || statusCode;
+			message = globalFilterMessages(code);
 		} else {
 			statusCode = 500;
+			code = 500;
 			message = globalFilterMessages(statusCode);
 		}
 		// responseBody
 		const responseBody = {
+			code: Number(code),
+			message, 
 			statusCode,
-			message,
 			timestamp: new Date().toISOString(),
 			path: httpAdapter.getRequestUrl(ctx.getRequest()),
 		};
