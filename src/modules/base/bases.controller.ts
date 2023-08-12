@@ -4,11 +4,10 @@ import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger
 import { IAppResponse, appResponse } from "utils/response.handle";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { AuthGuard } from "guards/auth.guard";
-import { RolesGuard } from "guards/role.guard";
-
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
+import { RolesGuard } from "guards/role.guard";
+import { AuthGuard } from "guards/auth.guard";
 
 import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto } from "./base.dto";
 import { ValidationQueryPipe } from "./base.pipe";

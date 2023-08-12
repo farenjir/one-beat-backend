@@ -29,6 +29,9 @@ export const responseMessage = (statusCode: Code) => {
 		2006: "User Deleted",
 		2007: "Base Created",
 		2008: "Base Updated",
+		2009: "File Uploaded",
+		2010: "File Updated",
+		2011: "File Deleted",
 	};
 	// return
 	return messages[statusCode];
