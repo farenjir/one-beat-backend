@@ -80,7 +80,7 @@ export class UploadController {
 		@Body() body: UploadDto,
 		@Req() req: Request,
 	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user?.id);
+		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
@@ -95,7 +95,7 @@ export class UploadController {
 		@Body() body: UploadDto,
 		@Req() req: Request,
 	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user?.id);
+		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile zip
@@ -110,7 +110,7 @@ export class UploadController {
 		@Body() body: UploadDto,
 		@Req() req: Request,
 	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user?.id);
+		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
 		return appResponse(fileCreated, "2009");
 	}
 	// getById

@@ -14,15 +14,15 @@ export class FileValidationPipe implements PipeTransform {
 	transform(value: any): Promise<any> {
 		const { types, maxFileSize } = this.optionsAsArray;
 		if (!value) {
-			throw new BadRequestException("File not Found");
+			throw new BadRequestException("4005");
 		}
 		const { size, mimetype } = value;
 		// validations
 		if (!types.includes(mimetype)) {
-			throw new BadRequestException("File type not support");
+			throw new BadRequestException("4006");
 		}
 		if (maxFileSize && size > maxFileSize) {
-			throw new BadRequestException("File size exceeds the allowed limit");
+			throw new BadRequestException("4007");
 		}
 		// return
 		return Promise.resolve(value);

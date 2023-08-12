@@ -6,6 +6,9 @@ export const globalFilterMessages = (stringCode: string | number) => {
 		4002: "Email is Already in Use",
 		4003: "Invalid Password or Email",
 		4004: "Base Not Found",
+		4005: "File Not Found",
+		4006: "File type not support",
+		4007: "File size exceeds the allowed limit",
 		// default status http codes
 		100: "CONTINUE",
 		101: "SWITCHING_PROTOCOLS",

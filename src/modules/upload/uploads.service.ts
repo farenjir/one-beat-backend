@@ -11,13 +11,9 @@ import { FileDto, UploadQueryDto, UploadDto } from "./upload.dto";
 export class UploadService {
 	constructor(@InjectRepository(Upload) private repo: Repository<Upload>) {}
 	// create
-	async create(
-		{ description, type, category }: UploadDto,
-		{ filename: name }: FileDto,
-		userId: number,
-	): Promise<Upload> {
+	async create({ description, type, category }: UploadDto, { filename: name }: FileDto, { id }): Promise<Upload> {
 		const params = {
-			userId,
+			userId: id,
 			name,
 			description,
 			type,
@@ -37,7 +33,7 @@ export class UploadService {
 		};
 		const file = await this.repo.findOne(options);
 		if (!file) {
-			throw new NotFoundException("4001");
+			throw new NotFoundException("4005");
 		}
 		return file;
 	}
@@ -51,7 +47,7 @@ export class UploadService {
 		};
 		const files = await this.repo.find(options);
 		if (!files) {
-			throw new NotFoundException("4001");
+			throw new NotFoundException("4005");
 		}
 		return files;
 	}
