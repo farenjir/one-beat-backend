@@ -17,7 +17,7 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		// init variables
 		if (exception instanceof HttpException) {
 			statusCode = exception.getStatus();
-			code = exception.message || statusCode;
+			code = exception.message;
 			message = globalFilterMessages(code);
 		} else {
 			statusCode = 500;
@@ -26,9 +26,9 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		}
 		// responseBody
 		const responseBody = {
-			code: Number(code),
-			message, 
 			statusCode,
+			code: Number(code) || statusCode,
+			message,
 			timestamp: new Date().toISOString(),
 			path: httpAdapter.getRequestUrl(ctx.getRequest()),
 		};

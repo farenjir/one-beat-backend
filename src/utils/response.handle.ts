@@ -1,16 +1,16 @@
+type Code = number | string;
+
 export interface IAppResponse {
-	code?: number | string;
+	code?: Code;
 	message?: string;
 	description?: string;
 	data?: any;
 	timestamp?: string;
 }
 
-type Code = number | string;
-
-export const appResponse = (data?: any, code?: Code, descriptionCode?: Code): IAppResponse => {
+export const appResponse = (data?: any, code = "2000", descriptionCode?: Code): IAppResponse => {
 	return {
-		code,
+		code: Number(code),
 		message: responseMessage(code),
 		description: descriptionMessage(descriptionCode),
 		timestamp: new Date().toISOString(),
@@ -20,6 +20,7 @@ export const appResponse = (data?: any, code?: Code, descriptionCode?: Code): IA
 
 export const responseMessage = (statusCode: Code) => {
 	const messages = {
+		2000: "Succeed",
 		2001: "User Created",
 		2002: "User SignIn",
 		2003: "User SignUp",
@@ -28,10 +29,9 @@ export const responseMessage = (statusCode: Code) => {
 		2006: "User Deleted",
 		2007: "Base Created",
 		2008: "Base Updated",
-		default: "Succeed",
 	};
 	// return
-	return messages[statusCode] || messages.default;
+	return messages[statusCode];
 };
 
 export const descriptionMessage = (descriptionCode: Code) => {

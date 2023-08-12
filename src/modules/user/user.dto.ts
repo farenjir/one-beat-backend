@@ -4,7 +4,7 @@ import { Expose } from "class-transformer";
 import { Role } from "guards/role/role.enum";
 import { ApiProperty } from "@nestjs/swagger";
 
-export { CreateUserDto, UpdateUserDto, UserDto, UserTokenDto };
+export { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto };
 
 class UserDto {
 	@ApiProperty()
@@ -51,8 +51,10 @@ class UpdateUserDto {
 	roles?: Role[];
 }
 
-class UserTokenDto {
+class UserExtraDto {
 	@IsString()
 	@IsOptional()
 	token?: string;
+	@IsOptional()
+	cookieOptions?: any;
 }

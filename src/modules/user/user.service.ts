@@ -21,7 +21,7 @@ export class UsersService {
 	// findOne
 	async findBy(id?: number, email?: string): Promise<Users> {
 		if (!id && !email) {
-			throw new BadRequestException("Invalid Query"); //HttpException
+			throw new BadRequestException("4000");
 		}
 		const options: FindOneOptions<Users> = { where: pickBy<object>({ id, email }, (isTruthy: any) => isTruthy) };
 		const user = await this.repo.findOne(options);

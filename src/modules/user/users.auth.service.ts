@@ -3,9 +3,16 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { randomBytes, scrypt } from "crypto";
 
+import { UserExtraDto, UserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 import { Users } from "./user.entity";
-import { UserTokenDto, UserDto } from "./user.dto";
+
+export const cookieOptions = {
+	path: "/",
+	maxAge: 24 * 24 * 3600,
+	httpOnly: true,
+	secure: true,
+};
 
 export async function hashPassword(password: string, salt: string): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
@@ -45,7 +52,7 @@ export class AuthService {
 		return await this.usersService.create(validationEmail, hashedPassword);
 	}
 	// signin
-	async signin(email: string, password: string): Promise<UserDto & UserTokenDto> {
+	async signin(email: string, password: string): Promise<UserDto & UserExtraDto> {
 		const validationEmail = email.toLowerCase();
 		const user = await this.usersService.findBy(null, validationEmail);
 		// stored password
@@ -57,6 +64,7 @@ export class AuthService {
 		}
 		// return JWT token
 		return {
+			cookieOptions,
 			token: await this.generateToken(user),
 			...user,
 		};

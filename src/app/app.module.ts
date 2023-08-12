@@ -2,6 +2,7 @@ import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
@@ -15,6 +16,8 @@ import { LoggerModule } from "modules/log/logger.module";
 
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
+
+import { UploadModule } from "modules/upload/uploads.module";
 
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
@@ -59,6 +62,7 @@ import { UsersModule } from "modules/user/user.module";
 		// app modules
 		LoggerModule,
 		BasesModule,
+		UploadModule,
 		UsersModule,
 	],
 	controllers: [AppController],
