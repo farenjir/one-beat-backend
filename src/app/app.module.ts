@@ -1,5 +1,5 @@
 import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
-import { Module, ValidationPipe } from "@nestjs/common";
+import { Controller, Injectable, Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
@@ -12,8 +12,6 @@ import { MulterModule } from "@nestjs/platform-express";
 
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 
 import { multerFilename } from "modules/upload/upload.configs";
 import { LoggerModule } from "modules/log/logger.module";
@@ -25,6 +23,12 @@ import { UploadModule } from "modules/upload/uploads.module";
 
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
+
+@Injectable()
+export class AppService {}
+
+@Controller()
+export class AppController {}
 
 @Module({
 	imports: [
