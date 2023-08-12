@@ -2,10 +2,14 @@ import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
-import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
+
+import { MulterModule } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { multerFilename } from "modules/upload/upload.configs";
 
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
@@ -56,6 +60,15 @@ import { UsersModule } from "modules/user/user.module";
 			useFactory: (config: ConfigService) => ({
 				ttl: +config.get<number>("CACHE_TTL"),
 				max: +config.get<number>("CACHE_MAX"),
+			}),
+		}),
+		MulterModule.registerAsync({
+			inject: [ConfigService],
+			useFactory: (config: ConfigService) => ({
+				storage: diskStorage({
+					destination: config.get<string>("FILE_DEST"),
+					filename: multerFilename,
+				}),
 			}),
 		}),
 		ScheduleModule.forRoot(),

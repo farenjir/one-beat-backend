@@ -90,6 +90,7 @@ export class BaseController {
 	@UseGuards(AuthGuard, RolesGuard)
 	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
 		const deletedBase: BaseDto = await this.typeService.removeById(id);
-		return appResponse(Object.assign(deletedBase, { id }), "2008");
+		Object.assign(deletedBase, { id });
+		return appResponse(deletedBase, "2008");
 	}
 }

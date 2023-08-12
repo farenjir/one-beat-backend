@@ -24,17 +24,21 @@ abstract class DefaultEntity {
 export class Users extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
+
 	@Column()
-	email: string;
+	email!: string;
+
 	@Column()
-	password: string;
+	password!: string;
+
 	@Column({
 		array: true,
 		type: "enum",
 		enum: Role,
 		default: [Role.User],
 	})
-	roles: Role[];
+	roles!: Role[];
+	
 	// logs
 	@AfterInsert()
 	logInsert() {

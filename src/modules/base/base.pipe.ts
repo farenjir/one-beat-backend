@@ -16,7 +16,7 @@ export class ValidationQueryPipe implements PipeTransform<any> {
 		const object = plainToInstance(metatype, value);
 		const errors = await validate(object);
 		if (errors?.length) {
-			throw new BadRequestException("Validation failed");
+			throw new BadRequestException("4000");
 		}
 		// return
 		return value;

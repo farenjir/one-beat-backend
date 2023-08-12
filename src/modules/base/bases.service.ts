@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
-import { pickBy } from "lodash";
+import { pickBy as _pickBy } from "lodash";
 
 import { Bases } from "./base.entity";
 import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
@@ -20,7 +20,7 @@ export class BaseService {
 			throw new BadRequestException("4000");
 		}
 		const options: FindOneOptions<Bases> = {
-			where: pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),
 		};
 		const base = await this.repo.findOne(options);
 		if (!base) {

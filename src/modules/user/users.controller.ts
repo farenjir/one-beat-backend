@@ -95,6 +95,7 @@ export class UsersController {
 	@UseGuards(AuthGuard, RolesGuard)
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
-		return appResponse(Object.assign(removedUser, { id }), "2006");
+		Object.assign(removedUser, { id });
+		return appResponse(removedUser, "2006");
 	}
 }

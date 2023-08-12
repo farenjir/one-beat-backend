@@ -1,7 +1,12 @@
-import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
 
-import { ItemUploadType } from "./upload.enum";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
 
+import { ItemUploadType } from "./upload.configs";
+import { UploadQueryDto } from "./upload.dto";
+
+type AllowedTypes = string | boolean | number | Array<any> | object;
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
 	constructor(public readonly optionsAsArray: ItemUploadType) {}
@@ -21,5 +26,27 @@ export class FileValidationPipe implements PipeTransform {
 		}
 		// return
 		return Promise.resolve(value);
+	}
+}
+
+@Injectable()
+export class ValidationQueryPipe implements PipeTransform<any> {
+	// transform
+	async transform(value: UploadQueryDto, { metatype }: ArgumentMetadata) {
+		if (!metatype || !this.toValidate(metatype)) {
+			return value;
+		}
+		const object = plainToInstance(metatype, value);
+		const errors = await validate(object);
+		if (errors?.length) {
+			throw new BadRequestException("4000");
+		}
+		// return
+		return value;
+	}
+	// toValidate
+	private toValidate(metatype: AllowedTypes): boolean {
+		const types: AllowedTypes[] = [String, Boolean, Number, Array, Object];
+		return !types.includes(metatype);
 	}
 }
