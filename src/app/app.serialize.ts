@@ -4,7 +4,7 @@ import { plainToClass } from "class-transformer";
 import { Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 
-import { IAppResponse } from "utils/response.handle";
+import { IAppResponse } from "./app.response";
 
 interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
