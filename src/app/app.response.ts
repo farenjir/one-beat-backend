@@ -16,7 +16,7 @@ export const appResponse = (data?: any, code = "2000", descriptionCode?: string)
 	};
 };
 
-export const responseMessage = (statusCode: string) => {
+const responseMessage = (statusCode: string) => {
 	const messages = {
 		2000: "Succeed",
 		2001: "User Created",
@@ -35,7 +35,7 @@ export const responseMessage = (statusCode: string) => {
 	return messages[statusCode];
 };
 
-export const descriptionMessage = (descriptionCode: string) => {
+const descriptionMessage = (descriptionCode: string) => {
 	const messages = {};
 	// return
 	return messages[descriptionCode] || "";

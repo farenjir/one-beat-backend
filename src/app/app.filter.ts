@@ -35,7 +35,7 @@ export class AppExceptionsFilter implements ExceptionFilter {
 	}
 }
 
-export const filterMessages = (stringCode: string | number) => {
+const filterMessages = (stringCode: string | number) => {
 	const messages = {
 		// custom codes
 		4000: "Invalid Query or Params",

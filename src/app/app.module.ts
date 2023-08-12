@@ -25,10 +25,10 @@ import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
 
 @Injectable()
-export class AppService {}
+class AppService {}
 
 @Controller()
-export class AppController {}
+class AppController {}
 
 @Module({
 	imports: [
