@@ -7,15 +7,15 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
-import { MulterModule } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import { multerFilename } from "modules/upload/upload.configs";
+import { MulterModule } from "@nestjs/platform-express";
 
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
+import { multerFilename } from "modules/upload/upload.configs";
 import { LoggerModule } from "modules/log/logger.module";
 
 import { Bases } from "modules/base/base.entity";

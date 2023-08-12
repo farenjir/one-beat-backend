@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
-import { Uploads } from "./upload.configs";
 import { IsOptional } from "class-validator";
+import { Uploads } from "./upload.configs";
 
 abstract class DefaultEntity {
 	@CreateDateColumn({ name: "createdAt" })

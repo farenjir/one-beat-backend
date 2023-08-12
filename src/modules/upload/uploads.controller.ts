@@ -10,28 +10,19 @@ import {
 	UploadedFile,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiQuery } from "@nestjs/swagger";
 
 import { Express, Request } from "express";
-import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
 
+import { IAppResponse, appResponse } from "utils/response.handle";
+
 import { UploadDto, UploadQueryDto } from "./upload.dto";
+import { FileValidationPipe, ValidationQueryPipe } from "./upload.pipe";
+import { Upload } from "./upload.entity";
 import { UploadTypes } from "./upload.configs";
 import { UploadService } from "./uploads.service";
-import { FileValidationPipe, ValidationQueryPipe } from "./upload.pipe";
-import { IAppResponse, appResponse } from "utils/response.handle";
-import { Upload } from "./upload.entity";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require("path");
-const multerFilename = (_request: any, fileObj: any, cb: any): void => {
-	const uploadFilename = path.parse(fileObj.originalname);
-	// return new file name
-	return cb(null, `${uploadFilename.name}-${Date.now()}${uploadFilename.ext}`);
-};
-
-@ApiTags("Upload")
 @Controller("upload")
 export class UploadController {
 	constructor(private uploadService: UploadService) {}

@@ -29,7 +29,7 @@ export class UsersController {
 			body.password,
 		);
 		res.cookie("app-token", token, cookieOptions);
-		return appResponse({ ...user }, "2002");
+		return appResponse(user, "2002");
 	}
 	// createUser
 	@ApiOkResponse({ type: UserDto })
