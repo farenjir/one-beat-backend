@@ -7,18 +7,15 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
-import { diskStorage } from "multer";
-import { MulterModule } from "@nestjs/platform-express";
-
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
 
-import { multerFilename } from "modules/upload/upload.configs";
 import { LoggerModule } from "modules/log/logger.module";
 
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
 
 import { Users } from "modules/user/user.entity";
@@ -48,7 +45,7 @@ class AppController {}
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				// app entities
-				entities: [Bases, Users],
+				entities: [Bases, Upload, Users],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -66,15 +63,15 @@ class AppController {}
 				max: +config.get<number>("CACHE_MAX"),
 			}),
 		}),
-		MulterModule.registerAsync({
-			inject: [ConfigService],
-			useFactory: (config: ConfigService) => ({
-				storage: diskStorage({
-					destination: config.get<string>("FILE_DEST"),
-					filename: multerFilename,
-				}),
-			}),
-		}),
+		// MulterModule.registerAsync({
+		// 	inject: [ConfigService],
+		// 	useFactory: (config: ConfigService) => ({
+		// 		storage: diskStorage({
+		// 			destination: config.get<string>("FILE_DEST"),
+		// 			filename: multerFilename,
+		// 		}),
+		// 	}),
+		// }),
 		ScheduleModule.forRoot(),
 		// app modules
 		LoggerModule,
@@ -91,10 +88,10 @@ class AppController {}
 				whitelist: true,
 			}),
 		},
-		{
-			provide: APP_FILTER,
-			useClass: AppExceptionsFilter,
-		},
+		// {
+		// 	provide: APP_FILTER,
+		// 	useClass: AppExceptionsFilter,
+		// },
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,

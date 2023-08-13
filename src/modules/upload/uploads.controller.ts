@@ -13,8 +13,9 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiCookieAuth, ApiOkResponse, ApiQuery } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger";
 
+import { diskStorage } from "multer";
 import { Express, Request } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 
@@ -23,17 +24,82 @@ import { Roles } from "guards/role/role.decorator";
 import { RolesGuard } from "guards/role.guard";
 import { AuthGuard } from "guards/auth.guard";
 
-import { IAppResponse, appResponse } from "utils/app.response";
+import { IAppResponse, appResponse } from "app/app.response";
 
 import { FileValidationPipe, ValidationQueryPipe } from "./upload.pipe";
 import { UploadDto, UploadQueryDto } from "./upload.dto";
+import { UploadTypes, multerFilename } from "./upload.configs";
 import { Upload } from "./upload.entity";
-import { UploadTypes } from "./upload.configs";
 import { UploadService } from "./uploads.service";
-
+@ApiTags("Uploads")
 @Controller("upload")
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
+	// uploadFile images
+	@ApiCookieAuth()
+	@ApiOkResponse({ type: Upload })
+	@UseInterceptors(
+		FileInterceptor("file", {
+			storage: diskStorage({
+				destination: "./uploads",
+				filename: multerFilename,
+			}),
+		}),
+	)
+	@Post("image")
+	// @UseGuards(AuthGuard)
+	async uploadImageFile(
+		@UploadedFile(new FileValidationPipe(UploadTypes.Image)) file: Express.Multer.File,
+		@Body() body: UploadDto,
+		@Req() req: Request,
+	): Promise<IAppResponse> {
+		const fileCreated: Upload = await this.uploadService.create(body, file, { id: 2 });
+		return appResponse(fileCreated, "2009");
+	}
+	// uploadFile music
+	@ApiCookieAuth()
+	@ApiOkResponse({ type: Upload })
+	@UseInterceptors(
+		FileInterceptor("file", {
+			storage: diskStorage({
+				destination: "./uploads",
+				filename: multerFilename,
+			}),
+		}),
+	)
+	@Post("music")
+	@Roles(Role.Admin, Role.Editor, Role.Producer)
+	@UseGuards(AuthGuard, RolesGuard)
+	async uploadMusicFile(
+		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
+		@Body() body: UploadDto,
+		@Req() req: Request,
+	): Promise<IAppResponse> {
+		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
+		return appResponse(fileCreated, "2009");
+	}
+	// uploadFile zip
+	@ApiCookieAuth()
+	@ApiOkResponse({ type: Upload })
+	@UseInterceptors(
+		FileInterceptor("file", {
+			storage: diskStorage({
+				destination: "./uploads",
+				filename: multerFilename,
+			}),
+		}),
+	)
+	@Post("zipFile")
+	@Roles(Role.Admin, Role.Editor, Role.Producer)
+	@UseGuards(AuthGuard, RolesGuard)
+	async uploadZipFile(
+		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
+		@Body() body: UploadDto,
+		@Req() req: Request,
+	): Promise<IAppResponse> {
+		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
+		return appResponse(fileCreated, "2009");
+	}
 	// getBy Query
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: [Upload] })
@@ -58,60 +124,6 @@ export class UploadController {
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<IAppResponse> {
 		const files: Upload[] = await this.uploadService.findBy(query);
 		return appResponse(files);
-	}
-	// uploadFile images
-	@ApiCookieAuth()
-	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(
-		FileInterceptor(
-			"file",
-			// {
-			// 	storage: diskStorage({
-			// 		destination: "./uploads",
-			// 		filename: multerFilename,
-			// 	}),
-			// }
-		),
-	)
-	@Post("image")
-	@UseGuards(AuthGuard)
-	async uploadImageFile(
-		@UploadedFile(new FileValidationPipe(UploadTypes.Image)) file: Express.Multer.File,
-		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
-		return appResponse(fileCreated, "2009");
-	}
-	// uploadFile music
-	@ApiCookieAuth()
-	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(FileInterceptor("file"))
-	@Post("music")
-	@Roles(Role.Admin, Role.Editor, Role.Producer)
-	@UseGuards(AuthGuard, RolesGuard)
-	async uploadMusicFile(
-		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
-		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
-		return appResponse(fileCreated, "2009");
-	}
-	// uploadFile zip
-	@ApiCookieAuth()
-	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(FileInterceptor("file"))
-	@Post("zipFile")
-	@Roles(Role.Admin, Role.Editor, Role.Producer)
-	@UseGuards(AuthGuard, RolesGuard)
-	async uploadZipFile(
-		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
-		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, req?.user);
-		return appResponse(fileCreated, "2009");
 	}
 	// getById
 	@ApiCookieAuth()

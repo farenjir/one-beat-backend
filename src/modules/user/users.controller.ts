@@ -2,7 +2,7 @@ import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, UseGua
 import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
-import { IAppResponse, appResponse } from "utils/app.response";
+import { IAppResponse, appResponse } from "app/app.response";
 import { Serialize } from "app/app.serialize";
 
 import { Role } from "guards/role/role.enum";

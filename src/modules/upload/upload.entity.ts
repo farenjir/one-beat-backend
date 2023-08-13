@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 import { IsOptional } from "class-validator";
+
 import { Uploads } from "./upload.configs";
 
 abstract class DefaultEntity {
@@ -17,20 +18,21 @@ export class Upload extends DefaultEntity {
 	id: string;
 
 	@Column()
-	userId!: number;
+	userId: number;
 
 	@Column()
-	name!: string;
+	name: string;
 
 	@Column({
 		type: "enum",
 		enum: Uploads,
+		default: Uploads.Image,
 	})
-	category!: Uploads;
+	category: Uploads;
 
 	@Column()
-	type!: string;
-	
+	type: string;
+
 	@IsOptional()
 	@Column({ default: "" })
 	description: string;

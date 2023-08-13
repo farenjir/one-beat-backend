@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
-import { IAppResponse, appResponse } from "utils/app.response";
+import { IAppResponse, appResponse } from "app/app.response";
 import { Serialize } from "app/app.serialize";
 
 import { Role } from "guards/role/role.enum";

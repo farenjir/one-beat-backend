@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { JwtModule } from "@nestjs/jwt";
+
 import { Upload } from "./upload.entity";
 import { UploadController } from "./uploads.controller";
 import { UploadService } from "./uploads.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Upload])],
+	imports: [TypeOrmModule.forFeature([Upload]), JwtModule],
 	controllers: [UploadController],
 	providers: [UploadService],
 })
