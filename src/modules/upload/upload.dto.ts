@@ -1,9 +1,10 @@
-import { IsInt, IsOptional, IsString } from "class-validator";
-import { Uploads } from "./upload.configs";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsInt, IsOptional, IsString } from "class-validator";
 import { Expose } from "class-transformer";
 
-export { UploadDto, FileDto, UploadQueryDto };
+import { Uploads } from "./upload.configs";
+
+export { UploadDto, FileDto, UploadQueryDto, UploadResponse };
 class UploadDto {
 	@ApiProperty()
 	@Expose()
@@ -18,6 +19,54 @@ class UploadDto {
 	@IsString()
 	@IsOptional()
 	description?: string;
+}
+
+class UploadQueryDto {
+	@IsString()
+	@IsOptional()
+	userId?: number;
+	@IsString()
+	@IsOptional()
+	type?: string;
+	@IsString()
+	@IsOptional()
+	category?: Uploads;
+}
+
+class UploadResponse {
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	id: string;
+	@ApiProperty()
+	@Expose()
+	@IsInt()
+	userId: number;
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	name: string;
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	category: Uploads;
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	type: string;
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	description?: string;
+	@ApiProperty()
+	@Expose()
+	createdAt: Date;
+	@ApiProperty()
+	@Expose()
+	updatedAt: Date;
+	@ApiProperty()
+	@Expose()
+	deletedAt: Date;
 }
 
 class FileDto {
@@ -37,16 +86,4 @@ class FileDto {
 	path: string;
 	@IsInt()
 	size: number;
-}
-
-class UploadQueryDto {
-	@IsString()
-	@IsOptional()
-	userId?: number;
-	@IsString()
-	@IsOptional()
-	type?: string;
-	@IsString()
-	@IsOptional()
-	category?: string;
 }
