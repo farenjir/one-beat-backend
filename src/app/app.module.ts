@@ -7,8 +7,10 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
-import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
+import { AppService } from "./app.service";
+import { AppController } from "./app.controller";
 import { AppExceptionsFilter } from "./app.filter";
+import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 
 import { LoggerModule } from "modules/log/logger.module";
 
@@ -20,12 +22,6 @@ import { UploadModule } from "modules/upload/uploads.module";
 
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
-
-@Injectable()
-class AppService {}
-
-@Controller()
-class AppController {}
 
 @Module({
 	imports: [

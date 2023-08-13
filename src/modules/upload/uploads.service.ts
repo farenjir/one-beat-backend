@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 
-import { pickBy as _pickBy, size as _size } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 
 import { Upload } from "./upload.entity";
 import { FileDto, UploadQueryDto, UploadDto } from "./upload.dto";
@@ -39,7 +39,7 @@ export class UploadService {
 	}
 	// findMany
 	async findBy(query: UploadQueryDto): Promise<Upload[]> {
-		if (_size(query)) {
+		if (_isEmpty(query)) {
 			throw new BadRequestException("4000");
 		}
 		const options: FindManyOptions<Upload> = {

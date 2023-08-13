@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from "typeorm";
 
-import { pickBy } from "lodash";
+import { pickBy as _pickBy } from "lodash";
 
 import { Users } from "./user.entity";
 
@@ -23,7 +23,7 @@ export class UsersService {
 		if (!id && !email) {
 			throw new BadRequestException("4000");
 		}
-		const options: FindOneOptions<Users> = { where: pickBy<object>({ id, email }, (isTruthy: any) => isTruthy) };
+		const options: FindOneOptions<Users> = { where: _pickBy<object>({ id, email }, (isTruthy: any) => isTruthy) };
 		const user = await this.repo.findOne(options);
 		if (!user) {
 			throw new NotFoundException("4001");

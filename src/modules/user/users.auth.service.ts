@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+
 import { randomBytes, scrypt } from "crypto";
 
 import { UserExtraDto, UserDto } from "./user.dto";
