@@ -7,5 +7,10 @@
         "signout",
         "ssword",
         "typeorm"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#4D1943",
+        "titleBar.activeBackground": "#6C225E",
+        "titleBar.activeForeground": "#FDF8FC"
+    }
 }

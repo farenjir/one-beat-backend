@@ -2,12 +2,11 @@ import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, UseGua
 import { ApiCookieAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
-import { IAppResponse, appResponse } from "utils/response.handle";
-import { Serialize } from "utils/serialize.interceptor";
+import { IAppResponse, appResponse } from "app/app.response";
+import { Serialize } from "app/app.serialize";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
-
 import { RolesGuard } from "guards/role.guard";
 import { AuthGuard } from "guards/auth.guard";
 
@@ -29,7 +28,7 @@ export class UsersController {
 			body.password,
 		);
 		res.cookie("app-token", token, cookieOptions);
-		return appResponse({ ...user }, "2002");
+		return appResponse(user, "2002");
 	}
 	// createUser
 	@ApiOkResponse({ type: UserDto })
@@ -95,6 +94,7 @@ export class UsersController {
 	@UseGuards(AuthGuard, RolesGuard)
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<IAppResponse> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
-		return appResponse(Object.assign(removedUser, { id }), "2006");
+		Object.assign(removedUser, { id });
+		return appResponse(removedUser, "2006");
 	}
 }

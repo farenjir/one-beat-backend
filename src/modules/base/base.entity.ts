@@ -24,12 +24,16 @@ export abstract class DefaultEntity {
 export class Bases extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
+
 	@Column()
-	type: string;
+	type!: string;
+
 	@Column()
-	name: string;
+	name!: string;
+
 	@Column()
-	nameFa: string;
+	nameFa!: string;
+	
 	// TreeChildren
 	@TreeChildren()
 	children: Bases[];

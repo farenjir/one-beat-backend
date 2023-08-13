@@ -1,26 +1,31 @@
 import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
-import { Module, ValidationPipe } from "@nestjs/common";
+import { Controller, Injectable, Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
-import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 import { AppExceptionsFilter } from "./app.filter";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 
 import { LoggerModule } from "modules/log/logger.module";
 
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
 
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
+
+@Injectable()
+class AppService {}
+
+@Controller()
+class AppController {}
 
 @Module({
 	imports: [
@@ -40,7 +45,7 @@ import { UsersModule } from "modules/user/user.module";
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				// app entities
-				entities: [Bases, Users],
+				entities: [Bases, Upload, Users],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -58,6 +63,15 @@ import { UsersModule } from "modules/user/user.module";
 				max: +config.get<number>("CACHE_MAX"),
 			}),
 		}),
+		// MulterModule.registerAsync({
+		// 	inject: [ConfigService],
+		// 	useFactory: (config: ConfigService) => ({
+		// 		storage: diskStorage({
+		// 			destination: config.get<string>("FILE_DEST"),
+		// 			filename: multerFilename,
+		// 		}),
+		// 	}),
+		// }),
 		ScheduleModule.forRoot(),
 		// app modules
 		LoggerModule,
@@ -74,10 +88,10 @@ import { UsersModule } from "modules/user/user.module";
 				whitelist: true,
 			}),
 		},
-		{
-			provide: APP_FILTER,
-			useClass: AppExceptionsFilter,
-		},
+		// {
+		// 	provide: APP_FILTER,
+		// 	useClass: AppExceptionsFilter,
+		// },
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,

@@ -1,14 +1,12 @@
-type Code = number | string;
-
 export interface IAppResponse {
-	code?: Code;
+	code?: number;
 	message?: string;
 	description?: string;
 	data?: any;
 	timestamp?: string;
 }
 
-export const appResponse = (data?: any, code = "2000", descriptionCode?: Code): IAppResponse => {
+export const appResponse = (data?: any, code = "2000", descriptionCode?: string): IAppResponse => {
 	return {
 		code: Number(code),
 		message: responseMessage(code),
@@ -18,7 +16,7 @@ export const appResponse = (data?: any, code = "2000", descriptionCode?: Code): 
 	};
 };
 
-export const responseMessage = (statusCode: Code) => {
+const responseMessage = (statusCode: string) => {
 	const messages = {
 		2000: "Succeed",
 		2001: "User Created",
@@ -29,12 +27,15 @@ export const responseMessage = (statusCode: Code) => {
 		2006: "User Deleted",
 		2007: "Base Created",
 		2008: "Base Updated",
+		2009: "File Uploaded",
+		2010: "File Updated",
+		2011: "File Deleted",
 	};
 	// return
 	return messages[statusCode];
 };
 
-export const descriptionMessage = (descriptionCode: Code) => {
+const descriptionMessage = (descriptionCode: string) => {
 	const messages = {};
 	// return
 	return messages[descriptionCode] || "";
