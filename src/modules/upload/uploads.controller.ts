@@ -11,24 +11,22 @@ import {
 	Req,
 	UploadedFile,
 	UseGuards,
-	UseInterceptors,
 } from "@nestjs/common";
 import { ApiCookieAuth, ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger";
 
-import { diskStorage } from "multer";
 import { Express, Request } from "express";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { IAppResponse, appResponse } from "app/app.response";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
 import { RolesGuard } from "guards/role.guard";
 import { AuthGuard } from "guards/auth.guard";
 
-import { IAppResponse, appResponse } from "app/app.response";
-
+import { UploadTypes } from "./upload.configs";
 import { FileValidationPipe, ValidationQueryPipe } from "./upload.pipe";
+import { FileUploadConfig } from "./upload.interceptor";
+
 import { UploadDto, UploadQueryDto } from "./upload.dto";
-import { UploadTypes, multerFilename } from "./upload.configs";
 import { Upload } from "./upload.entity";
 import { UploadService } from "./uploads.service";
 @ApiTags("Uploads")
@@ -38,14 +36,7 @@ export class UploadController {
 	// uploadFile images
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(
-		FileInterceptor("file", {
-			storage: diskStorage({
-				destination: "./uploads",
-				filename: multerFilename,
-			}),
-		}),
-	)
+	@FileUploadConfig("image")
 	@Post("image")
 	// @UseGuards(AuthGuard)
 	async uploadImageFile(
@@ -53,20 +44,13 @@ export class UploadController {
 		@Body() body: UploadDto,
 		@Req() req: Request,
 	): Promise<IAppResponse> {
-		const fileCreated: Upload = await this.uploadService.create(body, file, { id: 2 });
+		const fileCreated: Upload = await this.uploadService.create(body, file, { id: 0 });
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(
-		FileInterceptor("file", {
-			storage: diskStorage({
-				destination: "./uploads",
-				filename: multerFilename,
-			}),
-		}),
-	)
+	@FileUploadConfig("music")
 	@Post("music")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -81,14 +65,7 @@ export class UploadController {
 	// uploadFile zip
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: Upload })
-	@UseInterceptors(
-		FileInterceptor("file", {
-			storage: diskStorage({
-				destination: "./uploads",
-				filename: multerFilename,
-			}),
-		}),
-	)
+	@FileUploadConfig("zipFile")
 	@Post("zipFile")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
 	@UseGuards(AuthGuard, RolesGuard)

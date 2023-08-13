@@ -11,7 +11,7 @@ import { FileDto, UploadQueryDto, UploadDto } from "./upload.dto";
 export class UploadService {
 	constructor(@InjectRepository(Upload) private repo: Repository<Upload>) {}
 	// create
-	async create({ description, type, category }: UploadDto, { filename: name }: FileDto, { id }): Promise<Upload> {
+	async create({ description, type, category }: UploadDto, { filename: name }: FileDto, { id = 0 }): Promise<Upload> {
 		const params = {
 			userId: id,
 			name,
