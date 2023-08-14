@@ -4,7 +4,7 @@ export type ItemUploadType = {
 	maxFileSize: number;
 };
 
-export enum Uploads {
+export enum UploadEnum {
 	Image = "image",
 	Music = "music",
 	Zip = "zip",

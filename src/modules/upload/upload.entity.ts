@@ -1,14 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 import { IsOptional } from "class-validator";
 
-import { Uploads } from "./upload.configs";
+import { UploadEnum } from "./upload.configs";
 
 abstract class DefaultEntity {
-	@CreateDateColumn({ name: "createdAt" })
+	@CreateDateColumn()
 	createdAt: Date;
-	@UpdateDateColumn({ name: "updatedAt" })
+	@UpdateDateColumn()
 	updatedAt: Date;
-	@DeleteDateColumn({ name: "deletedAt" })
+	@DeleteDateColumn()
 	deletedAt: Date;
 }
 
@@ -25,10 +25,9 @@ export class Upload extends DefaultEntity {
 
 	@Column({
 		type: "enum",
-		enum: Uploads,
-		default: Uploads.Image,
+		enum: UploadEnum,
 	})
-	category: Uploads;
+	category: UploadEnum;
 
 	@Column()
 	type: string;

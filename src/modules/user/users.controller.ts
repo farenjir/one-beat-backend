@@ -30,7 +30,7 @@ export class UsersController {
 		res.cookie("app-token", token, cookieOptions);
 		return appResponse(user, "2002");
 	}
-	// createUser
+	// signUp
 	@ApiOkResponse({ type: UserDto })
 	@Post("signUp")
 	async createUser(@Body() body: CreateUserDto): Promise<IAppResponse> {
@@ -46,7 +46,7 @@ export class UsersController {
 		res.clearCookie("app-token");
 		return appResponse(req.user, "2004");
 	}
-	// return current user
+	// currentUser
 	@ApiCookieAuth()
 	@ApiOkResponse({ type: UserDto })
 	@Get("whoAmI")
