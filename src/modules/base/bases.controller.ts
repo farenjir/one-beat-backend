@@ -20,15 +20,14 @@ import { BaseService } from "./bases.service";
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
-	@SwaggerDocumentary({ responseDto: BaseDto, responseIsObject: false, useAuth: false, description: "get all bases of app" })
+	@SwaggerDocumentary(BaseDto, { responseIsObject: false, useAuth: false })
 	@Get("all")
 	async getBases(): Promise<AppResponseDto<BaseDto>> {
 		const bases: BaseDto[] = await this.typeService.findAllBases();
 		return appResponse(bases);
 	}
 	// get one type
-	@SwaggerDocumentary({
-		responseDto: BaseDto,
+	@SwaggerDocumentary(BaseDto, {
 		useAuth: false,
 		query: [
 			{
@@ -50,8 +49,7 @@ export class BaseController {
 		return appResponse(base);
 	}
 	// get children of type
-	@SwaggerDocumentary({
-		responseDto: BaseDto,
+	@SwaggerDocumentary(BaseDto, {
 		responseIsObject: false,
 		useAuth: false,
 		query: [
@@ -74,7 +72,7 @@ export class BaseController {
 		return appResponse(children);
 	}
 	// add new types
-	@SwaggerDocumentary({ responseDto: BaseDto })
+	@SwaggerDocumentary(BaseDto)
 	@Post("addBase")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -83,7 +81,7 @@ export class BaseController {
 		return appResponse(createdBase, "2007");
 	}
 	// update pre types
-	@SwaggerDocumentary({ responseDto: BaseDto })
+	@SwaggerDocumentary(BaseDto)
 	@Patch("updateBy/:id")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -92,7 +90,7 @@ export class BaseController {
 		return appResponse(updatedBase, "2008");
 	}
 	// delete types
-	@SwaggerDocumentary({ responseDto: BaseDto })
+	@SwaggerDocumentary(BaseDto)
 	@Delete("deleteBy/:id")
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)

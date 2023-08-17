@@ -35,7 +35,7 @@ import { UploadService } from "./uploads.service";
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
 	// uploadFile images
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("image")
 	@Post("image")
 	// @UseGuards(AuthGuard)
@@ -48,7 +48,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("music")
 	@Post("music")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
@@ -62,7 +62,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile zip
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
@@ -76,8 +76,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// getBy Query
-	@SwaggerDocumentary({
-		responseDto: UploadResponse,
+	@SwaggerDocumentary(UploadResponse, {
 		responseIsObject: false,
 		query: [
 			{
@@ -105,7 +104,7 @@ export class UploadController {
 		return appResponse(files);
 	}
 	// getById
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@Get("getBy/:id")
 	// @UseGuards(AuthGuard)
 	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
@@ -113,7 +112,7 @@ export class UploadController {
 		return appResponse(file);
 	}
 	// updateFile
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@Patch("updateBy/:id")
 	// @Roles(Role.Admin, Role.Editor, Role.Producer)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -125,7 +124,7 @@ export class UploadController {
 		return appResponse(updatedUser, "2010");
 	}
 	// removeFile
-	@SwaggerDocumentary({ responseDto: UploadResponse })
+	@SwaggerDocumentary(UploadResponse)
 	@Delete("deleteBy/:id")
 	// @Roles(Role.Admin, Role.Editor, Role.Producer)
 	// @UseGuards(AuthGuard, RolesGuard)
