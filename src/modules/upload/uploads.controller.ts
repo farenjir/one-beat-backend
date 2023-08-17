@@ -2,15 +2,13 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query,
 import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
+import { AppGuards, Role } from "guard/guard.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
-
-import { AppGuards, Role } from "guard/guard.decorator";
 
 import { UploadTypes } from "./upload.configs";
 import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
 import { FileUploadConfig } from "./upload.interceptor";
-
 import { UploadDto, UploadQueryDto, UploadResponse } from "./upload.dto";
 import { UploadService } from "./uploads.service";
 
@@ -78,7 +76,7 @@ export class UploadController {
 			},
 		],
 	})
-	@Get("fileList")
+	@Get("filesList")
 	// @AppGuards(Role.Admin, Role.Editor)
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<AppResponseDto<UploadResponse>> {
 		const files: UploadResponse[] = await this.uploadService.findBy(query);
