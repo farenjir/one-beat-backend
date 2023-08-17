@@ -1,7 +1,7 @@
 import { IsArray, IsEmail, IsOptional, IsString } from "class-validator";
 import { Expose } from "class-transformer";
 
-import { Role } from "guards/role/role.enum";
+import { Role } from "guards/auth.decorator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto };

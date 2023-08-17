@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 } from "typeorm";
-import { Role } from "guards/role/role.enum";
+import { Role } from "guards/auth.decorator";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -38,7 +38,7 @@ export class Users extends DefaultEntity {
 		default: [Role.User],
 	})
 	roles!: Role[];
-	
+
 	// logs
 	@AfterInsert()
 	logInsert() {

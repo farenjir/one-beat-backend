@@ -9,7 +9,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
-import { AppExceptionsFilter } from "./app.filter";
+import { AppExceptionsFilter } from "../utils/exception.filter";
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 
 import { LoggerModule } from "modules/log/logger.module";

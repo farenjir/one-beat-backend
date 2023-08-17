@@ -1,7 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiCookieAuth, ApiQuery } from "@nestjs/swagger";
 
-import { ApiSwaggerResponse } from "./response";
+import { ApiSwaggerResponse } from "./response.filter";
 
 interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
@@ -13,7 +13,7 @@ interface IOptions {
 	description?: "";
 }
 
-export const SwaggerDocumentary = (
+export const SwaggerDocumentaryApi = (
 	responseDto: ClassConstructor,
 	{ responseIsObject = true, useAuth = true, query = [], description = "" }: IOptions = {},
 ) => {
