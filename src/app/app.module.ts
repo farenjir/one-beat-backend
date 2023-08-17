@@ -1,5 +1,5 @@
 import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
-import { Controller, Injectable, Module, ValidationPipe } from "@nestjs/common";
+import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
@@ -9,7 +9,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
-import { AppExceptionsFilter } from "./app.filter";
+import { AppExceptionsFilter } from "../utils/exception.filter";
 import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 
 import { LoggerModule } from "modules/log/logger.module";
@@ -84,10 +84,10 @@ import { UsersModule } from "modules/user/user.module";
 				whitelist: true,
 			}),
 		},
-		// {
-		// 	provide: APP_FILTER,
-		// 	useClass: AppExceptionsFilter,
-		// },
+		{
+			provide: APP_FILTER,
+			useClass: AppExceptionsFilter,
+		},
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,

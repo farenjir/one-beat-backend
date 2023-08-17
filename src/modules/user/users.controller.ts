@@ -1,15 +1,12 @@
-import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, UseGuards, Res, Req } from "@nestjs/common";
+import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, Res, Req } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
-import { SwaggerDocumentary } from "app/app.decorator";
-import { AppResponseDto, appResponse } from "app/response";
-import { Serialize } from "app/serialize";
+import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
+import { AppResponseDto, appResponse } from "utils/response.filter";
+import { Serialize } from "utils/serialize.interceptor";
 
-import { Role } from "guards/role/role.enum";
-import { Roles } from "guards/role/role.decorator";
-import { RolesGuard } from "guards/role.guard";
-import { AuthGuard } from "guards/auth.guard";
+import { AppGuards, Role } from "guard/guard.decorator";
 
 import { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto } from "./user.dto";
 import { UsersService } from "./user.service";
@@ -24,7 +21,7 @@ export class UsersController {
 		private readonly authService: AuthService,
 	) {}
 	// auth services
-	@SwaggerDocumentary(UserDto, { useAuth: false })
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto<UserDto>> {
 		const { token, cookieOptions, ...user }: UserDto & UserExtraDto = await this.authService.signin(
@@ -35,61 +32,57 @@ export class UsersController {
 		return appResponse(user, "2002");
 	}
 	// signUp
-	@SwaggerDocumentary(UserDto, { useAuth: false })
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signUp")
 	async createUser(@Body() body: CreateUserDto): Promise<AppResponseDto<UserDto>> {
 		const userCreated: UserDto = await this.authService.signup(body.email, body.password);
 		return appResponse(userCreated, "2003");
 	}
 	// signOut
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentaryApi(UserDto)
 	@Post("signOut")
-	@UseGuards(AuthGuard)
+	@AppGuards()
 	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): AppResponseDto<any> {
 		res.clearCookie("app-token");
 		return appResponse(user, "2004");
 	}
 	// currentUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentaryApi(UserDto)
 	@Get("whoAmI")
-	@UseGuards(AuthGuard)
+	@AppGuards()
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
 		const currentUser: UserDto = await this.usersService.findBy(userId);
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
-	@SwaggerDocumentary(UserDto, { responseIsObject: false })
+	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
 	@Get("all")
-	@Roles(Role.Admin, Role.User)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.User)
 	async findAllUser(): Promise<AppResponseDto<UserDto>> {
 		const users: UserDto[] = await this.usersService.findUsers();
 		return appResponse(users);
 	}
 	// findUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentaryApi(UserDto)
 	@Get("getBy/:id")
-	@Roles(Role.Admin, Role.User)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.User)
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const user: UserDto = await this.usersService.findBy(id);
 		return appResponse(user);
 	}
 	// updateUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentaryApi(UserDto)
 	@Patch("updateBy/:id")
-	@Roles(Role.Admin, Role.User)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.User)
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentaryApi(UserDto)
 	@Delete("deleteBy/:id")
-	@Roles(Role.Admin, Role.User)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.User)
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
 		Object.assign(removedUser, { id });

@@ -1,27 +1,11 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	ParseIntPipe,
-	Patch,
-	Post,
-	Query,
-	Req,
-	UploadedFile,
-	UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UploadedFile } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
-import { SwaggerDocumentary } from "app/app.decorator";
-import { AppResponseDto, appResponse } from "app/response";
+import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
+import { AppResponseDto, appResponse } from "utils/response.filter";
 
-import { Role } from "guards/role/role.enum";
-import { Roles } from "guards/role/role.decorator";
-import { RolesGuard } from "guards/role.guard";
-import { AuthGuard } from "guards/auth.guard";
+import { AppGuards, Role } from "guard/guard.decorator";
 
 import { UploadTypes } from "./upload.configs";
 import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
@@ -35,7 +19,7 @@ import { UploadService } from "./uploads.service";
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
 	// uploadFile images
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@FileUploadConfig("image")
 	@Post("image")
 	// @UseGuards(AuthGuard)
@@ -48,11 +32,10 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@FileUploadConfig("music")
 	@Post("music")
-	@Roles(Role.Admin, Role.Editor, Role.Producer)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async uploadMusicFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -62,11 +45,10 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile zip
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
-	@Roles(Role.Admin, Role.Editor, Role.Producer)
-	@UseGuards(AuthGuard, RolesGuard)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async uploadZipFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -76,7 +58,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// getBy Query
-	@SwaggerDocumentary(UploadResponse, {
+	@SwaggerDocumentaryApi(UploadResponse, {
 		responseIsObject: false,
 		query: [
 			{
@@ -97,25 +79,23 @@ export class UploadController {
 		],
 	})
 	@Get("fileList")
-	// @Roles(Role.Admin, Role.Editor)
-	// @UseGuards(AuthGuard, RolesGuard)
+	// @AppGuards(Role.Admin, Role.Editor)
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<AppResponseDto<UploadResponse>> {
 		const files: UploadResponse[] = await this.uploadService.findBy(query);
 		return appResponse(files);
 	}
 	// getById
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@Get("getBy/:id")
-	// @UseGuards(AuthGuard)
+	// @AppGuards()
 	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
 		const file: UploadResponse = await this.uploadService.findById(id);
 		return appResponse(file);
 	}
 	// updateFile
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@Patch("updateBy/:id")
-	// @Roles(Role.Admin, Role.Editor, Role.Producer)
-	// @UseGuards(AuthGuard, RolesGuard)
+	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async updateUserById(
 		@Param("id", ParseIntPipe) id: string,
 		@Body() body: UploadDto,
@@ -124,10 +104,9 @@ export class UploadController {
 		return appResponse(updatedUser, "2010");
 	}
 	// removeFile
-	@SwaggerDocumentary(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponse)
 	@Delete("deleteBy/:id")
-	// @Roles(Role.Admin, Role.Editor, Role.Producer)
-	// @UseGuards(AuthGuard, RolesGuard)
+	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
 		const file: UploadResponse = await this.uploadService.removeById(id);
 		Object.assign(file, { id });
