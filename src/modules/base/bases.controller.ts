@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param, UseGuards } from "@nestjs/common";
-import { ApiCookieAuth, ApiTags, ApiQuery } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 
-import { ApiSwaggerResponse, AppResponseDto, appResponse } from "app/app.response";
-import { Serialize } from "app/app.serialize";
+import { AppResponseDto, appResponse } from "app/response";
+import { Serialize } from "app/serialize";
+import { SwaggerDocumentary } from "app/app.decorator";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
@@ -19,24 +20,25 @@ import { BaseService } from "./bases.service";
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
-	@ApiSwaggerResponse(BaseDto, false, false)
+	@SwaggerDocumentary(BaseDto, false, false)
 	@Get("getAll")
 	async getBases(): Promise<AppResponseDto> {
 		const bases: BaseDto[] = await this.typeService.findAllBases();
 		return appResponse(bases);
 	}
 	// get one type
-	@ApiQuery({
-		name: "baseType",
-		required: false,
-		type: String,
-	})
-	@ApiQuery({
-		name: "baseId",
-		required: false,
-		type: Number,
-	})
-	@ApiSwaggerResponse(BaseDto, true, false)
+	@SwaggerDocumentary(BaseDto, true, false, [
+		{
+			name: "baseType",
+			required: false,
+			type: String,
+		},
+		{
+			name: "baseId",
+			required: false,
+			type: Number,
+		},
+	])
 	@Get("getBase")
 	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto> {
 		const { baseId, baseType } = query;
@@ -44,17 +46,18 @@ export class BaseController {
 		return appResponse(base);
 	}
 	// get children of type
-	@ApiQuery({
-		name: "parentType",
-		required: false,
-		type: String,
-	})
-	@ApiQuery({
-		name: "parentId",
-		required: false,
-		type: Number,
-	})
-	@ApiSwaggerResponse(BaseDto, false, false)
+	@SwaggerDocumentary(BaseDto, false, false, [
+		{
+			name: "parentType",
+			required: false,
+			type: String,
+		},
+		{
+			name: "parentId",
+			required: false,
+			type: Number,
+		},
+	])
 	@Get("getChildren")
 	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto> {
 		const { parentId, parentType } = query;
@@ -62,8 +65,7 @@ export class BaseController {
 		return appResponse(children);
 	}
 	// add new types
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(BaseDto)
+	@SwaggerDocumentary(BaseDto)
 	@Post("addNewBase")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -72,8 +74,7 @@ export class BaseController {
 		return appResponse(createdBase, "2007");
 	}
 	// update pre types
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(BaseDto)
+	@SwaggerDocumentary(BaseDto)
 	@Patch("updateBy/:id")
 	// @Roles(Role.Admin)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -82,8 +83,7 @@ export class BaseController {
 		return appResponse(updatedBase, "2008");
 	}
 	// delete types
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(BaseDto)
+	@SwaggerDocumentary(BaseDto)
 	@Delete("deleteBy/:id")
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)

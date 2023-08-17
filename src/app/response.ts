@@ -1,5 +1,5 @@
 import { Type, applyDecorators } from "@nestjs/common";
-import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { ApiExtraModels, ApiOkResponse, ApiProperty, getSchemaPath } from "@nestjs/swagger";
 
 export class AppResponseDto {
 	@ApiProperty()
@@ -22,10 +22,8 @@ export const appResponse = <T>(data: T, code = "2000", descriptionCode?: string)
 	data,
 });
 
-export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject: boolean = true, useAuth: boolean = true) => {
-	const auth = useAuth ? [ApiCookieAuth()] : [];
+export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject: boolean = true) => {
 	return applyDecorators(
-		...auth,
 		ApiExtraModels(model),
 		ApiOkResponse({
 			schema: {

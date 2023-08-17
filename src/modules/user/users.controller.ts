@@ -1,9 +1,10 @@
 import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, UseGuards, Res, Req } from "@nestjs/common";
-import { ApiCookieAuth, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
-import { ApiSwaggerResponse, AppResponseDto, appResponse } from "app/app.response";
-import { Serialize } from "app/app.serialize";
+import { SwaggerDocumentary } from "app/app.decorator";
+import { AppResponseDto, appResponse } from "app/response";
+import { Serialize } from "app/serialize";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
@@ -23,7 +24,7 @@ export class UsersController {
 		private readonly authService: AuthService,
 	) {}
 	// auth services
-	@ApiSwaggerResponse(UserDto, true, false)
+	@SwaggerDocumentary(UserDto, true, false)
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto> {
 		const { token, cookieOptions, ...user }: UserDto & UserExtraDto = await this.authService.signin(
@@ -34,15 +35,14 @@ export class UsersController {
 		return appResponse(user, "2002");
 	}
 	// signUp
-	@ApiSwaggerResponse(UserDto, true, false)
+	@SwaggerDocumentary(UserDto, true, false)
 	@Post("signUp")
 	async createUser(@Body() body: CreateUserDto): Promise<AppResponseDto> {
 		const userCreated: UserDto = await this.authService.signup(body.email, body.password);
 		return appResponse(userCreated, "2003");
 	}
 	// signOut
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto)
+	@SwaggerDocumentary(UserDto)
 	@Post("signOut")
 	@UseGuards(AuthGuard)
 	async signOut(@Res({ passthrough: true }) res: Response, @Req() req: Request): Promise<AppResponseDto> {
@@ -50,8 +50,7 @@ export class UsersController {
 		return appResponse(req.user, "2004");
 	}
 	// currentUser
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto)
+	@SwaggerDocumentary(UserDto)
 	@Get("whoAmI")
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto> {
@@ -60,8 +59,7 @@ export class UsersController {
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto, false)
+	@SwaggerDocumentary(UserDto, false)
 	@Get("getAll")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -70,8 +68,7 @@ export class UsersController {
 		return appResponse(users);
 	}
 	// findUser
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto)
+	@SwaggerDocumentary(UserDto)
 	@Get("getBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -80,8 +77,7 @@ export class UsersController {
 		return appResponse(user);
 	}
 	// updateUser
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto)
+	@SwaggerDocumentary(UserDto)
 	@Patch("updateBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -90,8 +86,7 @@ export class UsersController {
 		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
-	@ApiCookieAuth()
-	@ApiSwaggerResponse(UserDto)
+	@SwaggerDocumentary(UserDto)
 	@Delete("deleteBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)

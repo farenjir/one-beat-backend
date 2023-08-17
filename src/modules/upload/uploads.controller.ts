@@ -12,10 +12,11 @@ import {
 	UploadedFile,
 	UseGuards,
 } from "@nestjs/common";
-import { ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
-import { ApiSwaggerResponse, AppResponseDto, appResponse } from "app/app.response";
+import { SwaggerDocumentary } from "app/app.decorator";
+import { AppResponseDto, appResponse } from "app/response";
 
 import { Role } from "guards/role/role.enum";
 import { Roles } from "guards/role/role.decorator";
@@ -34,7 +35,7 @@ import { UploadService } from "./uploads.service";
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
 	// uploadFile images
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("image")
 	@Post("image")
 	// @UseGuards(AuthGuard)
@@ -47,7 +48,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("music")
 	@Post("music")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
@@ -61,7 +62,7 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile zip
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
 	@Roles(Role.Admin, Role.Editor, Role.Producer)
@@ -75,22 +76,23 @@ export class UploadController {
 		return appResponse(fileCreated, "2009");
 	}
 	// getBy Query
-	@ApiQuery({
-		name: "userId",
-		required: false,
-		type: Number,
-	})
-	@ApiQuery({
-		name: "type",
-		required: false,
-		type: String,
-	})
-	@ApiQuery({
-		name: "category",
-		required: false,
-		type: String,
-	})
-	@ApiSwaggerResponse(UploadResponse, false)
+	@SwaggerDocumentary(UploadResponse, false, true, [
+		{
+			name: "userId",
+			required: false,
+			type: Number,
+		},
+		{
+			name: "type",
+			required: false,
+			type: String,
+		},
+		{
+			name: "category",
+			required: false,
+			type: String,
+		},
+	])
 	@Get("getFileList")
 	// @Roles(Role.Admin, Role.Editor)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -99,7 +101,7 @@ export class UploadController {
 		return appResponse(files);
 	}
 	// getById
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@Get("getFile/:id")
 	// @UseGuards(AuthGuard)
 	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto> {
@@ -107,7 +109,7 @@ export class UploadController {
 		return appResponse(file);
 	}
 	// updateFile
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@Patch("updateBy/:id")
 	// @Roles(Role.Admin, Role.Editor, Role.Producer)
 	// @UseGuards(AuthGuard, RolesGuard)
@@ -116,7 +118,7 @@ export class UploadController {
 		return appResponse(updatedUser, "2010");
 	}
 	// removeFile
-	@ApiSwaggerResponse(UploadResponse)
+	@SwaggerDocumentary(UploadResponse)
 	@Delete("deleteBy/:id")
 	// @Roles(Role.Admin, Role.Editor, Role.Producer)
 	// @UseGuards(AuthGuard, RolesGuard)
