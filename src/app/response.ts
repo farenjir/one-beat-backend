@@ -1,7 +1,7 @@
 import { Type, applyDecorators } from "@nestjs/common";
 import { ApiExtraModels, ApiOkResponse, ApiProperty, getSchemaPath } from "@nestjs/swagger";
 
-export class AppResponseDto {
+export class AppResponseDto<TData> {
 	@ApiProperty()
 	code: number;
 	@ApiProperty()
@@ -11,10 +11,10 @@ export class AppResponseDto {
 	@ApiProperty()
 	timestamp: string;
 	@ApiProperty()
-	data: unknown;
+	data: TData[] | TData;
 }
 
-export const appResponse = <T>(data: T, code = "2000", descriptionCode?: string): AppResponseDto => ({
+export const appResponse = <T>(data: T | T[], code = "2000", descriptionCode?: string): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
@@ -31,6 +31,19 @@ export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject:
 					{ $ref: getSchemaPath(AppResponseDto) },
 					{
 						properties: {
+							code: {
+								type: "integer",
+							},
+							message: {
+								type: "string",
+							},
+							description: {
+								type: "string",
+							},
+							timestamp: {
+								type: "string",
+								format: "date-time",
+							},
 							data: isObject
 								? { $ref: getSchemaPath(model) }
 								: {

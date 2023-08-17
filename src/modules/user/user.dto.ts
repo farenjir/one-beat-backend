@@ -56,5 +56,5 @@ class UserExtraDto {
 	@IsOptional()
 	token?: string;
 	@IsOptional()
-	cookieOptions?: any;
+	cookieOptions?: object;
 }

@@ -24,9 +24,9 @@ export class UsersController {
 		private readonly authService: AuthService,
 	) {}
 	// auth services
-	@SwaggerDocumentary(UserDto, true, false)
+	@SwaggerDocumentary({ responseDto: UserDto, useAuth: false })
 	@Post("signIn")
-	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto> {
+	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto<UserDto>> {
 		const { token, cookieOptions, ...user }: UserDto & UserExtraDto = await this.authService.signin(
 			body.email,
 			body.password,
@@ -35,62 +35,62 @@ export class UsersController {
 		return appResponse(user, "2002");
 	}
 	// signUp
-	@SwaggerDocumentary(UserDto, true, false)
+	@SwaggerDocumentary({ responseDto: UserDto, useAuth: false })
 	@Post("signUp")
-	async createUser(@Body() body: CreateUserDto): Promise<AppResponseDto> {
+	async createUser(@Body() body: CreateUserDto): Promise<AppResponseDto<UserDto>> {
 		const userCreated: UserDto = await this.authService.signup(body.email, body.password);
 		return appResponse(userCreated, "2003");
 	}
 	// signOut
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentary({ responseDto: UserDto })
 	@Post("signOut")
 	@UseGuards(AuthGuard)
-	async signOut(@Res({ passthrough: true }) res: Response, @Req() req: Request): Promise<AppResponseDto> {
+	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): AppResponseDto<any> {
 		res.clearCookie("app-token");
-		return appResponse(req.user, "2004");
+		return appResponse(user, "2004");
 	}
 	// currentUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentary({ responseDto: UserDto })
 	@Get("whoAmI")
 	@UseGuards(AuthGuard)
-	async whoAmI(@Req() req: Request): Promise<AppResponseDto> {
+	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
 		const currentUser: UserDto = await this.usersService.findBy(userId);
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
-	@SwaggerDocumentary(UserDto, false)
-	@Get("getAll")
+	@SwaggerDocumentary({ responseDto: UserDto, responseIsObject: false })
+	@Get("all")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
-	async findAllUser(): Promise<AppResponseDto> {
+	async findAllUser(): Promise<AppResponseDto<UserDto>> {
 		const users: UserDto[] = await this.usersService.findUsers();
 		return appResponse(users);
 	}
 	// findUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentary({ responseDto: UserDto })
 	@Get("getBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
-	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto> {
+	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const user: UserDto = await this.usersService.findBy(id);
 		return appResponse(user);
 	}
 	// updateUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentary({ responseDto: UserDto })
 	@Patch("updateBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
-	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto> {
+	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
-	@SwaggerDocumentary(UserDto)
+	@SwaggerDocumentary({ responseDto: UserDto })
 	@Delete("deleteBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
-	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto> {
+	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
 		Object.assign(removedUser, { id });
 		return appResponse(removedUser, "2006");
