@@ -5,7 +5,7 @@ import { Express, Request } from "express";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 
-import { AppGuards, Role } from "guards/auth.decorator";
+import { AppGuards, Role } from "guard/guard.decorator";
 
 import { UploadTypes } from "./upload.configs";
 import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";

@@ -6,7 +6,7 @@ import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { AppGuards, Role } from "guards/auth.decorator";
+import { AppGuards, Role } from "guard/guard.decorator";
 
 import { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto } from "./user.dto";
 import { UsersService } from "./user.service";

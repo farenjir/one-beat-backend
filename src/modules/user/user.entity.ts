@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 } from "typeorm";
-import { Role } from "guards/auth.decorator";
+import { Role } from "guard/guard.decorator";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
