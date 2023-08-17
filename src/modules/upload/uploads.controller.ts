@@ -18,9 +18,9 @@ export class UploadController {
 	constructor(private uploadService: UploadService) {}
 	// uploadFile images
 	@SwaggerDocumentaryApi(UploadResponse)
+	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("image")
 	@Post("image")
-	// @UseGuards(AuthGuard)
 	async uploadImageFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Image)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -31,9 +31,9 @@ export class UploadController {
 	}
 	// uploadFile music
 	@SwaggerDocumentaryApi(UploadResponse)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("music")
 	@Post("music")
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async uploadMusicFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -44,9 +44,9 @@ export class UploadController {
 	}
 	// uploadFile zip
 	@SwaggerDocumentaryApi(UploadResponse)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	async uploadZipFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -76,24 +76,24 @@ export class UploadController {
 			},
 		],
 	})
-	@Get("filesList")
 	// @AppGuards(Role.Admin, Role.Editor)
+	@Get("filesList")
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<AppResponseDto<UploadResponse>> {
 		const files: UploadResponse[] = await this.uploadService.findBy(query);
 		return appResponse(files);
 	}
 	// getById
 	@SwaggerDocumentaryApi(UploadResponse)
-	@Get("getBy/:id")
 	// @AppGuards()
+	@Get("getBy/:id")
 	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
 		const file: UploadResponse = await this.uploadService.findById(id);
 		return appResponse(file);
 	}
 	// updateFile
 	@SwaggerDocumentaryApi(UploadResponse)
-	@Patch("updateBy/:id")
 	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@Patch("updateBy/:id")
 	async updateUserById(
 		@Param("id", ParseIntPipe) id: string,
 		@Body() body: UploadDto,
@@ -103,8 +103,8 @@ export class UploadController {
 	}
 	// removeFile
 	@SwaggerDocumentaryApi(UploadResponse)
-	@Delete("deleteBy/:id")
 	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@Delete("deleteBy/:id")
 	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
 		const file: UploadResponse = await this.uploadService.removeById(id);
 		Object.assign(file, { id });

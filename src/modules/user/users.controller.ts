@@ -39,16 +39,16 @@ export class UsersController {
 	}
 	// signOut
 	@SwaggerDocumentaryApi(UserDto)
-	@Post("signOut")
 	@AppGuards()
+	@Post("signOut")
 	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): AppResponseDto<any> {
 		res.clearCookie("app-token");
 		return appResponse(user, "2004");
 	}
 	// currentUser
 	@SwaggerDocumentaryApi(UserDto)
-	@Get("whoAmI")
 	@AppGuards()
+	@Get("whoAmI")
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
 		const currentUser: UserDto = await this.usersService.findBy(userId);
@@ -56,32 +56,32 @@ export class UsersController {
 	}
 	// findAllUsers
 	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
-	@Get("all")
 	@AppGuards(Role.Admin, Role.User)
+	@Get("all")
 	async findAllUser(): Promise<AppResponseDto<UserDto>> {
 		const users: UserDto[] = await this.usersService.findUsers();
 		return appResponse(users);
 	}
 	// findUser
 	@SwaggerDocumentaryApi(UserDto)
-	@Get("getBy/:id")
 	@AppGuards(Role.Admin, Role.User)
+	@Get("getBy/:id")
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const user: UserDto = await this.usersService.findBy(id);
 		return appResponse(user);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserDto)
-	@Patch("updateBy/:id")
 	@AppGuards(Role.Admin, Role.User)
+	@Patch("updateBy/:id")
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
 	@SwaggerDocumentaryApi(UserDto)
-	@Delete("deleteBy/:id")
 	@AppGuards(Role.Admin, Role.User)
+	@Delete("deleteBy/:id")
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
 		const removedUser: UserDto = await this.usersService.removeById(id);
 		Object.assign(removedUser, { id });
