@@ -1,5 +1,4 @@
-import { Type, applyDecorators } from "@nestjs/common";
-import { ApiExtraModels, ApiOkResponse, ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class AppResponseDto<TData> {
 	@ApiProperty()
@@ -21,42 +20,6 @@ export const appResponse = <T>(result: T | T[], code = "2000", descriptionCode?:
 	timestamp: new Date().toISOString(),
 	result,
 });
-
-export const ApiSwaggerResponse = <TModel extends Type<any>>(model: TModel, isObject: boolean = true) => {
-	return applyDecorators(
-		ApiExtraModels(model),
-		ApiOkResponse({
-			schema: {
-				allOf: [
-					{ $ref: getSchemaPath(AppResponseDto) },
-					{
-						properties: {
-							code: {
-								type: "integer",
-							},
-							message: {
-								type: "string",
-							},
-							description: {
-								type: "string",
-							},
-							timestamp: {
-								type: "string",
-								format: "date-time",
-							},
-							result: isObject
-								? { $ref: getSchemaPath(model) }
-								: {
-										type: "array",
-										items: { $ref: getSchemaPath(model) },
-								  },
-						},
-					},
-				],
-			},
-		}),
-	);
-};
 
 const responseMessage = (statusCode: string) => {
 	const messages = {

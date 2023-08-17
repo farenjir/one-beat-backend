@@ -1,7 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCookieAuth, ApiQuery } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiQuery, getSchemaPath } from "@nestjs/swagger";
 
-import { ApiSwaggerResponse } from "./response.filter";
+import { AppResponseDto } from "./response.filter";
 
 interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
@@ -33,6 +33,36 @@ export const SwaggerDocumentaryApi = (
 		// 	description,
 		// 	title: description,
 		// }),
-		ApiSwaggerResponse(responseDto, responseIsObject),
+		ApiExtraModels(responseDto),
+		ApiOkResponse({
+			schema: {
+				allOf: [
+					{ $ref: getSchemaPath(AppResponseDto) },
+					{
+						properties: {
+							code: {
+								type: "integer",
+							},
+							message: {
+								type: "string",
+							},
+							description: {
+								type: "string",
+							},
+							timestamp: {
+								type: "string",
+								format: "date-time",
+							},
+							result: responseIsObject
+								? { $ref: getSchemaPath(responseDto) }
+								: {
+										type: "array",
+										items: { $ref: getSchemaPath(responseDto) },
+								  },
+						},
+					},
+				],
+			},
+		}),
 	);
 };

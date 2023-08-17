@@ -2,11 +2,10 @@ import { Controller, Body, Post, Get, Patch, Delete, Param, ParseIntPipe, Res, R
 import { ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
+import { AppGuards, Role } from "guard/guard.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
-
-import { AppGuards, Role } from "guard/guard.decorator";
 
 import { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto } from "./user.dto";
 import { UsersService } from "./user.service";
