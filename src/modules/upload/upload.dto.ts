@@ -2,14 +2,14 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, IsString } from "class-validator";
 import { Expose } from "class-transformer";
 
-import { Uploads } from "./upload.configs";
+import { UploadEnum } from "./upload.configs";
 
 export { UploadDto, FileDto, UploadQueryDto, UploadResponse };
 class UploadDto {
-	@ApiProperty()
+	@ApiProperty({ name: "category", enumName: "UploadEnum", enum: UploadEnum })
 	@Expose()
 	@IsString()
-	category: Uploads;
+	category: UploadEnum;
 	@ApiProperty()
 	@Expose()
 	@IsString()
@@ -30,7 +30,7 @@ class UploadQueryDto {
 	type?: string;
 	@IsString()
 	@IsOptional()
-	category?: Uploads;
+	category?: UploadEnum;
 }
 
 class UploadResponse {
@@ -46,10 +46,10 @@ class UploadResponse {
 	@Expose()
 	@IsString()
 	name: string;
-	@ApiProperty()
+	@ApiProperty({ name: "category", enumName: "UploadEnum", enum: UploadEnum })
 	@Expose()
 	@IsString()
-	category: Uploads;
+	category: UploadEnum;
 	@ApiProperty()
 	@Expose()
 	@IsString()

@@ -11,11 +11,11 @@ import {
 } from "typeorm";
 
 export abstract class DefaultEntity {
-	@CreateDateColumn({ name: "createdAt" })
+	@CreateDateColumn()
 	createdAt?: Date;
-	@UpdateDateColumn({ name: "updatedAt" })
+	@UpdateDateColumn()
 	updatedAt?: Date;
-	@DeleteDateColumn({ name: "deletedAt" })
+	@DeleteDateColumn()
 	deletedAt?: Date;
 }
 
