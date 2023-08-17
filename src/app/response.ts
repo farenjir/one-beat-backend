@@ -10,19 +10,19 @@ export class AppResponseDto<TData> {
 	description: string;
 	@ApiProperty()
 	timestamp: string;
-	@ApiProperty()
-	data: TData[] | TData;
+	// TData
+	result: TData[] | TData;
 }
 
-export const appResponse = <T>(data: T | T[], code = "2000", descriptionCode?: string): AppResponseDto<T> => ({
+export const appResponse = <T>(result: T | T[], code = "2000", descriptionCode?: string): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
 	timestamp: new Date().toISOString(),
-	data,
+	result,
 });
 
-export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject: boolean = true) => {
+export const ApiSwaggerResponse = <TModel extends Type<any>>(model: TModel, isObject: boolean = true) => {
 	return applyDecorators(
 		ApiExtraModels(model),
 		ApiOkResponse({
@@ -44,7 +44,7 @@ export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject:
 								type: "string",
 								format: "date-time",
 							},
-							data: isObject
+							result: isObject
 								? { $ref: getSchemaPath(model) }
 								: {
 										type: "array",

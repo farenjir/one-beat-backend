@@ -3,7 +3,20 @@ import { ApiCookieAuth, ApiQuery } from "@nestjs/swagger";
 
 import { ApiSwaggerResponse } from "./response";
 
-export const SwaggerDocumentary = ({ responseDto, responseIsObject = true, useAuth = true, query = [], description = "" }) => {
+interface ClassConstructor<T = any> {
+	new (...args: any[]): T;
+}
+interface IOptions {
+	responseIsObject?: boolean;
+	useAuth?: boolean;
+	query?: object[];
+	description?: "";
+}
+
+export const SwaggerDocumentary = (
+	responseDto: ClassConstructor,
+	{ responseIsObject = true, useAuth = true, query = [], description = "" }: IOptions = {},
+) => {
 	let queryArray = [];
 	let auth = [];
 	if (query?.length) {

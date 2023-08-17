@@ -24,7 +24,7 @@ export class UsersController {
 		private readonly authService: AuthService,
 	) {}
 	// auth services
-	@SwaggerDocumentary({ responseDto: UserDto, useAuth: false })
+	@SwaggerDocumentary(UserDto, { useAuth: false })
 	@Post("signIn")
 	async signIn(@Body() body: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto<UserDto>> {
 		const { token, cookieOptions, ...user }: UserDto & UserExtraDto = await this.authService.signin(
@@ -35,14 +35,14 @@ export class UsersController {
 		return appResponse(user, "2002");
 	}
 	// signUp
-	@SwaggerDocumentary({ responseDto: UserDto, useAuth: false })
+	@SwaggerDocumentary(UserDto, { useAuth: false })
 	@Post("signUp")
 	async createUser(@Body() body: CreateUserDto): Promise<AppResponseDto<UserDto>> {
 		const userCreated: UserDto = await this.authService.signup(body.email, body.password);
 		return appResponse(userCreated, "2003");
 	}
 	// signOut
-	@SwaggerDocumentary({ responseDto: UserDto })
+	@SwaggerDocumentary(UserDto)
 	@Post("signOut")
 	@UseGuards(AuthGuard)
 	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): AppResponseDto<any> {
@@ -50,7 +50,7 @@ export class UsersController {
 		return appResponse(user, "2004");
 	}
 	// currentUser
-	@SwaggerDocumentary({ responseDto: UserDto })
+	@SwaggerDocumentary(UserDto)
 	@Get("whoAmI")
 	@UseGuards(AuthGuard)
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
@@ -59,7 +59,7 @@ export class UsersController {
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
-	@SwaggerDocumentary({ responseDto: UserDto, responseIsObject: false })
+	@SwaggerDocumentary(UserDto, { responseIsObject: false })
 	@Get("all")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -68,7 +68,7 @@ export class UsersController {
 		return appResponse(users);
 	}
 	// findUser
-	@SwaggerDocumentary({ responseDto: UserDto })
+	@SwaggerDocumentary(UserDto)
 	@Get("getBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -77,7 +77,7 @@ export class UsersController {
 		return appResponse(user);
 	}
 	// updateUser
-	@SwaggerDocumentary({ responseDto: UserDto })
+	@SwaggerDocumentary(UserDto)
 	@Patch("updateBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -86,7 +86,7 @@ export class UsersController {
 		return appResponse(updatedUser, "2005");
 	}
 	// removeUser
-	@SwaggerDocumentary({ responseDto: UserDto })
+	@SwaggerDocumentary(UserDto)
 	@Delete("deleteBy/:id")
 	@Roles(Role.Admin, Role.User)
 	@UseGuards(AuthGuard, RolesGuard)
