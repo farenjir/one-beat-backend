@@ -1,19 +1,50 @@
-export interface IAppResponse {
-	code?: number;
-	message?: string;
-	description?: string;
-	data?: any;
-	timestamp?: string;
+import { Type, applyDecorators } from "@nestjs/common";
+import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiProperty, getSchemaPath } from "@nestjs/swagger";
+
+export class AppResponseDto {
+	@ApiProperty()
+	code: number;
+	@ApiProperty()
+	message: string;
+	@ApiProperty()
+	description: string;
+	@ApiProperty()
+	timestamp: string;
+	@ApiProperty()
+	data: unknown;
 }
 
-export const appResponse = (data?: any, code = "2000", descriptionCode?: string): IAppResponse => {
-	return {
-		code: Number(code),
-		message: responseMessage(code),
-		description: descriptionMessage(descriptionCode),
-		timestamp: new Date().toISOString(),
-		data,
-	};
+export const appResponse = <T>(data: T, code = "2000", descriptionCode?: string): AppResponseDto => ({
+	code: Number(code),
+	message: responseMessage(code),
+	description: descriptionMessage(descriptionCode),
+	timestamp: new Date().toISOString(),
+	data,
+});
+
+export const ApiSwaggerResponse = <TModel extends Type>(model: TModel, isObject: boolean = true, useAuth: boolean = true) => {
+	const auth = useAuth ? [ApiCookieAuth()] : [];
+	return applyDecorators(
+		...auth,
+		ApiExtraModels(model),
+		ApiOkResponse({
+			schema: {
+				allOf: [
+					{ $ref: getSchemaPath(AppResponseDto) },
+					{
+						properties: {
+							data: isObject
+								? { $ref: getSchemaPath(model) }
+								: {
+										type: "array",
+										items: { $ref: getSchemaPath(model) },
+								  },
+						},
+					},
+				],
+			},
+		}),
+	);
 };
 
 const responseMessage = (statusCode: string) => {
