@@ -9,7 +9,7 @@ import { AppResponseDto, appResponse } from "utils/response.filter";
 import { UploadTypes } from "./upload.configs";
 import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
 import { FileUploadConfig } from "./upload.interceptor";
-import { UploadDto, UploadQueryDto, UploadResponse } from "./upload.dto";
+import { UploadDto, UploadQueryDto, UploadResponseDto } from "./upload.dto";
 import { UploadService } from "./uploads.service";
 
 @ApiTags("Uploads")
@@ -17,46 +17,46 @@ import { UploadService } from "./uploads.service";
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
 	// uploadFile images
-	@SwaggerDocumentaryApi(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponseDto)
 	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("image")
 	@Post("image")
 	async uploadImageFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Image)) file: Express.Multer.File,
 		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<AppResponseDto<UploadResponse>> {
-		const fileCreated: UploadResponse = await this.uploadService.create(body, file, { id: 0 });
+		@Req() { user }: Request,
+	): Promise<AppResponseDto<UploadResponseDto>> {
+		const fileCreated: UploadResponseDto = await this.uploadService.create(body, file, { id: 0 });
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile music
-	@SwaggerDocumentaryApi(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("music")
 	@Post("music")
 	async uploadMusicFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
 		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<AppResponseDto<UploadResponse>> {
-		const fileCreated: UploadResponse = await this.uploadService.create(body, file, req?.user);
+		@Req() { user }: Request,
+	): Promise<AppResponseDto<UploadResponseDto>> {
+		const fileCreated: UploadResponseDto = await this.uploadService.create(body, file, user);
 		return appResponse(fileCreated, "2009");
 	}
 	// uploadFile zip
-	@SwaggerDocumentaryApi(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
 	async uploadZipFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
 		@Body() body: UploadDto,
-		@Req() req: Request,
-	): Promise<AppResponseDto<UploadResponse>> {
-		const fileCreated: UploadResponse = await this.uploadService.create(body, file, req?.user);
+		@Req() { user }: Request,
+	): Promise<AppResponseDto<UploadResponseDto>> {
+		const fileCreated: UploadResponseDto = await this.uploadService.create(body, file, user);
 		return appResponse(fileCreated, "2009");
 	}
 	// getBy Query
-	@SwaggerDocumentaryApi(UploadResponse, {
+	@SwaggerDocumentaryApi(UploadResponseDto, {
 		responseIsObject: false,
 		query: [
 			{
@@ -78,35 +78,35 @@ export class UploadController {
 	})
 	// @AppGuards(Role.Admin, Role.Editor)
 	@Get("filesList")
-	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<AppResponseDto<UploadResponse>> {
-		const files: UploadResponse[] = await this.uploadService.findBy(query);
+	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<AppResponseDto<UploadResponseDto>> {
+		const files: UploadResponseDto[] = await this.uploadService.findBy(query);
 		return appResponse(files);
 	}
 	// getById
-	@SwaggerDocumentaryApi(UploadResponse)
-	// @AppGuards()
+	@SwaggerDocumentaryApi(UploadResponseDto)
+	@AppGuards()
 	@Get("getBy/:id")
-	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
-		const file: UploadResponse = await this.uploadService.findById(id);
+	async getFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponseDto>> {
+		const file: UploadResponseDto = await this.uploadService.findById(id);
 		return appResponse(file);
 	}
 	// updateFile
-	@SwaggerDocumentaryApi(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponseDto)
 	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Patch("updateBy/:id")
 	async updateUserById(
 		@Param("id", ParseIntPipe) id: string,
 		@Body() body: UploadDto,
-	): Promise<AppResponseDto<UploadResponse>> {
-		const updatedUser: UploadResponse = await this.uploadService.updateById(id, body);
+	): Promise<AppResponseDto<UploadResponseDto>> {
+		const updatedUser: UploadResponseDto = await this.uploadService.updateById(id, body);
 		return appResponse(updatedUser, "2010");
 	}
 	// removeFile
-	@SwaggerDocumentaryApi(UploadResponse)
+	@SwaggerDocumentaryApi(UploadResponseDto)
 	// @AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Delete("deleteBy/:id")
-	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponse>> {
-		const file: UploadResponse = await this.uploadService.removeById(id);
+	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<AppResponseDto<UploadResponseDto>> {
+		const file: UploadResponseDto = await this.uploadService.removeById(id);
 		Object.assign(file, { id });
 		return appResponse(file, "2011");
 	}

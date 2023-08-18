@@ -84,10 +84,10 @@ import { UsersModule } from "modules/user/user.module";
 				whitelist: true,
 			}),
 		},
-		{
-			provide: APP_FILTER,
-			useClass: AppExceptionsFilter,
-		},
+		// {
+		// 	provide: APP_FILTER,
+		// 	useClass: AppExceptionsFilter,
+		// },
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,

@@ -22,28 +22,6 @@ export class BaseController {
 		const bases: BaseDto[] = await this.typeService.findAllBases();
 		return appResponse(bases);
 	}
-	// get one type
-	@SwaggerDocumentaryApi(BaseDto, {
-		useAuth: false,
-		query: [
-			{
-				name: "baseType",
-				required: false,
-				type: String,
-			},
-			{
-				name: "baseId",
-				required: false,
-				type: Number,
-			},
-		],
-	})
-	@Get("getBase")
-	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
-		const { baseId, baseType } = query;
-		const base: BaseDto = await this.typeService.findBase(baseId, baseType);
-		return appResponse(base);
-	}
 	// get children of type
 	@SwaggerDocumentaryApi(BaseDto, {
 		responseIsObject: false,
@@ -66,6 +44,28 @@ export class BaseController {
 		const { parentId, parentType } = query;
 		const children: BaseDto[] = await this.typeService.findBaseChildren(parentId, parentType);
 		return appResponse(children);
+	}
+	// get one type
+	@SwaggerDocumentaryApi(BaseDto, {
+		useAuth: false,
+		query: [
+			{
+				name: "baseType",
+				required: false,
+				type: String,
+			},
+			{
+				name: "baseId",
+				required: false,
+				type: Number,
+			},
+		],
+	})
+	@Get("getBase")
+	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
+		const { baseId, baseType } = query;
+		const base: BaseDto = await this.typeService.findBase(baseId, baseType);
+		return appResponse(base);
 	}
 	// add new types
 	@SwaggerDocumentaryApi(BaseDto)

@@ -7,7 +7,7 @@ import { CacheInterceptor } from "@nestjs/cache-manager";
 
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
-	private readonly excludePaths: Array<string> = ["user", "upload"];
+	private readonly includePaths: Array<string> = ["base"];
 	// trackBy
 	trackBy(context: ExecutionContext): string | undefined {
 		const request = context.switchToHttp().getRequest();
@@ -16,13 +16,13 @@ export class HttpCacheInterceptor extends CacheInterceptor {
 		const path = httpAdapter.getRequestUrl(request);
 		const method = httpAdapter.getRequestMethod(request);
 		// check conditions
-		const isNotGetRequest = method !== "GET";
-		const excludePath = this.excludePaths.some((ex) => path.includes(ex));
+		const isGetRequest = method === "GET";
+		const includePath = this.includePaths.some((ex) => path.includes(ex));
 		// return
-		if (excludePath || isNotGetRequest) {
-			return undefined;
-		} else {
+		if (includePath && isGetRequest) {
 			return httpAdapter.getRequestUrl(request);
+		} else {
+			return undefined;
 		}
 	}
 }
