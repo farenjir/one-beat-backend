@@ -24,21 +24,23 @@ export class UsersService {
 			throw new BadRequestException("4000");
 		}
 		const options: FindOneOptions<Users> = { where: _pickBy<object>({ id, email }, (isTruthy: any) => isTruthy) };
-		const user = await this.repo.findOne(options);
-		if (!user) {
-			throw new NotFoundException("4001");
-		}
-		return user;
+		return await this.repo.findOne(options);
 	}
 	// update
 	async updateById(id: number, attrs: Partial<Users>): Promise<Users> {
 		const user = await this.findBy(id);
+		if (!user) {
+			throw new NotFoundException("4001");
+		}
 		Object.assign(user, attrs);
 		return await this.repo.save(user);
 	}
 	// remove
 	async removeById(id: number): Promise<Users> {
 		const user = await this.findBy(id);
+		if (!user) {
+			throw new NotFoundException("4001");
+		}
 		return await this.repo.remove(user);
 	}
 }
