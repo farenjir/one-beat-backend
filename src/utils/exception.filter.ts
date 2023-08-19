@@ -46,6 +46,7 @@ const filterMessages = (stringCode: string | number) => {
 		4005: "File Not Found",
 		4006: "File type not support",
 		4007: "File size exceeds the allowed limit",
+		4008: "Parent not Found",
 		// default status http codes
 		100: "CONTINUE",
 		101: "SWITCHING_PROTOCOLS",

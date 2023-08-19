@@ -31,11 +31,7 @@ export class UploadService {
 		const options: FindOneOptions<Upload> = {
 			where: { id },
 		};
-		const file = await this.repo.findOne(options);
-		if (!file) {
-			throw new NotFoundException("4005");
-		}
-		return file;
+		return await this.repo.findOne(options);
 	}
 	// findMany
 	async findBy(query: UploadQueryDto): Promise<Upload[]> {
@@ -54,12 +50,18 @@ export class UploadService {
 	// update
 	async updateById(id: string, attrs: Partial<Upload>): Promise<Upload> {
 		const file = await this.findById(id);
+		if (!file) {
+			throw new NotFoundException("4005");
+		}
 		Object.assign(file, attrs);
 		return await this.repo.save(file);
 	}
 	// remove
 	async removeById(id: string): Promise<Upload> {
 		const file = await this.findById(id);
+		if (!file) {
+			throw new NotFoundException("4005");
+		}
 		return await this.repo.remove(file);
 	}
 }
