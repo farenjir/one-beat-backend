@@ -4,7 +4,8 @@ import { Expose } from "class-transformer";
 
 import { UploadEnum } from "./upload.configs";
 
-export { UploadDto, FileDto, UploadQueryDto, UploadResponse };
+export { UploadDto, FileDto, UploadQueryDto, UploadResponseDto };
+
 class UploadDto {
 	@ApiProperty({ name: "category", enumName: "UploadEnum", enum: UploadEnum })
 	@Expose()
@@ -33,7 +34,7 @@ class UploadQueryDto {
 	category?: UploadEnum;
 }
 
-class UploadResponse {
+class UploadResponseDto {
 	@ApiProperty()
 	@Expose()
 	@IsString()

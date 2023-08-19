@@ -1,8 +1,6 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiQuery, getSchemaPath } from "@nestjs/swagger";
 
-import { AppResponseDto } from "./response.filter";
-
 interface ClassConstructor<T = any> {
 	new (...args: any[]): T;
 }
@@ -37,7 +35,7 @@ export const SwaggerDocumentaryApi = (
 		ApiOkResponse({
 			schema: {
 				allOf: [
-					{ $ref: getSchemaPath(AppResponseDto) },
+					// { $ref: getSchemaPath(AppResponseDto) },
 					{
 						properties: {
 							code: {
