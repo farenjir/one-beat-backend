@@ -22,11 +22,7 @@ export class BaseService {
 		const options: FindOneOptions<Bases> = {
 			where: _pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),
 		};
-		const base = await this.repo.findOne(options);
-		if (!base) {
-			throw new NotFoundException("4004");
-		}
-		return base;
+		return await this.repo.findOne(options);
 	}
 	// findChildren
 	async findBaseChildren(parentId?: number, parentType?: string): Promise<Bases[]> {
@@ -34,6 +30,9 @@ export class BaseService {
 			throw new BadRequestException("4000");
 		}
 		const parent = await this.findBase(parentId, parentType);
+		if (!parent) {
+			throw new NotFoundException("4008");
+		}
 		const options: FindTreeOptions = { relations: ["parent", "children"] };
 		const { children } = await this.repo.findDescendantsTree(parent, options);
 		return children;
@@ -42,6 +41,9 @@ export class BaseService {
 	async create({ parentId, ...baseParams }: CreateBaseDto): Promise<Bases> {
 		if (parentId) {
 			const parent = await this.findBase(parentId);
+			if (!parent) {
+				throw new NotFoundException("4008");
+			}
 			Object.assign(baseParams, { parent });
 		}
 		const base = this.repo.create(baseParams);
@@ -50,8 +52,14 @@ export class BaseService {
 	// update
 	async updateById(id: number, { parentId, ...baseParams }: Partial<UpdateBaseDto>): Promise<Bases> {
 		const base = await this.findBase(id);
+		if (!base) {
+			throw new NotFoundException("4004");
+		}
 		if (parentId) {
 			const parent = await this.findBase(parentId);
+			if (!parent) {
+				throw new NotFoundException("4008");
+			}
 			Object.assign(baseParams, { parent });
 		}
 		Object.assign(base, baseParams);
@@ -60,6 +68,9 @@ export class BaseService {
 	// remove
 	async removeById(id: number): Promise<Bases> {
 		const base = await this.findBase(id);
+		if (!base) {
+			throw new NotFoundException("4004");
+		}
 		return await this.repo.remove(base);
 	}
 }
