@@ -8,8 +8,13 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	DeleteDateColumn,
+	JoinColumn,
+	ManyToOne,
 } from "typeorm";
+
 import { Role } from "guard/guard.decorator";
+
+import { Bases } from "modules/base/base.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -38,6 +43,11 @@ export class Users extends DefaultEntity {
 		default: [Role.User],
 	})
 	roles!: Role[];
+
+	// relations
+	@ManyToOne(() => Bases)
+	@JoinColumn()
+	gender: Bases;
 
 	// logs
 	@AfterInsert()

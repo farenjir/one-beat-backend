@@ -1,11 +1,14 @@
-import { IsArray, IsEmail, IsOptional, IsString } from "class-validator";
-import { Expose } from "class-transformer";
+import { IsArray, IsEmail, IsIn, IsInt, IsObject, IsOptional, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { Exclude, Expose } from "class-transformer";
 
 import { Role } from "guard/guard.decorator";
-import { ApiProperty } from "@nestjs/swagger";
 
-export { CreateUserDto, UpdateUserDto, UserDto, UserExtraDto };
+import { Bases } from "modules/base/base.entity";
 
+export { UpdateUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto };
+
+// *** params
 class UserDto {
 	@ApiProperty()
 	@Expose()
@@ -21,17 +24,18 @@ class UserDto {
 	@Expose()
 	@IsOptional()
 	roles?: Role[];
+	@Expose()
+	@IsOptional()
+	gender?: Bases;
 }
-
-class CreateUserDto {
-	@ApiProperty({ default: "test@test.com" })
+class CreateSaveUserDto {
 	@IsEmail()
 	email: string;
-	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
 	password: string;
+	@IsObject()
+	genderId: number;
 }
-
 class UpdateUserDto {
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
@@ -49,12 +53,16 @@ class UpdateUserDto {
 		default: [Role.User],
 	})
 	roles?: Role[];
+	@ApiProperty({ default: 0 })
+	@IsInt()
+	@IsOptional()
+	genderId?: number;
 }
 
-class UserExtraDto {
-	@IsString()
-	@IsOptional()
-	token?: string;
-	@IsOptional()
-	cookieOptions?: object;
+// *** response
+class UserIgnoredDto {
+	@Exclude()
+	password: string;
+	@Exclude()
+	deletedAt: Date;
 }

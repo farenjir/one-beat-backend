@@ -17,11 +17,12 @@ import { LoggerModule } from "modules/log/logger.module";
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
-import { Upload } from "modules/upload/upload.entity";
-import { UploadModule } from "modules/upload/uploads.module";
-
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
+import { AuthModule } from "modules/auth/auth.module";
+
+import { Upload } from "modules/upload/upload.entity";
+import { UploadModule } from "modules/upload/uploads.module";
 
 @Module({
 	imports: [
@@ -72,8 +73,9 @@ import { UsersModule } from "modules/user/user.module";
 		// app modules
 		LoggerModule,
 		BasesModule,
-		UploadModule,
 		UsersModule,
+		AuthModule,
+		UploadModule,
 	],
 	controllers: [AppController],
 	providers: [
