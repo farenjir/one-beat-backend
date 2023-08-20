@@ -4,9 +4,12 @@ import { JwtService } from "@nestjs/jwt";
 
 import { randomBytes, scrypt } from "crypto";
 
-import { UserExtraDto, UserDto } from "./user.dto";
-import { UsersService } from "./user.service";
-import { Users } from "./user.entity";
+import { BaseService } from "modules/base/bases.service";
+
+import { UserDto } from "modules/user/user.dto";
+import { UsersService } from "modules/user/user.service";
+
+import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
 
 export const cookieOptions = {
 	path: "/",
@@ -29,33 +32,36 @@ export async function hashPassword(password: string, salt: string): Promise<stri
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService, private jwtService: JwtService, private config: ConfigService) {}
+	constructor(
+		private usersService: UsersService,
+		private baseService: BaseService,
+		private jwtService: JwtService,
+		private config: ConfigService,
+	) {}
 	// generateToken
-	async generateToken(user: Users): Promise<string> {
-		return this.jwtService.signAsync(
-			{ id: user.id, roles: user.roles },
-			{ secret: this.config.get<string>("JWT_KEY") },
-		);
+	async generateToken(user: UserDto): Promise<string> {
+		return this.jwtService.signAsync({ id: user.id, roles: user.roles }, { secret: this.config.get<string>("JWT_KEY") });
 	}
 	// signup
-	async signup(email: string, password: string): Promise<Users> {
-		const validationEmail = email.toLowerCase();
-		const user = await this.usersService.findBy(null, validationEmail);
+	async signup(userParams: AuthSignUpDto): Promise<UserDto> {
+		const { genderId, email, password, ...other } = userParams;
+		const user = await this.usersService.findBy(null, email);
 		if (user) {
 			throw new BadRequestException("4002");
 		}
+		const gender = await this.baseService.findBase(genderId);
 		// hash with add salt
 		const salt = randomBytes(16).toString("hex");
 		const hash = await hashPassword(password, salt);
 		// hashedPassword
 		const hashedPassword = `${salt}.${hash}`;
 		// return new user
-		return await this.usersService.create(validationEmail, hashedPassword);
+		return await this.usersService.create({ email, gender, password: hashedPassword });
 	}
 	// signin
-	async signin(email: string, password: string): Promise<UserDto & UserExtraDto> {
-		const validationEmail = email.toLowerCase();
-		const user = await this.usersService.findBy(null, validationEmail);
+	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
+		const { email, password } = userParams;
+		const user = await this.usersService.findBy(null, email);
 		// stored password
 		const [salt, storedHash] = user.password.split(".");
 		const hash = await hashPassword(password, salt);
