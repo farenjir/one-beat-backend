@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsIn, IsInt, IsObject, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsInt, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
@@ -33,7 +33,7 @@ class CreateSaveUserDto {
 	email: string;
 	@IsString()
 	password: string;
-	@IsObject()
+	@IsInt()
 	genderId: number;
 }
 class UpdateUserDto {
