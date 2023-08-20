@@ -27,7 +27,7 @@ export class UsersController {
 	// findAllUsers
 	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
 	@AppGuards(Role.Admin, Role.User)
-	@Get("all")
+	@Get("getAll")
 	async findAllUser(): Promise<AppResponseDto<UserDto>> {
 		const users: UserDto[] = await this.usersService.findUsers();
 		return appResponse(users);
