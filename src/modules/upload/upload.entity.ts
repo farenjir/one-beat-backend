@@ -18,19 +18,19 @@ export class Upload extends DefaultEntity {
 	id: string;
 
 	@Column()
-	userId: number;
+	userId!: number;
 
 	@Column()
-	name: string;
+	name!: string;
 
 	@Column({
 		type: "enum",
 		enum: UploadEnum,
 	})
-	category: UploadEnum;
+	category!: UploadEnum;
 
 	@Column()
-	type: string;
+	type!: string;
 
 	@IsOptional()
 	@Column({ default: "" })

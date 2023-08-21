@@ -14,7 +14,7 @@ import {
 
 import { Role } from "guard/guard.decorator";
 
-import { Bases } from "modules/base/base.entity";
+import { Profile } from "./profile/profile.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -45,9 +45,9 @@ export class Users extends DefaultEntity {
 	roles!: Role[];
 
 	// relations
-	@ManyToOne(() => Bases)
+	@ManyToOne(() => Profile)
 	@JoinColumn()
-	gender: Bases;
+	profile!: Profile;
 
 	// logs
 	@AfterInsert()

@@ -1,40 +1,36 @@
-import { IsArray, IsEmail, IsInt, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsObject, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose } from "class-transformer";
+import { Exclude } from "class-transformer";
 
 import { Role } from "guard/guard.decorator";
 
-import { Bases } from "modules/base/base.entity";
+import { UpdateProfileDto, ProfileDto, CreateSaveProfileDto} from "./profile/profile.dto";
 
 export { UpdateUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto };
 
 // *** params
 class UserDto {
 	@ApiProperty()
-	@Expose()
 	id: number;
 	@ApiProperty({ default: "test@test.com" })
-	@Expose()
 	email: string;
 	@ApiProperty({
 		name: "roles",
 		enum: Role,
 		default: [Role.User],
 	})
-	@Expose()
 	@IsOptional()
 	roles?: Role[];
-	@Expose()
 	@IsOptional()
-	gender?: Bases;
+	profile?: ProfileDto;
 }
 class CreateSaveUserDto {
 	@IsEmail()
 	email: string;
 	@IsString()
 	password: string;
-	@IsInt()
-	genderId: number;
+	@IsObject()
+	profile?: CreateSaveProfileDto;
 }
 class UpdateUserDto {
 	@ApiProperty({ default: "test@test.com" })
@@ -53,10 +49,10 @@ class UpdateUserDto {
 		default: [Role.User],
 	})
 	roles?: Role[];
-	@ApiProperty({ default: 0 })
-	@IsInt()
+	@ApiProperty({ default: {} })
+	@IsObject()
 	@IsOptional()
-	genderId?: number;
+	profile?: UpdateProfileDto;
 }
 
 // *** response

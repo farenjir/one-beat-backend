@@ -5,30 +5,27 @@ import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 import { pickBy as _pickBy } from "lodash";
 import { hashPassword } from "modules/auth/auth.configs";
 
-import { BaseService } from "modules/base/bases.service";
+import { ProfileService } from "./profile/profile.service";
 
 import { Users } from "./user.entity";
 import { CreateSaveUserDto, UpdateUserDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
-	constructor(
-		@InjectRepository(Users) private repo: Repository<Users>,
-		private baseService: BaseService,
-	) {}
+	constructor(@InjectRepository(Users) private repo: Repository<Users>, private profileService: ProfileService) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
-		const { genderId, ...other } = params;
+		const { email, password, profile } = params;
 		// relations
-		const gender = await this.baseService.findBase(genderId);
+		const profileCreated = await this.profileService.create(profile);
 		// create
-		const user = this.repo.create({ gender, ...other });
+		const user = this.repo.create({ email, password, profile: profileCreated });
 		return this.repo.save(user);
 	}
 	// findAll
 	async findUsers(): Promise<Users[]> {
 		const options: FindManyOptions<Users> = {
-			relations: ["gender"],
+			relations: ["profile"],
 		};
 		return await this.repo.find(options);
 	}
@@ -39,7 +36,7 @@ export class UsersService {
 		}
 		const options: FindOneOptions<Users> = {
 			where: _pickBy<object>({ id, email }, (isTruthy: any) => isTruthy),
-			relations: ["gender"],
+			relations: ["profile"],
 		};
 		return await this.repo.findOne(options);
 	}
@@ -49,13 +46,17 @@ export class UsersService {
 		if (!user) {
 			throw new NotFoundException("4001");
 		}
-		const { genderId, password, ...other } = attrs;
+		const { profile: currentProfile } = user;
+		const { profile, password, ...other } = attrs;
 		// updatedRelations
-		const gender = genderId ? await this.baseService.findBase(genderId) : null;
+		const profileUpdated = await this.profileService.updateById(currentProfile.id, profile);
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
-		const relations = _pickBy<object>({ gender, password: hashedPassword }, (isTruthy: any) => isTruthy);
+		const relations = _pickBy<object>(
+			{ password: hashedPassword, profile: profileUpdated },
+			(isTruthy: any) => isTruthy,
+		);
 		// updateUserData
 		Object.assign(user, other, relations);
 		return await this.repo.save(user);
