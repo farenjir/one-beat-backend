@@ -1,4 +1,4 @@
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
 
@@ -32,7 +32,7 @@ export class ProfileService {
 		return await this.repo.find();
 	}
 	// findOne
-	async findBy(profileId: number): Promise<Profile> {
+	async findById(profileId: number): Promise<Profile> {
 		const options: FindOneOptions<Profile> = {
 			where: _pickBy<object>({ profileId }, (isTruthy: any) => isTruthy),
 			// relations: ["gender", "expertise", "skills", "favorites"],
@@ -41,22 +41,23 @@ export class ProfileService {
 	}
 	// update
 	async updateById(profileId: number, attrs: Partial<UpdateProfileDto>): Promise<Profile> {
-		const profile = await this.findBy(profileId);
+		const profile = await this.findById(profileId);
 		if (!profile) {
 			throw new NotFoundException("4001");
 		}
-		const { genderId, ...other } = attrs;
+		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = attrs;
 		// updatedRelations
-		const gender = genderId ? await this.baseService.findBase(genderId) : null;
-		// relations
-		const relations = _pickBy<object>({ gender }, (isTruthy: any) => isTruthy);
+		const gender = await this.baseService.findBase(genderId);
+		const expertise = await Promise.all(expertiseIds.map(async (id) => await this.baseService.findBase(id)));
+		const skills = await Promise.all(skillsIds.map(async (id) => await this.baseService.findBase(id)));
+		const favorites = await Promise.all(favoritesIds.map(async (id) => await this.baseService.findBase(id)));
 		// updateUserData
-		Object.assign(profile, other, relations);
+		Object.assign(profile, other, { gender, favorites, skills, expertise });
 		return await this.repo.save(profile);
 	}
 	// remove
 	async removeById(profileId: number): Promise<Profile> {
-		const profile = await this.findBy(profileId);
+		const profile = await this.findById(profileId);
 		if (!profile) {
 			throw new NotFoundException("4001");
 		}

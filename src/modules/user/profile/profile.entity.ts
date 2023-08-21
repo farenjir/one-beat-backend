@@ -26,7 +26,7 @@ export class Profile {
 
 	// *** relations params
 
-	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"],
+	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"], 
 	@JoinColumn()
 	@IsOptional()
 	gender: Bases;
@@ -34,15 +34,15 @@ export class Profile {
 	@ManyToMany(() => Bases, { eager: true, nullable: true })
 	@JoinTable()
 	@IsOptional()
-	expertise: Bases[];
+	expertise: Bases[] 
+
+	@ManyToMany(() => Bases, { eager: true,  nullable: true })
+	@JoinTable()
+	@IsOptional()
+	skills: Bases[] 
 
 	@ManyToMany(() => Bases, { eager: true, nullable: true })
 	@JoinTable()
 	@IsOptional()
-	skills: Bases[];
-
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
-	@IsOptional()
-	favorites: Bases[];
+	favorites: Bases[] 
 }
