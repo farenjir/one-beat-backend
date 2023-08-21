@@ -2,12 +2,12 @@ import { Controller, Body, Get, Patch, Delete, Param, ParseIntPipe, Req } from "
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { AppGuards, Role } from "guard/guard.decorator";
+import { AppGuards, Role } from "guards/guards.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { UpdateUserDto, UserDto, UserIgnoredDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UpdateWithProfileUserDto, UpdateUserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 
 @ApiTags("Users")
@@ -21,7 +21,7 @@ export class UsersController {
 	@Get("whoAmI")
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findBy(userId);
+		const currentUser: UserDto = await this.usersService.findBy({ id: userId }, true);
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
@@ -37,14 +37,36 @@ export class UsersController {
 	@AppGuards(Role.Admin, Role.User)
 	@Get("getBy/:id")
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
-		const user: UserDto = await this.usersService.findBy(id);
+		const user: UserDto = await this.usersService.findBy({ id });
 		return appResponse(user);
+	}
+	// profile
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@AppGuards()
+	@Get("userWithProfile/:id")
+	async findProfile(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
+		const userProfile: UserDto = await this.usersService.findUserWithProfile({ id });
+		return appResponse(userProfile);
+	}
+	// updateUser with profile
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@AppGuards(Role.Admin, Role.User)
+	@Patch("updateUserWithProfile/:id")
+	async updateUserWithProfileById(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UpdateWithProfileUserDto,
+	): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
+		const updatedUser: UserDto = await this.usersService.updateWithProfile(id, body);
+		return appResponse(updatedUser, "2005");
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
-	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
+	async updateUserById(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UpdateUserDto,
+	): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}

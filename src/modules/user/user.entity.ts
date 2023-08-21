@@ -9,12 +9,12 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
-	ManyToOne,
+	OneToOne,
 } from "typeorm";
 
-import { Role } from "guard/guard.decorator";
+import { Role } from "guards/guards.decorator";
 
-import { Bases } from "modules/base/base.entity";
+import { Profile } from "./profile/profile.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -30,7 +30,10 @@ export class Users extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ unique: true })
+	username!: string;
+
+	@Column({ unique: true })
 	email!: string;
 
 	@Column()
@@ -44,12 +47,14 @@ export class Users extends DefaultEntity {
 	})
 	roles!: Role[];
 
-	// relations
-	@ManyToOne(() => Bases)
-	@JoinColumn()
-	gender: Bases;
+	// *** relations
 
-	// logs
+	@OneToOne(() => Profile)
+	@JoinColumn()
+	profile!: Profile
+
+	// *** logs
+
 	@AfterInsert()
 	logInsert() {
 		console.log("Inserted User with id", this.id);

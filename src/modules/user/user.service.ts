@@ -1,71 +1,100 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
 
-import { pickBy as _pickBy } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 import { hashPassword } from "modules/auth/auth.configs";
 
-import { BaseService } from "modules/base/bases.service";
+import { ProfileService } from "./profile/profile.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, UpdateUserDto } from "./user.dto";
+import { CreateSaveUserDto, IUserQuery, UpdateWithProfileUserDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(Users) private repo: Repository<Users>,
-		private baseService: BaseService,
+		private profileService: ProfileService,
 	) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
-		const { genderId, ...other } = params;
-		// relations
-		const gender = await this.baseService.findBase(genderId);
 		// create
-		const user = this.repo.create({ gender, ...other });
+		const user = this.repo.create({ ...params, profile: {} });
 		return this.repo.save(user);
 	}
 	// findAll
 	async findUsers(): Promise<Users[]> {
-		const options: FindManyOptions<Users> = {
-			relations: ["gender"],
-		};
-		return await this.repo.find(options);
+		return await this.repo.find();
 	}
 	// findOne
-	async findBy(id?: number, email?: string): Promise<Users> {
-		if (!id && !email) {
+	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {
+		const options: FindOneOptions<Users> = {
+			where: _pickBy<object>({ id, email, username }, (isTruthy: any) => isTruthy),
+		};
+		if (_isEmpty(options.where)) {
 			throw new BadRequestException("4000");
 		}
-		const options: FindOneOptions<Users> = {
-			where: _pickBy<object>({ id, email }, (isTruthy: any) => isTruthy),
-			relations: ["gender"],
-		};
-		return await this.repo.findOne(options);
-	}
-	// update
-	async updateById(id: number, attrs: Partial<UpdateUserDto>): Promise<Users> {
-		const user = await this.findBy(id);
-		if (!user) {
+		const user = await this.repo.findOne(options);
+		if (checkValidUser && !user) {
 			throw new NotFoundException("4001");
 		}
-		const { genderId, password, ...other } = attrs;
-		// updatedRelations
-		const gender = genderId ? await this.baseService.findBase(genderId) : null;
+		return user;
+	}
+	// findOne with profile
+	async findUserWithProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
+		const options: FindOneOptions<Users> = {
+			where: { id },
+			relations: ["profile"],
+		};
+		if (_isEmpty(options.where)) {
+			throw new BadRequestException("4000");
+		}
+		const user = await this.repo.findOne(options);
+		if (checkValidUser && !user) {
+			throw new NotFoundException("4001");
+		}
+		return user;
+	}
+	// update
+	async updateById(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
+		const user = await this.findUserWithProfile({ id }, true);
+		// payload
+		const { profile, password, ...otherPayload } = attrs;
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
-		const relations = _pickBy<object>({ gender, password: hashedPassword }, (isTruthy: any) => isTruthy);
+		const relations = _pickBy<object>({ password: hashedPassword, profile }, (isTruthy: any) => isTruthy);
 		// updateUserData
-		Object.assign(user, other, relations);
+		Object.assign(user, otherPayload, relations);
+		return await this.repo.save(user);
+	}
+	// update with profile
+	async updateWithProfile(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
+		const user = await this.findUserWithProfile({ id }, true);
+		const profileId = user?.profile?.profileId;
+		// payload
+		const { profile, password, ...otherPayload } = attrs;
+		// updatedRelations
+		let profileUpdated;
+		if (profileId) {
+			profileUpdated = await this.profileService.updateById(profileId, profile);
+		} else {
+			profileUpdated = await this.profileService.create(profile);
+		}
+		// hashedPassword
+		const hashedPassword = password ? await hashPassword(password) : null;
+		// relations
+		const relations = _pickBy<object>(
+			{ password: hashedPassword, profile: profileUpdated },
+			(isTruthy: any) => isTruthy,
+		);
+		// updateUserData
+		Object.assign(user, otherPayload, relations);
 		return await this.repo.save(user);
 	}
 	// remove
 	async removeById(id: number): Promise<Users> {
-		const user = await this.findBy(id);
-		if (!user) {
-			throw new NotFoundException("4001");
-		}
+		const user = await this.findBy({ id }, true);
 		return await this.repo.remove(user);
 	}
 }

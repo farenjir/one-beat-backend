@@ -2,8 +2,8 @@ import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
@@ -17,9 +17,11 @@ import { LoggerModule } from "modules/log/logger.module";
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { AuthModule } from "modules/auth/auth.module";
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
-import { AuthModule } from "modules/auth/auth.module";
+import { Profile } from "modules/user/profile/profile.entity";
+import { ProfileModule } from "modules/user/profile/profile.module";
 
 import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
@@ -29,7 +31,6 @@ import { UploadModule } from "modules/upload/uploads.module";
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: `.env.${process.env.NODE_ENV}`,
-			// load: [configuration],
 			// expandVariables: true,
 		}),
 		TypeOrmModule.forRootAsync({
@@ -42,7 +43,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				// app entities
-				entities: [Bases, Upload, Users],
+				entities: [Bases, Users, Profile, Upload],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -73,8 +74,9 @@ import { UploadModule } from "modules/upload/uploads.module";
 		// app modules
 		LoggerModule,
 		BasesModule,
-		UsersModule,
 		AuthModule,
+		UsersModule,
+		ProfileModule,
 		UploadModule,
 	],
 	controllers: [AppController],

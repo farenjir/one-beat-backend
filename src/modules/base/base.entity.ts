@@ -1,27 +1,8 @@
-import {
-	Entity,
-	Tree,
-	Column,
-	PrimaryGeneratedColumn,
-	TreeChildren,
-	TreeParent,
-	CreateDateColumn,
-	UpdateDateColumn,
-	DeleteDateColumn,
-} from "typeorm";
-
-export abstract class DefaultEntity {
-	@CreateDateColumn()
-	createdAt?: Date;
-	@UpdateDateColumn()
-	updatedAt?: Date;
-	@DeleteDateColumn()
-	deletedAt?: Date;
-}
+import { Entity, Tree, Column, PrimaryGeneratedColumn, TreeChildren, TreeParent } from "typeorm";
 
 @Entity()
 @Tree("closure-table")
-export class Bases extends DefaultEntity {
+export class Bases {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -33,10 +14,11 @@ export class Bases extends DefaultEntity {
 
 	@Column()
 	nameFa!: string;
-	
+
 	// TreeChildren
 	@TreeChildren()
 	children: Bases[];
+
 	// TreeParent
 	@TreeParent()
 	parent: Bases;

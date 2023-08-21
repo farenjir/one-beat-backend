@@ -1,42 +1,44 @@
-import { IsArray, IsEmail, IsInt, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose } from "class-transformer";
+import { Exclude } from "class-transformer";
 
-import { Role } from "guard/guard.decorator";
+import { Role } from "guards/guards.decorator";
 
-import { Bases } from "modules/base/base.entity";
+import { CreateSaveProfileDto } from "./profile/profile.dto";
 
-export { UpdateUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto };
+export { UpdateWithProfileUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto, UpdateUserDto };
+export { IUserQuery };
 
 // *** params
 class UserDto {
 	@ApiProperty()
-	@Expose()
 	id: number;
+	@ApiProperty({ default: "test" })
+	@IsString()
+	username: string;
 	@ApiProperty({ default: "test@test.com" })
-	@Expose()
 	email: string;
 	@ApiProperty({
 		name: "roles",
 		enum: Role,
 		default: [Role.User],
 	})
-	@Expose()
 	@IsOptional()
 	roles?: Role[];
-	@Expose()
-	@IsOptional()
-	gender?: Bases;
 }
 class CreateSaveUserDto {
+	@IsString()
+	username: string;
 	@IsEmail()
 	email: string;
 	@IsString()
 	password: string;
-	@IsInt()
-	genderId: number;
 }
-class UpdateUserDto {
+class UpdateWithProfileUserDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@IsOptional()
+	username?: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	@IsOptional()
@@ -53,10 +55,31 @@ class UpdateUserDto {
 		default: [Role.User],
 	})
 	roles?: Role[];
-	@ApiProperty({ default: 0 })
-	@IsInt()
+	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
-	genderId?: number;
+	profile?: CreateSaveProfileDto;
+}
+class UpdateUserDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@IsOptional()
+	username?: string;
+	@ApiProperty({ default: "test@test.com" })
+	@IsEmail()
+	@IsOptional()
+	email?: string;
+	@ApiProperty({ default: "P@ssword123" })
+	@IsString()
+	@IsOptional()
+	password?: string;
+	@IsArray()
+	@IsOptional()
+	@ApiProperty({
+		name: "roles",
+		enum: Role,
+		default: [Role.User],
+	})
+	roles?: Role[];
 }
 
 // *** response
@@ -65,4 +88,11 @@ class UserIgnoredDto {
 	password: string;
 	@Exclude()
 	deletedAt: Date;
+}
+
+// *** interfaces
+interface IUserQuery {
+	id?: number;
+	username?: string;
+	email?: string;
 }

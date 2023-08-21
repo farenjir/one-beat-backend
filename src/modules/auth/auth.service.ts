@@ -7,34 +7,41 @@ import { UsersService } from "modules/user/user.service";
 
 import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
 import { hashPassword, cookieOptions, handleHashPassword } from "./auth.configs";
+import { pickBy as _pickBy } from "lodash";
 
 @Injectable()
 export class AuthService {
-	constructor(
-		private usersService: UsersService,
-		private jwtService: JwtService,
-		private config: ConfigService,
-	) {}
+	constructor(private usersService: UsersService, private jwtService: JwtService, private config: ConfigService) {}
 	// generateToken
 	async generateToken(user: UserDto): Promise<string> {
-		return this.jwtService.signAsync({ id: user.id, roles: user.roles }, { secret: this.config.get<string>("JWT_KEY") });
+		return this.jwtService.signAsync(
+			{ id: user.id, roles: user.roles },
+			{ secret: this.config.get<string>("JWT_KEY") },
+		);
 	}
 	// signup
 	async signup(userParams: AuthSignUpDto): Promise<UserDto> {
-		const { email, password, ...other } = userParams;
-		const user = await this.usersService.findBy(null, email);
-		if (user) {
+		const { email, password, username } = userParams;
+		// validation unique params
+		const emailInUse = await this.usersService.findBy({ email });
+		if (emailInUse) {
+			throw new BadRequestException("4002");
+		}
+		const usernameInUse = await this.usersService.findBy({ username });
+		if (usernameInUse) {
 			throw new BadRequestException("4002");
 		}
 		// hashedPassword
 		const hashedPassword = await hashPassword(password);
 		// return new user
-		return await this.usersService.create({ ...other, email, password: hashedPassword });
+		return await this.usersService.create({ username, email, password: hashedPassword });
 	}
 	// signin
 	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
-		const { email, password } = userParams;
-		const user = await this.usersService.findBy(null, email);
+		const { username, email, password } = userParams;
+		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		// get
+		const user = await this.usersService.findBy(params, true);
 		// stored password
 		const [salt, storedHash] = user.password.split(".");
 		const hash = await handleHashPassword(password, salt);

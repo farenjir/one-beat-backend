@@ -1,23 +1,21 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { AppGuards, Role } from "guard/guard.decorator";
+import { AppGuards, Role } from "guards/guards.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
-import { Serialize } from "utils/serialize.interceptor";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
 import { ValidationQueryPipe } from "./bases.pipe";
 import { BaseService } from "./bases.service";
 
 @ApiTags("Bases")
 @Controller("base")
-@Serialize(IgnoredBaseDto, false)
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
 	@SwaggerDocumentaryApi(BaseDto, { responseIsObject: false, useAuth: false })
-	@Get("all")
+	@Get("getAll")
 	async getBases(): Promise<AppResponseDto<BaseDto>> {
 		const bases: BaseDto[] = await this.typeService.findAllBases();
 		return appResponse(bases);
@@ -40,7 +38,9 @@ export class BaseController {
 		],
 	})
 	@Get("children")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
+	async getChildrenOfParent(
+		@Query(new ValidationQueryPipe()) query: BaseQuery = {},
+	): Promise<AppResponseDto<BaseDto>> {
 		const { parentId, parentType } = query;
 		const children: BaseDto[] = await this.typeService.findBaseChildren(parentId, parentType);
 		return appResponse(children);
@@ -79,7 +79,10 @@ export class BaseController {
 	@SwaggerDocumentaryApi(BaseDto)
 	// @AppGuards(Role.Admin)
 	@Patch("updateBy/:id")
-	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<AppResponseDto<BaseDto>> {
+	async updateBase(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UpdateBaseDto,
+	): Promise<AppResponseDto<BaseDto>> {
 		const updatedBase: BaseDto = await this.typeService.updateById(id, body);
 		return appResponse(updatedBase, "2008");
 	}
