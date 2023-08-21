@@ -40,25 +40,6 @@ export class UsersController {
 		const user: UserDto = await this.usersService.findBy({ id });
 		return appResponse(user);
 	}
-	// profile
-	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
-	@AppGuards()
-	@Get("userWithProfile/:id")
-	async findProfile(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
-		const userProfile: UserDto = await this.usersService.findUserWithProfile({ id });
-		return appResponse(userProfile);
-	}
-	// updateUser with profile
-	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Patch("updateUserWithProfile/:id")
-	async updateUserWithProfileById(
-		@Param("id", ParseIntPipe) id: number,
-		@Body() body: UpdateWithProfileUserDto,
-	): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
-		const updatedUser: UserDto = await this.usersService.updateWithProfile(id, body);
-		return appResponse(updatedUser, "2005");
-	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards(Role.Admin, Role.User)
@@ -78,5 +59,24 @@ export class UsersController {
 		const removedUser: UserDto = await this.usersService.removeById(id);
 		Object.assign(removedUser, { id });
 		return appResponse(removedUser, "2006");
+	}
+	// profile
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@AppGuards()
+	@Get("userWithProfileBy/:id")
+	async findProfile(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
+		const userProfile: UserDto = await this.usersService.findUserWithProfile({ id });
+		return appResponse(userProfile);
+	}
+	// updateUser with profile
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@AppGuards(Role.Admin, Role.User)
+	@Patch("updateUserWithProfileBy/:id")
+	async updateUserWithProfileById(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UpdateWithProfileUserDto,
+	): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
+		const updatedUser: UserDto = await this.usersService.updateWithProfile(id, body);
+		return appResponse(updatedUser, "2005");
 	}
 }
