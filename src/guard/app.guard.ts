@@ -15,10 +15,7 @@ declare module "express" {
 }
 @Injectable()
 export class AuthGuard implements CanActivate {
-	constructor(
-		private jwtService: JwtService,
-		private readonly config: ConfigService,
-	) {}
+	constructor(private jwtService: JwtService, private readonly config: ConfigService) {}
 	// canActivate
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
@@ -43,7 +40,10 @@ export class RolesGuard implements CanActivate {
 	constructor(private readonly reflector: Reflector) {}
 	// canActivate
 	canActivate(context: ExecutionContext): boolean {
-		const requiredRoles = this.reflector.getAllAndOverride<Role[]>(RoleKey, [context.getHandler(), context.getClass()]);
+		const requiredRoles = this.reflector.getAllAndOverride<Role[]>(RoleKey, [
+			context.getHandler(),
+			context.getClass(),
+		]);
 		if (!requiredRoles || !requiredRoles?.length) {
 			return true;
 		}

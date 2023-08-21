@@ -12,4 +12,5 @@ export enum Role {
 	User = "user",
 }
 
-export const AppGuards = (...roles: Role[]) => applyDecorators(SetMetadata(RoleKey, roles), UseGuards(AuthGuard, RolesGuard));
+export const AppGuards = (...roles: Role[]) =>
+	applyDecorators(SetMetadata(RoleKey, roles), UseGuards(AuthGuard, RolesGuard));
