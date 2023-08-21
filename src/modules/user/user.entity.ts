@@ -49,9 +49,6 @@ export class Users extends DefaultEntity {
 
 	// *** relations
 
-	@Column({ nullable: true })
-	profileId: number;
-
 	@OneToOne(() => Profile)
 	@JoinColumn()
 	profile!: Profile

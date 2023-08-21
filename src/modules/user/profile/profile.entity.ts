@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, Column, ManyToMany, JoinTable } from "typeorm";
 
 import { Bases } from "modules/base/base.entity";
 import { IsOptional } from "class-validator";
@@ -6,43 +6,43 @@ import { IsOptional } from "class-validator";
 @Entity()
 export class Profile {
 	@PrimaryGeneratedColumn()
-	id: number;
+	profileId: number;
 
 	@Column({ default: "" })
 	@IsOptional()
-	firstName?: string;
+	firstName: string;
 
 	@Column({ default: "" })
 	@IsOptional()
-	lastName?: string;
+	lastName: string;
 
 	@Column({ default: "" })
 	@IsOptional()
-	mobileNumber?: string;
+	mobileNumber: string;
 
-	@Column({ default: "" })
+	@Column({ default: 12 })
 	@IsOptional()
-	age?: number;
+	age: number;
 
 	// *** relations params
 
-	@ManyToOne(() => Bases, { eager: true })
+	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"],
 	@JoinColumn()
 	@IsOptional()
-	gender?: Bases;
+	gender: Bases;
 
-	@ManyToOne(() => Bases, { eager: true })
-	@JoinColumn()
+	@ManyToMany(() => Bases, { eager: true, nullable: true })
+	@JoinTable()
 	@IsOptional()
-	expertise?: Bases[];
+	expertise: Bases[];
 
-	@ManyToOne(() => Bases, { eager: true })
-	@JoinColumn()
+	@ManyToMany(() => Bases, { eager: true, nullable: true })
+	@JoinTable()
 	@IsOptional()
-	skills?: Bases[];
+	skills: Bases[];
 
-	@ManyToOne(() => Bases, { eager: true })
-	@JoinColumn()
+	@ManyToMany(() => Bases, { eager: true, nullable: true })
+	@JoinTable()
 	@IsOptional()
-	favorites?: Bases[];
+	favorites: Bases[];
 }

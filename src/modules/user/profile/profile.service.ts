@@ -11,34 +11,37 @@ import { UpdateProfileDto, CreateSaveProfileDto } from "./profile.dto";
 
 @Injectable()
 export class ProfileService {
-	constructor(@InjectRepository(Profile) private repo: Repository<Profile>, private baseService: BaseService) {}
+	constructor(
+		@InjectRepository(Profile) private repo: Repository<Profile>,
+		private baseService: BaseService,
+	) {}
 	// create
 	async create(params: CreateSaveProfileDto): Promise<Profile> {
-		const { genderId, ...other } = params;
+		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = params;
 		// relations
 		const gender = await this.baseService.findBase(genderId);
+		const expertise = await Promise.all(expertiseIds.map(async (id) => await this.baseService.findBase(id)));
+		const skills = await Promise.all(skillsIds.map(async (id) => await this.baseService.findBase(id)));
+		const favorites = await Promise.all(favoritesIds.map(async (id) => await this.baseService.findBase(id)));
 		// create
-		const profile = this.repo.create({ gender, ...other });
+		const profile = this.repo.create({ gender, expertise, skills, favorites, ...other });
 		return this.repo.save(profile);
 	}
 	// findAll
 	async find(): Promise<Profile[]> {
-		const options: FindManyOptions<Profile> = {
-			relations: ["gender"],
-		};
-		return await this.repo.find(options);
+		return await this.repo.find();
 	}
 	// findOne
-	async findBy(id: number): Promise<Profile> {
+	async findBy(profileId: number): Promise<Profile> {
 		const options: FindOneOptions<Profile> = {
-			where: _pickBy<object>({ id }, (isTruthy: any) => isTruthy),
-			relations: ["gender"],
+			where: _pickBy<object>({ profileId }, (isTruthy: any) => isTruthy),
+			// relations: ["gender", "expertise", "skills", "favorites"],
 		};
 		return await this.repo.findOne(options);
 	}
 	// update
-	async updateById(id: number, attrs: Partial<UpdateProfileDto>): Promise<Profile> {
-		const profile = await this.findBy(id);
+	async updateById(profileId: number, attrs: Partial<UpdateProfileDto>): Promise<Profile> {
+		const profile = await this.findBy(profileId);
 		if (!profile) {
 			throw new NotFoundException("4001");
 		}
@@ -52,8 +55,8 @@ export class ProfileService {
 		return await this.repo.save(profile);
 	}
 	// remove
-	async removeById(id: number): Promise<Profile> {
-		const profile = await this.findBy(id);
+	async removeById(profileId: number): Promise<Profile> {
+		const profile = await this.findBy(profileId);
 		if (!profile) {
 			throw new NotFoundException("4001");
 		}

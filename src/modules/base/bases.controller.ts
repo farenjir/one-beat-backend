@@ -15,7 +15,7 @@ export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
 	@SwaggerDocumentaryApi(BaseDto, { responseIsObject: false, useAuth: false })
-	@Get("all")
+	@Get("getAll")
 	async getBases(): Promise<AppResponseDto<BaseDto>> {
 		const bases: BaseDto[] = await this.typeService.findAllBases();
 		return appResponse(bases);

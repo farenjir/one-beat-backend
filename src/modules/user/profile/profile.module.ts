@@ -7,9 +7,12 @@ import { BaseService } from "modules/base/bases.service";
 
 import { Users } from "../user.entity";
 import { UsersService } from "../user.service";
+import { Profile } from "./profile.entity";
+import { ProfileService } from "./profile.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Users, Bases]), JwtModule],
-	providers: [UsersService, BaseService],
+	imports: [TypeOrmModule.forFeature([Profile, Users, Bases]), JwtModule],
+	controllers: [],
+	providers: [ProfileService, UsersService, BaseService],
 })
 export class ProfileModule {}

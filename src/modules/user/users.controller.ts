@@ -7,7 +7,7 @@ import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { UpdateUserDto, UserDto, UserIgnoredDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UpdateWithProfileUserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 
 @ApiTags("Users")
@@ -21,7 +21,7 @@ export class UsersController {
 	@Get("whoAmI")
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findBy({ id: userId });
+		const currentUser: UserDto = await this.usersService.findBy({ id: userId }, true);
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
@@ -41,21 +41,21 @@ export class UsersController {
 		return appResponse(user);
 	}
 	// profile
-	@SwaggerDocumentaryApi(UserDto)
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
 	@AppGuards()
-	@Get("profileBy/:id")
-	async findProfile(@Param("profileId", ParseIntPipe) profileId: number): Promise<AppResponseDto<UserDto>> {
-		const userProfile: UserDto = await this.usersService.findProfile({ id: profileId });
+	@Get("userWithProfile/:id")
+	async findProfile(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
+		const userProfile: UserDto = await this.usersService.findProfile({ id });
 		return appResponse(userProfile);
 	}
 	// updateUser
-	@SwaggerDocumentaryApi(UserDto)
+	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
 	async updateUserById(
 		@Param("id", ParseIntPipe) id: number,
-		@Body() body: UpdateUserDto,
-	): Promise<AppResponseDto<UserDto>> {
+		@Body() body: UpdateWithProfileUserDto,
+	): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}
