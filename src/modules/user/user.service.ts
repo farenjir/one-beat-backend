@@ -50,12 +50,14 @@ export class UsersService {
 			throw new NotFoundException("4001");
 		}
 		const { genderId, password, ...other } = attrs;
+		// updatedRelations
+		const gender = genderId ? await this.baseService.findBase(genderId) : null;
 		// hashedPassword
-		const hashedPassword = await hashPassword(password);
+		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
-		const gender = await this.baseService.findBase(genderId);
+		const relations = _pickBy<object>({ gender, password: hashedPassword }, (isTruthy: any) => isTruthy);
 		// updateUserData
-		Object.assign(user, other, { gender, password: hashedPassword });
+		Object.assign(user, other, relations);
 		return await this.repo.save(user);
 	}
 	// remove
