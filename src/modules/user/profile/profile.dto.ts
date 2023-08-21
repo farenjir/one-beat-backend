@@ -33,7 +33,7 @@ class CreateSaveProfileDto {
 }
 class ProfileDto extends CreateSaveProfileDto {
 	@ApiProperty()
-	profileId: number;
+	id: number;
 }
 
 class UpdateProfileDto {

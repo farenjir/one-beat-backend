@@ -71,7 +71,7 @@ export class UsersService {
 	// update with profile
 	async updateWithProfile(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
-		const profileId = user?.profile?.profileId;
+		const profileId = user?.profile?.id;
 		// payload
 		const { profile, password, ...otherPayload } = attrs;
 		// updatedRelations

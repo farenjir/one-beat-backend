@@ -6,7 +6,7 @@ import { IsOptional } from "class-validator";
 @Entity()
 export class Profile {
 	@PrimaryGeneratedColumn()
-	profileId: number;
+	id: number;
 
 	@Column({ default: "" })
 	@IsOptional()
