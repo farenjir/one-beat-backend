@@ -1,13 +1,12 @@
-import { IsArray, IsEmail, IsObject, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
 import { Role } from "guards/guards.decorator";
 
-import { CreateSaveProfileDto, UpdateProfileDto } from "./profile/profile.dto";
-import { Profile } from "./profile/profile.entity";
+import { CreateSaveProfileDto } from "./profile/profile.dto";
 
-export { UpdateWithProfileUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto };
+export { UpdateWithProfileUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto, UpdateUserDto };
 export { IUserQuery };
 
 // *** params
@@ -59,6 +58,28 @@ class UpdateWithProfileUserDto {
 	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
 	profile?: CreateSaveProfileDto;
+}
+class UpdateUserDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@IsOptional()
+	username?: string;
+	@ApiProperty({ default: "test@test.com" })
+	@IsEmail()
+	@IsOptional()
+	email?: string;
+	@ApiProperty({ default: "P@ssword123" })
+	@IsString()
+	@IsOptional()
+	password?: string;
+	@IsArray()
+	@IsOptional()
+	@ApiProperty({
+		name: "roles",
+		enum: Role,
+		default: [Role.User],
+	})
+	roles?: Role[];
 }
 
 // *** response

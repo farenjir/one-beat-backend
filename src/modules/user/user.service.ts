@@ -41,7 +41,7 @@ export class UsersService {
 		return user;
 	}
 	// findOne with profile
-	async findProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
+	async findUserWithProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
 			where: { id },
 			relations: ["profile"],
@@ -57,7 +57,20 @@ export class UsersService {
 	}
 	// update
 	async updateById(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
-		const user = await this.findProfile({ id }, true);
+		const user = await this.findUserWithProfile({ id }, true);
+		// payload
+		const { profile, password, ...otherPayload } = attrs;
+		// hashedPassword
+		const hashedPassword = password ? await hashPassword(password) : null;
+		// relations
+		const relations = _pickBy<object>({ password: hashedPassword, profile }, (isTruthy: any) => isTruthy);
+		// updateUserData
+		Object.assign(user, otherPayload, relations);
+		return await this.repo.save(user);
+	}
+	// update with profile
+	async updateWithProfile(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
+		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.profileId;
 		// payload
 		const { profile, password, ...otherPayload } = attrs;
