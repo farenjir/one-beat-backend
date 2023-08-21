@@ -34,12 +34,12 @@ export class Profile {
 	@ManyToOne(() => Bases, { eager: true })
 	@JoinColumn()
 	@IsOptional()
-	skills?: Bases[];
+	expertise?: Bases[];
 
 	@ManyToOne(() => Bases, { eager: true })
 	@JoinColumn()
 	@IsOptional()
-	expertise?: Bases[];
+	skills?: Bases[];
 
 	@ManyToOne(() => Bases, { eager: true })
 	@JoinColumn()
