@@ -4,14 +4,18 @@ import { Exclude } from "class-transformer";
 
 import { Role } from "guards/guards.decorator";
 
-import { UpdateProfileDto, ProfileDto, CreateSaveProfileDto} from "./profile/profile.dto";
+import { UpdateProfileDto, ProfileDto, CreateSaveProfileDto } from "./profile/profile.dto";
 
 export { UpdateUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto };
+export { IUserQuery };
 
 // *** params
 class UserDto {
 	@ApiProperty()
 	id: number;
+	@ApiProperty({ default: "test" })
+	@IsString()
+	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	email: string;
 	@ApiProperty({
@@ -25,6 +29,8 @@ class UserDto {
 	profile?: ProfileDto;
 }
 class CreateSaveUserDto {
+	@IsString()
+	username: string;
 	@IsEmail()
 	email: string;
 	@IsString()
@@ -33,6 +39,9 @@ class CreateSaveUserDto {
 	profile?: CreateSaveProfileDto;
 }
 class UpdateUserDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	@IsOptional()
@@ -61,4 +70,11 @@ class UserIgnoredDto {
 	password: string;
 	@Exclude()
 	deletedAt: Date;
+}
+
+// *** interfaces
+interface IUserQuery {
+	id?: number;
+	username?: string;
+	email?: string;
 }

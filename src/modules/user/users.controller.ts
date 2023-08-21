@@ -21,7 +21,7 @@ export class UsersController {
 	@Get("whoAmI")
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findBy(userId);
+		const currentUser: UserDto = await this.usersService.findBy({ id: userId });
 		return appResponse(currentUser, "2002");
 	}
 	// findAllUsers
@@ -37,14 +37,17 @@ export class UsersController {
 	@AppGuards(Role.Admin, Role.User)
 	@Get("getBy/:id")
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
-		const user: UserDto = await this.usersService.findBy(id);
+		const user: UserDto = await this.usersService.findBy({ id });
 		return appResponse(user);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
-	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
+	async updateUserById(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UpdateUserDto,
+	): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}

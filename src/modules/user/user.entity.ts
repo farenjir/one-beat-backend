@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
-	ManyToOne,
+	OneToOne,
 } from "typeorm";
 
 import { Role } from "guards/guards.decorator";
@@ -30,7 +30,10 @@ export class Users extends DefaultEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ unique: true })
+	username!: string;
+
+	@Column({ unique: true })
 	email!: string;
 
 	@Column()
@@ -45,7 +48,7 @@ export class Users extends DefaultEntity {
 	roles!: Role[];
 
 	// relations
-	@ManyToOne(() => Profile)
+	@OneToOne(() => Profile)
 	@JoinColumn()
 	profile!: Profile;
 

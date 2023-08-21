@@ -2,24 +2,24 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 
-import { pickBy as _pickBy } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 import { hashPassword } from "modules/auth/auth.configs";
 
 import { ProfileService } from "./profile/profile.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, UpdateUserDto } from "./user.dto";
+import { CreateSaveUserDto, IUserQuery, UpdateUserDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
 	constructor(@InjectRepository(Users) private repo: Repository<Users>, private profileService: ProfileService) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
-		const { email, password, profile } = params;
+		const { profile, ...accountInfo } = params;
 		// relations
 		const profileCreated = await this.profileService.create(profile);
 		// create
-		const user = this.repo.create({ email, password, profile: profileCreated });
+		const user = this.repo.create({ ...accountInfo, profile: profileCreated });
 		return this.repo.save(user);
 	}
 	// findAll
@@ -30,24 +30,26 @@ export class UsersService {
 		return await this.repo.find(options);
 	}
 	// findOne
-	async findBy(id?: number, email?: string): Promise<Users> {
-		if (!id && !email) {
-			throw new BadRequestException("4000");
-		}
+	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
-			where: _pickBy<object>({ id, email }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id, email, username }, (isTruthy: any) => isTruthy),
 			relations: ["profile"],
 		};
-		return await this.repo.findOne(options);
+		if (_isEmpty(options.where)) {
+			throw new BadRequestException("4000");
+		}
+		const user = await this.repo.findOne(options);
+		if (checkValidUser && !user) {
+			throw new NotFoundException("4001");
+		}
+		return user;
 	}
 	// update
 	async updateById(id: number, attrs: Partial<UpdateUserDto>): Promise<Users> {
-		const user = await this.findBy(id);
-		if (!user) {
-			throw new NotFoundException("4001");
-		}
+		const user = await this.findBy({ id }, true);
 		const { profile: currentProfile } = user;
-		const { profile, password, ...other } = attrs;
+		// payload
+		const { profile, password, ...otherPayload } = attrs;
 		// updatedRelations
 		const profileUpdated = await this.profileService.updateById(currentProfile.id, profile);
 		// hashedPassword
@@ -58,15 +60,12 @@ export class UsersService {
 			(isTruthy: any) => isTruthy,
 		);
 		// updateUserData
-		Object.assign(user, other, relations);
+		Object.assign(user, otherPayload, relations);
 		return await this.repo.save(user);
 	}
 	// remove
 	async removeById(id: number): Promise<Users> {
-		const user = await this.findBy(id);
-		if (!user) {
-			throw new NotFoundException("4001");
-		}
+		const user = await this.findBy({ id }, true);
 		return await this.repo.remove(user);
 	}
 }
