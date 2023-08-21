@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { AppGuards, Role } from "guard/guard.decorator";
+import { AppGuards, Role } from "guards/guards.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";

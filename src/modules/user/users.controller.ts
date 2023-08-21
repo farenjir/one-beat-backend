@@ -2,7 +2,7 @@ import { Controller, Body, Get, Patch, Delete, Param, ParseIntPipe, Req } from "
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { AppGuards, Role } from "guard/guard.decorator";
+import { AppGuards, Role } from "guards/guards.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";

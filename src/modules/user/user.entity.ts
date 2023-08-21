@@ -12,7 +12,7 @@ import {
 	ManyToOne,
 } from "typeorm";
 
-import { Role } from "guard/guard.decorator";
+import { Role } from "guards/guards.decorator";
 
 import { Profile } from "./profile/profile.entity";
 

@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { Role, RoleKey } from "./guard.decorator";
+import { Role, RoleKey } from "./guards.decorator";
 
 declare module "express" {
 	interface Request {

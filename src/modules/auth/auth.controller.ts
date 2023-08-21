@@ -2,7 +2,7 @@ import { Controller, Body, Post, Res, Req } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 
-import { AppGuards } from "guard/guard.decorator";
+import { AppGuards } from "guards/guards.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";

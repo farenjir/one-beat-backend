@@ -2,7 +2,7 @@ import { IsArray, IsEmail, IsObject, IsOptional, IsString } from "class-validato
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
-import { Role } from "guard/guard.decorator";
+import { Role } from "guards/guards.decorator";
 
 import { UpdateProfileDto, ProfileDto, CreateSaveProfileDto} from "./profile/profile.dto";
 
