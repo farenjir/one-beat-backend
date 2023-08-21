@@ -22,7 +22,7 @@ export class AuthController {
 	async signIn(@Body() body: SignInDto, @Res({ passthrough: true }) res: Response): Promise<AppResponseDto<UserDto>> {
 		const params = {
 			email: body?.email?.toLowerCase(),
-			username: body?.username,
+			username: body?.username?.toLowerCase(),
 			password: body.password,
 		};
 		const { token, cookieOptions, ...user }: UserDto & AuthExtraDto = await this.authService.signin(params);
@@ -35,7 +35,7 @@ export class AuthController {
 	async createUser(@Body() body: AuthSignUpDto): Promise<AppResponseDto<UserDto>> {
 		const params = {
 			email: body.email.toLowerCase(),
-			username: body.username,
+			username: body.username.toLowerCase(),
 			password: body.password,
 		};
 		const userCreated: UserDto = await this.authService.signup(params);

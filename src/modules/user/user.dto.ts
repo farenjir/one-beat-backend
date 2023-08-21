@@ -26,6 +26,8 @@ class UserDto {
 	@IsOptional()
 	roles?: Role[];
 	@IsOptional()
+	profileId?: number;
+	@IsOptional()
 	profile?: ProfileDto;
 }
 class CreateSaveUserDto {

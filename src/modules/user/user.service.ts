@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 import { hashPassword } from "modules/auth/auth.configs";
@@ -24,15 +24,26 @@ export class UsersService {
 	}
 	// findAll
 	async findUsers(): Promise<Users[]> {
-		const options: FindManyOptions<Users> = {
-			relations: ["profile"],
-		};
-		return await this.repo.find(options);
+		return await this.repo.find();
 	}
 	// findOne
 	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
 			where: _pickBy<object>({ id, email, username }, (isTruthy: any) => isTruthy),
+		};
+		if (_isEmpty(options.where)) {
+			throw new BadRequestException("4000");
+		}
+		const user = await this.repo.findOne(options);
+		if (checkValidUser && !user) {
+			throw new NotFoundException("4001");
+		}
+		return user;
+	}
+	// findOne with profile
+	async findProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
+		const options: FindOneOptions<Users> = {
+			where: { id },
 			relations: ["profile"],
 		};
 		if (_isEmpty(options.where)) {

@@ -40,6 +40,14 @@ export class UsersController {
 		const user: UserDto = await this.usersService.findBy({ id });
 		return appResponse(user);
 	}
+	// profile
+	@SwaggerDocumentaryApi(UserDto)
+	@AppGuards()
+	@Get("profileBy/:id")
+	async findProfile(@Param("profileId", ParseIntPipe) profileId: number): Promise<AppResponseDto<UserDto>> {
+		const userProfile: UserDto = await this.usersService.findProfile({ id: profileId });
+		return appResponse(userProfile);
+	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards(Role.Admin, Role.User)

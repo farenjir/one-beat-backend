@@ -47,12 +47,17 @@ export class Users extends DefaultEntity {
 	})
 	roles!: Role[];
 
-	// relations
+	// *** relations
+
+	@Column({ nullable: true })
+	profileId: number;
+
 	@OneToOne(() => Profile)
 	@JoinColumn()
-	profile!: Profile;
+	profile!: Profile
 
-	// logs
+	// *** logs
+
 	@AfterInsert()
 	logInsert() {
 		console.log("Inserted User with id", this.id);

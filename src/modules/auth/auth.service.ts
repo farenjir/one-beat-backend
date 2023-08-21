@@ -39,9 +39,9 @@ export class AuthService {
 	// signin
 	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
 		const { username, email, password } = userParams;
-		const query = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
 		// get
-		const user = await this.usersService.findBy(query, true);
+		const user = await this.usersService.findBy(params, true);
 		// stored password
 		const [salt, storedHash] = user.password.split(".");
 		const hash = await handleHashPassword(password, salt);

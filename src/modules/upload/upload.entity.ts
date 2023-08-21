@@ -34,5 +34,5 @@ export class Upload extends DefaultEntity {
 
 	@IsOptional()
 	@Column({ default: "" })
-	description: string;
+	description?: string;
 }
