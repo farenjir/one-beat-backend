@@ -21,19 +21,19 @@ class CreateSaveProfileDto {
 	@Max(99)
 	age: number;
 	// *** relations params
-	@ApiProperty({ default: 0 })
+	@ApiProperty({ type: Number })
 	@IsInt()
 	@IsOptional()
 	genderId?: number;
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	expertiseIds?: number[];
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	skillsIds?: number[];
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	favoritesIds?: number[];
@@ -60,19 +60,19 @@ class UpdateProfileDto {
 	@Max(99)
 	age?: number;
 	// *** relations params
-	@ApiProperty({ default: 0 })
+	@ApiProperty({ type: Number })
 	@IsInt()
 	@IsOptional()
 	genderId?: number;
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	expertiseIds?: number[];
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	skillsIds: number[];
-	@ApiProperty({ default: [] })
+	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
 	favoritesIds?: number[];
