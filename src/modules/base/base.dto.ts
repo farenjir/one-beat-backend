@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { Expose, Type, Exclude } from "class-transformer";
 
 export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto };

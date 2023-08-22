@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
@@ -8,23 +8,37 @@ export { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto };
 class SignInDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
+	@IsOptional()
+	@MaxLength(24)
+	@MinLength(4)
 	username?: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
+	@IsOptional()
+	@MaxLength(64)
+	@MinLength(5)
 	email?: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
+	@MaxLength(100)
+	@MinLength(8)
 	password: string;
 }
 class AuthSignUpDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
+	@MaxLength(24)
+	@MinLength(4)
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
+	@MaxLength(64)
+	@MinLength(5)
 	email: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
+	@MaxLength(100)
+	@MinLength(8)
 	password: string;
 }
 

@@ -12,7 +12,7 @@ export enum Role {
 	User = "user",
 }
 
-// const Roles = Reflector.createDecorator<string[]>()  // new syntax for RULES !
+// const Roles = Reflector.createDecorator<string[]>()  // new syntax in v.10.2 for RULES !
 
 export const AppGuards = (...roles: Role[]) =>
-	applyDecorators(UseGuards(AuthGuard, RolesGuard), SetMetadata(RoleKey, roles));
+	applyDecorators(SetMetadata(RoleKey, roles), UseGuards(AuthGuard, RolesGuard));
