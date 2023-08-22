@@ -7,7 +7,7 @@ import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { UserDto, UserIgnoredDto, UpdateWithProfileUserDto, UpdateUserDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UpdateProfileDto, UserProfileDto, UpdateUserDto } from "./user.dto";
 import { UsersService } from "./user.service";
 
 @ApiTags("Users")
@@ -41,13 +41,10 @@ export class UsersController {
 		return appResponse(user);
 	}
 	// updateUser
-	@SwaggerDocumentaryApi(UserDto)
+	@SwaggerDocumentaryApi(UpdateUserDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
-	async updateUserById(
-		@Param("id", ParseIntPipe) id: number,
-		@Body() body: UpdateUserDto,
-	): Promise<AppResponseDto<UserDto>> {
+	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
 		const updatedUser: UserDto = await this.usersService.updateById(id, body);
 		return appResponse(updatedUser, "2005");
 	}
@@ -61,22 +58,22 @@ export class UsersController {
 		return appResponse(removedUser, "2006");
 	}
 	// profile
-	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards()
-	@Get("userWithProfileBy/:id")
-	async findProfile(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
-		const userProfile: UserDto = await this.usersService.findUserWithProfile({ id });
+	@Get("userWithProfileBy/:userId")
+	async findProfile(@Param("userId", ParseIntPipe) userId: number): Promise<AppResponseDto<UserProfileDto>> {
+		const userProfile = await this.usersService.findUserWithProfile({ id: userId }, true);
 		return appResponse(userProfile);
 	}
 	// updateUser with profile
-	@SwaggerDocumentaryApi(UpdateWithProfileUserDto)
+	@SwaggerDocumentaryApi(UpdateProfileDto)
 	@AppGuards(Role.Admin, Role.User)
-	@Patch("updateUserWithProfileBy/:id")
+	@Patch("updateProfileBy/:userId")
 	async updateUserWithProfileById(
-		@Param("id", ParseIntPipe) id: number,
-		@Body() body: UpdateWithProfileUserDto,
-	): Promise<AppResponseDto<UpdateWithProfileUserDto>> {
-		const updatedUser: UserDto = await this.usersService.updateWithProfile(id, body);
+		@Param("userId", ParseIntPipe) userId: number,
+		@Body() body: UpdateProfileDto,
+	): Promise<AppResponseDto<UserDto>> {
+		const updatedUser: UserDto = await this.usersService.updateUserProfile(userId, body);
 		return appResponse(updatedUser, "2005");
 	}
 }

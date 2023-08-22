@@ -13,18 +13,15 @@ import { UpdateProfileDto, CreateSaveProfileDto } from "./profile.dto";
 export class ProfileService {
 	constructor(
 		@InjectRepository(Profile) private repo: Repository<Profile>,
-		private baseService: BaseService,
+		private readonly baseService: BaseService,
 	) {}
 	// create
 	async create(params: CreateSaveProfileDto): Promise<Profile> {
-		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = params;
 		// relations
-		const gender = await this.baseService.findBase(genderId);
-		const expertise = await Promise.all(expertiseIds.map(async (id) => await this.baseService.findBase(id)));
-		const skills = await Promise.all(skillsIds.map(async (id) => await this.baseService.findBase(id)));
-		const favorites = await Promise.all(favoritesIds.map(async (id) => await this.baseService.findBase(id)));
+		const { gender, expertise, skills, favorites, ...profileData }: Partial<Profile> =
+			await this.getRelationsParams(params);
 		// create
-		const profile = this.repo.create({ gender, expertise, skills, favorites, ...other });
+		const profile = this.repo.create({ gender, expertise, skills, favorites, ...profileData });
 		return this.repo.save(profile);
 	}
 	// findAll
@@ -45,14 +42,11 @@ export class ProfileService {
 		if (!profile) {
 			throw new NotFoundException("4001");
 		}
-		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = attrs;
 		// updatedRelations
-		const gender = await this.baseService.findBase(genderId);
-		const expertise = await Promise.all(expertiseIds.map(async (id) => await this.baseService.findBase(id)));
-		const skills = await Promise.all(skillsIds.map(async (id) => await this.baseService.findBase(id)));
-		const favorites = await Promise.all(favoritesIds.map(async (id) => await this.baseService.findBase(id)));
+		const { gender, expertise, skills, favorites, ...profileData }: Partial<Profile> =
+			await this.getRelationsParams(attrs);
 		// updateUserData
-		Object.assign(profile, other, { gender, favorites, skills, expertise });
+		Object.assign(profile, profileData, { gender, favorites, skills, expertise });
 		return await this.repo.save(profile);
 	}
 	// remove
@@ -62,5 +56,19 @@ export class ProfileService {
 			throw new NotFoundException("4001");
 		}
 		return await this.repo.remove(profile);
+	}
+	// handles
+	private async getRelationsParams(params: CreateSaveProfileDto | Partial<UpdateProfileDto>): Promise<Partial<Profile>> {
+		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = params;
+		// findBases
+		const findBase = async (id: number) => await this.baseService.findBase(id);
+		const [gender, expertise, skills, favorites] = await Promise.all([
+			findBase(genderId),
+			Promise.all(expertiseIds.map(findBase)),
+			Promise.all(skillsIds.map(findBase)),
+			Promise.all(favoritesIds.map(findBase)),
+		]);
+		// return
+		return { gender, expertise, skills, favorites, ...other };
 	}
 }

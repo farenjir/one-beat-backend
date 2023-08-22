@@ -18,7 +18,7 @@ export const SwaggerDocumentaryApi = (
 	let queryArray = [];
 	let auth = [];
 	if (query?.length) {
-		queryArray = query.map((queryItem: object) => ApiQuery(queryItem));
+		queryArray = query.map(ApiQuery);
 	}
 	if (useAuth) {
 		auth = [ApiCookieAuth()];

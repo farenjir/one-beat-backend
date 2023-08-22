@@ -6,10 +6,10 @@ import { Role } from "guards/guards.decorator";
 
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 
-export { UpdateWithProfileUserDto, UserDto, UserIgnoredDto, CreateSaveUserDto, UpdateUserDto };
+export { UpdateProfileDto, UserDto, UserIgnoredDto, CreateSaveUserDto, UpdateUserDto, UserProfileDto };
 export { IUserQuery };
 
-// *** params
+// *** user params
 class UserDto {
 	@ApiProperty()
 	id: number;
@@ -34,31 +34,6 @@ class CreateSaveUserDto {
 	@IsString()
 	password: string;
 }
-class UpdateWithProfileUserDto {
-	@ApiProperty({ default: "test" })
-	@IsString()
-	@IsOptional()
-	username?: string;
-	@ApiProperty({ default: "test@test.com" })
-	@IsEmail()
-	@IsOptional()
-	email?: string;
-	@ApiProperty({ default: "P@ssword123" })
-	@IsString()
-	@IsOptional()
-	password?: string;
-	@IsArray()
-	@IsOptional()
-	@ApiProperty({
-		name: "roles",
-		enum: Role,
-		default: [Role.User],
-	})
-	roles?: Role[];
-	@ApiProperty({ default: CreateSaveProfileDto })
-	@IsOptional()
-	profile?: CreateSaveProfileDto;
-}
 class UpdateUserDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
@@ -80,6 +55,18 @@ class UpdateUserDto {
 		default: [Role.User],
 	})
 	roles?: Role[];
+}
+
+// *** profile
+class UserProfileDto extends UserDto {
+	@ApiProperty({ default: CreateSaveProfileDto })
+	@IsOptional()
+	profile: CreateSaveProfileDto;
+}
+class UpdateProfileDto {
+	@ApiProperty({ default: CreateSaveProfileDto })
+	@IsOptional()
+	profile: CreateSaveProfileDto;
 }
 
 // *** response
