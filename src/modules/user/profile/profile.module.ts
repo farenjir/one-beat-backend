@@ -12,7 +12,6 @@ import { ProfileService } from "./profile.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([Profile, Users, Bases]), JwtModule],
-	controllers: [],
 	providers: [ProfileService, UsersService, BaseService],
 })
 export class ProfileModule {}

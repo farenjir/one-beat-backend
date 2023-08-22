@@ -8,14 +8,11 @@ import { hashPassword } from "modules/auth/auth.configs";
 import { ProfileService } from "./profile/profile.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, IUserQuery, UpdateWithProfileUserDto } from "./user.dto";
+import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UpdateUserDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
-	constructor(
-		@InjectRepository(Users) private repo: Repository<Users>,
-		private profileService: ProfileService,
-	) {}
+	constructor(@InjectRepository(Users) private repo: Repository<Users>, private profileService: ProfileService) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
 		// create
@@ -56,40 +53,31 @@ export class UsersService {
 		return user;
 	}
 	// update
-	async updateById(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
+	async updateById(id: number, attrs: Partial<UpdateUserDto>): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		// payload
-		const { profile, password, ...otherPayload } = attrs;
-		// hashedPassword
-		const hashedPassword = password ? await hashPassword(password) : null;
-		// relations
-		const relations = _pickBy<object>({ password: hashedPassword, profile }, (isTruthy: any) => isTruthy);
-		// updateUserData
-		Object.assign(user, otherPayload, relations);
-		return await this.repo.save(user);
-	}
-	// update with profile
-	async updateWithProfile(id: number, attrs: Partial<UpdateWithProfileUserDto>): Promise<Users> {
-		const user = await this.findUserWithProfile({ id }, true);
-		const profileId = user?.profile?.id;
-		// payload
-		const { profile, password, ...otherPayload } = attrs;
-		// updatedRelations
-		let profileUpdated;
-		if (profileId) {
-			profileUpdated = await this.profileService.updateById(profileId, profile);
-		} else {
-			profileUpdated = await this.profileService.create(profile);
-		}
+		const { password, roles, email, username } = attrs;
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
 		const relations = _pickBy<object>(
-			{ password: hashedPassword, profile: profileUpdated },
+			{ password: hashedPassword, roles, email, username },
 			(isTruthy: any) => isTruthy,
 		);
 		// updateUserData
-		Object.assign(user, otherPayload, relations);
+		Object.assign(user, relations);
+		return await this.repo.save(user);
+	}
+	// update with profile
+	async updateUserProfile(id: number, { profile }: Partial<UpdateProfileDto>): Promise<Users> {
+		const user = await this.findUserWithProfile({ id }, true);
+		const profileId = user?.profile?.id;
+		// updatedProfile
+		const profileUpdated = profileId
+			? await this.profileService.updateById(profileId, profile)
+			: await this.profileService.create(profile);
+		// updateUserData
+		Object.assign(user, { profile: profileUpdated });
 		return await this.repo.save(user);
 	}
 	// remove

@@ -4,7 +4,7 @@
 	"semi": true,
 	"singleQuote": false,
 	"endOfLine": "lf",
-	"printWidth": 120,
+	"printWidth": 125,
 	"bracketSpacing": true,
 	"useTabs": true,
 	"ignored": false,
