@@ -9,7 +9,6 @@ import { BaseService } from "modules/base/bases.service";
 import { Profile } from "./profile.entity";
 import { UpdateProfileDto, CreateSaveProfileDto } from "./profile.dto";
 
-
 @Injectable()
 export class ProfileService {
 	constructor(
@@ -19,7 +18,8 @@ export class ProfileService {
 	// create
 	async create(params: CreateSaveProfileDto): Promise<Profile> {
 		// relations
-		const {gender,expertise,skills,favorites,...profileData}:Partial<Profile> = await this.getRelationsParams(params)
+		const { gender, expertise, skills, favorites, ...profileData }: Partial<Profile> =
+			await this.getRelationsParams(params);
 		// create
 		const profile = this.repo.create({ gender, expertise, skills, favorites, ...profileData });
 		return this.repo.save(profile);
@@ -43,7 +43,8 @@ export class ProfileService {
 			throw new NotFoundException("4001");
 		}
 		// updatedRelations
-	const {gender,expertise,skills,favorites,...profileData}:Partial<Profile> = await this.getRelationsParams(attrs)
+		const { gender, expertise, skills, favorites, ...profileData }: Partial<Profile> =
+			await this.getRelationsParams(attrs);
 		// updateUserData
 		Object.assign(profile, profileData, { gender, favorites, skills, expertise });
 		return await this.repo.save(profile);
@@ -60,7 +61,7 @@ export class ProfileService {
 	private async getRelationsParams(params: CreateSaveProfileDto | Partial<UpdateProfileDto>): Promise<Partial<Profile>> {
 		const { genderId, expertiseIds, skillsIds, favoritesIds, ...other } = params;
 		// findBases
-	  const findBase= async (id:number) => await this.baseService.findBase(id)
+		const findBase = async (id: number) => await this.baseService.findBase(id);
 		const [gender, expertise, skills, favorites] = await Promise.all([
 			findBase(genderId),
 			Promise.all(expertiseIds.map(findBase)),
@@ -70,5 +71,4 @@ export class ProfileService {
 		// return
 		return { gender, expertise, skills, favorites, ...other };
 	}
-	
 }

@@ -16,12 +16,16 @@ export const SwaggerDocumentaryApi = (
 	{ responseIsObject = true, useAuth = true, query = [], description = "" }: IOptions = {},
 ) => {
 	let queryArray = [];
+	let auth = [];
 	if (query?.length) {
 		queryArray = query.map(ApiQuery);
 	}
+	if (useAuth) {
+		auth = [ApiCookieAuth()];
+	}
 	// return
 	return applyDecorators(
-		useAuth?ApiCookieAuth():null,
+		...auth,
 		...queryArray,
 		// ApiProperty({
 		// 	description,

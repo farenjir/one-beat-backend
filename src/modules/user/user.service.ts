@@ -12,7 +12,10 @@ import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UpdateUserDto } from "
 
 @Injectable()
 export class UsersService {
-	constructor(@InjectRepository(Users) private repo: Repository<Users>, private profileService: ProfileService) {}
+	constructor(
+		@InjectRepository(Users) private repo: Repository<Users>,
+		private profileService: ProfileService,
+	) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
 		// create
@@ -60,12 +63,9 @@ export class UsersService {
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
-		const relations = _pickBy<object>(
-			{ password: hashedPassword, roles, email, username },
-			(isTruthy: any) => isTruthy,
-		);
+		const updatedData = _pickBy<object>({ password: hashedPassword, roles, email, username }, (isTruthy: any) => isTruthy);
 		// updateUserData
-		Object.assign(user, relations);
+		Object.assign(user, updatedData);
 		return await this.repo.save(user);
 	}
 	// update with profile
