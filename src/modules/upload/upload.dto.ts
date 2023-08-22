@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { Expose } from "class-transformer";
 
 import { UploadEnum } from "./upload.configs";
@@ -14,11 +14,14 @@ class UploadDto {
 	@ApiProperty()
 	@Expose()
 	@IsString()
+	@MaxLength(24)
+	@MinLength(4)
 	type: string;
 	@ApiProperty()
 	@Expose()
 	@IsString()
 	@IsOptional()
+	@MaxLength(200)
 	description?: string;
 }
 
