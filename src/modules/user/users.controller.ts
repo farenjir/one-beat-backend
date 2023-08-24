@@ -7,7 +7,7 @@ import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { Serialize } from "utils/serialize.interceptor";
 
-import { UserDto, UserIgnoredDto, UpdateProfileDto, UserProfileDto, UpdateUserDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 import { UsersService } from "./user.service";
 
 @ApiTags("Users")
@@ -21,59 +21,61 @@ export class UsersController {
 	@Get("whoAmI")
 	async whoAmI(@Req() req: Request): Promise<AppResponseDto<UserDto>> {
 		const userId = req.user.id;
-		const currentUser: UserDto = await this.usersService.findBy({ id: userId }, true);
+		const currentUser = await this.usersService.findBy({ id: userId }, true);
 		return appResponse(currentUser, "2002");
-	}
-	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
-	@AppGuards(Role.Admin, Role.User)
-	@Get("getAll")
-	async findAllUser(): Promise<AppResponseDto<UserDto>> {
-		const users: UserDto[] = await this.usersService.findUsers();
-		return appResponse(users);
-	}
-	// findUser
-	@SwaggerDocumentaryApi(UserDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Get("getBy/:id")
-	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
-		const user: UserDto = await this.usersService.findBy({ id });
-		return appResponse(user);
-	}
-	// updateUser
-	@SwaggerDocumentaryApi(UpdateUserDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Patch("updateBy/:id")
-	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateUserDto): Promise<AppResponseDto<UserDto>> {
-		const updatedUser: UserDto = await this.usersService.updateById(id, body);
-		return appResponse(updatedUser, "2005");
-	}
-	// removeUser
-	@SwaggerDocumentaryApi(UserDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Delete("deleteBy/:id")
-	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
-		const removedUser: UserDto = await this.usersService.removeById(id);
-		Object.assign(removedUser, { id });
-		return appResponse(removedUser, "2006");
 	}
 	// profile
 	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards()
-	@Get("userWithProfileBy/:userId")
-	async findProfile(@Param("userId", ParseIntPipe) userId: number): Promise<AppResponseDto<UserProfileDto>> {
+	@Get("userProfile")
+	async findProfile(@Req() req: Request): Promise<AppResponseDto<UserProfileDto>> {
+		const userId = req.user.id;
 		const userProfile = await this.usersService.findUserWithProfile({ id: userId }, true);
 		return appResponse(userProfile);
 	}
 	// updateUser with profile
 	@SwaggerDocumentaryApi(UpdateProfileDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Patch("updateProfileBy/:userId")
-	async updateUserWithProfileById(
-		@Param("userId", ParseIntPipe) userId: number,
-		@Body() body: UpdateProfileDto,
-	): Promise<AppResponseDto<UserDto>> {
-		const updatedUser: UserDto = await this.usersService.updateUserProfile(userId, body);
+	@AppGuards()
+	@Patch("updateUser")
+	async updateUserWithProfileById(@Req() req: Request, @Body() body: UpdateProfileDto): Promise<AppResponseDto<UserDto>> {
+		const userId = req.user.id;
+		const updatedUser = await this.usersService.updateUserProfile(userId, body);
 		return appResponse(updatedUser, "2005");
+	}
+	// findAllUsers
+	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
+	@AppGuards(Role.Admin)
+	@Get("getUsers")
+	async findAllUser(): Promise<AppResponseDto<UserDto>> {
+		const users: UserDto[] = await this.usersService.findUsers();
+		return appResponse(users);
+	}
+	// findUser
+	@SwaggerDocumentaryApi(UserProfileDto)
+	@AppGuards(Role.Admin, Role.User)
+	@Get("getBy/:id")
+	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserProfileDto>> {
+		const user: UserProfileDto = await this.usersService.findUserWithProfile({ id });
+		return appResponse(user);
+	}
+	// updateUser
+	@SwaggerDocumentaryApi(UserProfileDto)
+	@AppGuards(Role.Admin)
+	@Patch("updateBy/:id")
+	async updateUserById(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: UserProfileDto,
+	): Promise<AppResponseDto<UserProfileDto>> {
+		const updatedUser = await this.usersService.updateById(id, body);
+		return appResponse(updatedUser, "2005");
+	}
+	// removeUser
+	@SwaggerDocumentaryApi(UserDto)
+	@AppGuards(Role.Admin)
+	@Delete("deleteBy/:id")
+	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<UserDto>> {
+		const removedUser = await this.usersService.removeById(id);
+		Object.assign(removedUser, { id });
+		return appResponse(removedUser, "2006");
 	}
 }

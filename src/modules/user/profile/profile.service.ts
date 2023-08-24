@@ -31,7 +31,7 @@ export class ProfileService {
 	// findOne
 	async findById(profileId: number): Promise<Profile> {
 		const options: FindOneOptions<Profile> = {
-			where: _pickBy<object>({ profileId }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id: profileId }, (isTruthy: any) => isTruthy),
 			// relations: ["gender", "expertise", "skills", "favorites"],
 		};
 		return await this.repo.findOne(options);

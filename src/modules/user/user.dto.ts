@@ -5,8 +5,9 @@ import { Exclude } from "class-transformer";
 import { Role } from "guards/guards.decorator";
 
 import { CreateSaveProfileDto } from "./profile/profile.dto";
+import { UserKycDto } from "./kyc/kyc.dto";
 
-export { UpdateProfileDto, UserDto, UserIgnoredDto, CreateSaveUserDto, UpdateUserDto, UserProfileDto };
+export { UserDto, UserIgnoredDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto };
 export { IUserQuery };
 
 // *** user params
@@ -29,6 +30,9 @@ class UserDto {
 	})
 	@IsOptional()
 	roles?: Role[];
+	@ApiProperty({ default: UserKycDto })
+	@IsOptional()
+	userKyc: UserKycDto;
 }
 class CreateSaveUserDto {
 	@IsString()
@@ -44,25 +48,24 @@ class CreateSaveUserDto {
 	@MinLength(8)
 	password: string;
 }
-class UpdateUserDto {
+
+// *** profile
+class UserProfileDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@IsOptional()
 	@MaxLength(24)
 	@MinLength(4)
-	username?: string;
+	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@IsOptional()
 	@MaxLength(64)
 	@MinLength(5)
-	email?: string;
+	email: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@IsOptional()
 	@MaxLength(100)
 	@MinLength(8)
-	password?: string;
+	password: string;
 	@IsArray()
 	@IsOptional()
 	@ApiProperty({
@@ -71,18 +74,36 @@ class UpdateUserDto {
 		default: [Role.User],
 	})
 	roles?: Role[];
+	@ApiProperty({ default: UserKycDto })
+	@IsOptional()
+	userKyc?: UserKycDto;
+	@ApiProperty({ default: CreateSaveProfileDto })
+	@IsOptional()
+	profile?: CreateSaveProfileDto;
 }
 
-// *** profile
-class UserProfileDto extends UserDto {
-	@ApiProperty({ default: CreateSaveProfileDto })
-	@IsOptional()
-	profile: CreateSaveProfileDto;
-}
 class UpdateProfileDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@MaxLength(24)
+	@MinLength(4)
+	@IsOptional()
+	username?: string;
+	@ApiProperty({ default: "test@test.com" })
+	@IsEmail()
+	@MaxLength(64)
+	@MinLength(5)
+	@IsOptional()
+	email?: string;
+	@ApiProperty({ default: "P@ssword123" })
+	@IsString()
+	@MaxLength(100)
+	@MinLength(8)
+	@IsOptional()
+	password?: string;
 	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
-	profile: CreateSaveProfileDto;
+	profile?: CreateSaveProfileDto;
 }
 
 // *** response

@@ -24,6 +24,8 @@ import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
 import { Profile } from "modules/user/profile/profile.entity";
 import { ProfileModule } from "modules/user/profile/profile.module";
+import { UserKYC } from "modules/user/kyc/kyc.entity";
+import { UserKycModule } from "modules/user/kyc/kyc.module";
 
 import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
@@ -44,9 +46,9 @@ import { UploadModule } from "modules/upload/uploads.module";
 				port: config.get<number>("DB_PORT"),
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
-				logger:new CustomDBLoggerOnTypeORM(),
+				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities
-				entities: [Bases, Users, Profile, Upload],
+				entities: [Bases, Users, Profile, UserKYC, Upload],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -79,6 +81,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 		BasesModule,
 		AuthModule,
 		UsersModule,
+		UserKycModule,
 		ProfileModule,
 		UploadModule,
 	],
