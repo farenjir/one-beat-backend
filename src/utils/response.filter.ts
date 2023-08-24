@@ -35,6 +35,9 @@ const responseMessage = (statusCode: string) => {
 		2009: "File Uploaded",
 		2010: "File Updated",
 		2011: "File Deleted",
+		2012: "Version Added",
+		2013: "Version Updated",
+		2014: "Version Deleted",
 	};
 	// return
 	return messages[statusCode];
