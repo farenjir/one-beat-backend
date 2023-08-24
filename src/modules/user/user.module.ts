@@ -8,13 +8,16 @@ import { BaseService } from "modules/base/bases.service";
 import { Profile } from "./profile/profile.entity";
 import { ProfileService } from "./profile/profile.service";
 
+import { UserKYC } from "./kyc/kyc.entity";
+import { UserKycService } from "./kyc/kyc.service";
+
 import { Users } from "./user.entity";
 import { UsersService } from "./user.service";
 import { UsersController } from "./users.controller";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Users, Bases, Profile]), JwtModule],
+	imports: [TypeOrmModule.forFeature([Users, Bases, Profile, UserKYC]), JwtModule],
 	controllers: [UsersController],
-	providers: [UsersService, BaseService, ProfileService],
+	providers: [UsersService, BaseService, ProfileService, UserKycService],
 })
 export class UsersModule {}

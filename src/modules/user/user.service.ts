@@ -6,20 +6,23 @@ import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 import { hashPassword } from "modules/auth/auth.configs";
 
 import { ProfileService } from "./profile/profile.service";
+import { UserKycService } from "./kyc/kyc.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UpdateUserDto } from "./user.dto";
+import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UserProfileDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(Users) private repo: Repository<Users>,
 		private profileService: ProfileService,
+		private kycService: UserKycService,
 	) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
+		const userKyc = await this.kycService.create({ userKyc: true });
 		// create
-		const user = this.repo.create({ ...params, profile: {} });
+		const user = this.repo.create({ ...params, profile: {}, userKyc });
 		return this.repo.save(user);
 	}
 	// findAll
@@ -56,28 +59,44 @@ export class UsersService {
 		return user;
 	}
 	// update
-	async updateById(id: number, attrs: Partial<UpdateUserDto>): Promise<Users> {
+	async updateById(
+		id: number,
+		{ profile, username, email, password, roles, userKyc }: Partial<UserProfileDto>,
+	): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
-		// payload
-		const { password, roles, email, username } = attrs;
+		const profileId = user?.profile?.id;
+		// profile
+		const createOrUpdated = profileId
+			? await this.profileService.updateById(profileId, profile)
+			: await this.profileService.create(profile);
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations
-		const updatedData = _pickBy<object>({ password: hashedPassword, roles, email, username }, (isTruthy: any) => isTruthy);
+		const updatedData = _pickBy<object>(
+			{ password: hashedPassword, email, username, profile: createOrUpdated, userKyc, roles },
+			(isTruthy: any) => isTruthy,
+		);
 		// updateUserData
 		Object.assign(user, updatedData);
 		return await this.repo.save(user);
 	}
 	// update with profile
-	async updateUserProfile(id: number, { profile }: Partial<UpdateProfileDto>): Promise<Users> {
+	async updateUserProfile(id: number, { profile, username, email, password }: Partial<UpdateProfileDto>): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
-		// updatedProfile
-		const profileUpdated = profileId
+		// profile
+		const createOrUpdated = profileId
 			? await this.profileService.updateById(profileId, profile)
 			: await this.profileService.create(profile);
+		// hashedPassword
+		const hashedPassword = password ? await hashPassword(password) : null;
+		// relations
+		const updatedData = _pickBy<object>(
+			{ password: hashedPassword, email, username, profile: createOrUpdated },
+			(isTruthy: any) => isTruthy,
+		);
 		// updateUserData
-		Object.assign(user, { profile: profileUpdated });
+		Object.assign(user, updatedData);
 		return await this.repo.save(user);
 	}
 	// remove

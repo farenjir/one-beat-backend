@@ -1,3 +1,4 @@
+import { UserKYC } from "./kyc/kyc.entity";
 import {
 	Entity,
 	Column,
@@ -48,5 +49,9 @@ export class Users extends DefaultEntity {
 
 	@OneToOne(() => Profile)
 	@JoinColumn()
-	profile: Profile
+	profile: Profile;
+
+	@OneToOne(() => UserKYC, { eager: true })
+	@JoinColumn()
+	userKyc: UserKYC;
 }
