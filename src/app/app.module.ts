@@ -19,6 +19,9 @@ import { LoggerModule } from "modules/log/logger.module";
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { Version } from "modules/version/version.entity";
+import { VersionModule } from "modules/version/versions.module";
+
 import { AuthModule } from "modules/auth/auth.module";
 import { Users } from "modules/user/user.entity";
 import { UsersModule } from "modules/user/user.module";
@@ -48,7 +51,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 				password: config.get<string>("DB_PASS"),
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities
-				entities: [Bases, Users, Profile, UserKYC, Upload],
+				entities: [Bases, Version, Users, Profile, UserKYC, Upload],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -79,6 +82,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 		// app modules
 		LoggerModule,
 		BasesModule,
+		VersionModule,
 		AuthModule,
 		UsersModule,
 		UserKycModule,

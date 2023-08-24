@@ -19,18 +19,19 @@ export class UserKycService {
 		return await this.repo.find();
 	}
 	// findOne
-	async findById(kycId: number): Promise<UserKYC> {
+	async findById(kycId: number, isValidKyc: boolean = false): Promise<UserKYC> {
 		const options: FindOneOptions<UserKYC> = {
 			where: { id: kycId },
 		};
-		return await this.repo.findOne(options);
+		const kyc = await this.repo.findOne(options);
+		if (isValidKyc && !kyc) {
+			throw new NotFoundException("4010");
+		}
+		return kyc;
 	}
 	// update
 	async updateById(kycId: number, attrs: Partial<UserKYC> = {}): Promise<UserKYC> {
-		const kyc = await this.findById(kycId);
-		if (!kyc) {
-			throw new NotFoundException("4001");
-		}
+		const kyc = await this.findById(kycId, true);
 		const { userKyc, mobileKyc, emailKyc, producerKyc } = attrs;
 		// update
 		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, producerKyc });
@@ -38,10 +39,7 @@ export class UserKycService {
 	}
 	// remove
 	async removeById(kycId: number): Promise<UserKYC> {
-		const kyc = await this.findById(kycId);
-		if (!kyc) {
-			throw new NotFoundException("4001");
-		}
+		const kyc = await this.findById(kycId, true);
 		return await this.repo.remove(kyc);
 	}
 }
