@@ -1,11 +1,11 @@
 import { SetMetadata, UseGuards, applyDecorators } from "@nestjs/common";
 
-import { AuthGuard, RolesGuard } from "./app.guards";
+import { AuthGuard, RolesGuard } from "./app.guard";
 
 export const RoleKey = "roles";
 
 export enum Role {
-	Admin = "admin",
+	Admin = "sAdmin",
 	Editor = "editor",
 	Author = "author",
 	Producer = "producer",
