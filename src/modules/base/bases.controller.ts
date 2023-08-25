@@ -5,7 +5,7 @@ import { AppGuards, Role } from "guards/guards.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
 import { ValidationQueryPipe } from "./bases.pipe";
 import { BaseService } from "./bases.service";
 
@@ -38,9 +38,7 @@ export class BaseController {
 		],
 	})
 	@Get("children")
-	async getChildrenOfParent(
-		@Query(new ValidationQueryPipe()) query: BaseQuery = {},
-	): Promise<AppResponseDto<BaseDto>> {
+	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
 		const { parentId, parentType } = query;
 		const children: BaseDto[] = await this.typeService.findBaseChildren(parentId, parentType);
 		return appResponse(children);
@@ -64,26 +62,30 @@ export class BaseController {
 	@Get("getBase")
 	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
 		const { baseId, baseType } = query;
-		const base: BaseDto = await this.typeService.findBase(baseId, baseType);
+		const base = await this.typeService.findBase(baseId, baseType);
 		return appResponse(base);
 	}
 	// add new types
-	@SwaggerDocumentaryApi(BaseDto)
+	@SwaggerDocumentaryApi(CreateBaseDto)
 	// @AppGuards(Role.Admin)
 	@Post("addBase")
 	async addNewBase(@Body() body: CreateBaseDto): Promise<AppResponseDto<BaseDto>> {
-		const createdBase: BaseDto = await this.typeService.create(body);
+		const createdBase = await this.typeService.create(body);
+		return appResponse(createdBase, "2007");
+	}
+	@SwaggerDocumentaryApi(CreateBasesDto)
+	// @AppGuards(Role.Admin)
+	@Post("addBase/withChildren")
+	async addNewBaseWithChildren(@Body() body: CreateBasesDto): Promise<AppResponseDto<BaseDto>> {
+		const createdBase = await this.typeService.createWithChildren(body);
 		return appResponse(createdBase, "2007");
 	}
 	// update pre types
 	@SwaggerDocumentaryApi(BaseDto)
 	// @AppGuards(Role.Admin)
 	@Patch("updateBy/:id")
-	async updateBase(
-		@Param("id", ParseIntPipe) id: number,
-		@Body() body: UpdateBaseDto,
-	): Promise<AppResponseDto<BaseDto>> {
-		const updatedBase: BaseDto = await this.typeService.updateById(id, body);
+	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<AppResponseDto<BaseDto>> {
+		const updatedBase = await this.typeService.updateById(id, body);
 		return appResponse(updatedBase, "2008");
 	}
 	// delete types
@@ -91,7 +93,7 @@ export class BaseController {
 	@AppGuards(Role.Admin)
 	@Delete("deleteBy/:id")
 	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<BaseDto>> {
-		const deletedBase: BaseDto = await this.typeService.removeById(id);
+		const deletedBase = await this.typeService.removeById(id);
 		Object.assign(deletedBase, { id });
 		return appResponse(deletedBase, "2008");
 	}

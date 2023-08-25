@@ -7,7 +7,7 @@ import { CacheInterceptor } from "@nestjs/cache-manager";
 
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
-	private readonly includePaths: Array<string> = ["base"];
+	private readonly includePaths: Array<string> = ["base", "version"];
 	// trackBy
 	trackBy(context: ExecutionContext): string | undefined {
 		const request = context.switchToHttp().getRequest();

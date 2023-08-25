@@ -3,12 +3,12 @@ import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { Version } from "./version.entity";
-import { BaseController } from "./versions.controller";
-import { BaseService } from "./versions.service";
+import { VersionController } from "./versions.controller";
+import { VersionService } from "./versions.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([Version]), JwtModule],
-	controllers: [BaseController],
-	providers: [BaseService],
+	controllers: [VersionController],
+	providers: [VersionService],
 })
 export class VersionModule {}

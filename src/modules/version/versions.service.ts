@@ -6,7 +6,7 @@ import { Version } from "./version.entity";
 import { VersionCreateUpdateDto } from "./version.dto";
 
 @Injectable()
-export class BaseService {
+export class VersionService {
 	constructor(@InjectRepository(Version) private repo: Repository<Version>) {}
 	// findAll
 	async find(): Promise<Version[]> {
