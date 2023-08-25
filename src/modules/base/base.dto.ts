@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { Expose, Type, Exclude } from "class-transformer";
 
-export { BaseDto, CreateBaseDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto };
+export { BaseDto, CreateBaseDto, CreateBasesDto, UpdateBaseDto, BaseQuery, IgnoredBaseDto };
 
 class BaseDto {
 	@ApiProperty()
@@ -10,12 +10,18 @@ class BaseDto {
 	id: number;
 	@ApiProperty({ default: "type" })
 	@Expose()
+	@MaxLength(30)
+	@MinLength(1)
 	type: string;
 	@ApiProperty({ default: "Name" })
 	@Expose()
+	@MaxLength(30)
+	@MinLength(1)
 	name: string;
 	@ApiProperty({ default: "NameFa" })
 	@Expose()
+	@MaxLength(30)
+	@MinLength(1)
 	nameFa: string;
 	@Expose()
 	parent?: BaseDto;
@@ -30,13 +36,40 @@ class CreateBaseDto {
 	parentId: number;
 	@ApiProperty({ default: "type" })
 	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
 	type: string;
 	@ApiProperty({ default: "Name" })
 	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
 	name: string;
 	@ApiProperty({ default: "NameFa" })
 	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
 	nameFa: string;
+}
+
+class CreateBasesDto {
+	@ApiProperty({ default: "type" })
+	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
+	type: string;
+	@ApiProperty({ default: "Name" })
+	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
+	name: string;
+	@ApiProperty({ default: "NameFa" })
+	@IsString()
+	@MaxLength(30)
+	@MinLength(1)
+	nameFa: string;
+	@ApiProperty({ default: [CreateBaseDto] })
+	@IsArray()
+	children: CreateBaseDto[];
 }
 
 class UpdateBaseDto {
