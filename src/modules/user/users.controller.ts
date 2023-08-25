@@ -5,7 +5,7 @@ import { Request } from "express";
 import { AppGuards, Role } from "guards/guards.decorator";
 import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
 import { AppResponseDto, appResponse } from "utils/response.filter";
-import { Serialize } from "utils/serialize.interceptor";
+import { Serialize } from "global/serialize.interceptor";
 
 import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 import { UsersService } from "./user.service";

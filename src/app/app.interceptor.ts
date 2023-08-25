@@ -1,9 +1,9 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, RequestTimeoutException } from "@nestjs/common";
 
-import { Observable, throwError, TimeoutError } from "rxjs";
-import { catchError, timeout } from "rxjs/operators";
-
 import { CacheInterceptor } from "@nestjs/cache-manager";
+
+import { Observable, throwError, TimeoutError } from "rxjs";
+import { catchError, timeout, tap } from "rxjs/operators";
 
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
@@ -39,5 +39,15 @@ export class TimeoutInterceptor implements NestInterceptor {
 				return throwError(() => err);
 			}),
 		);
+	}
+}
+
+@Injectable()
+export class AppLoggingInterceptor implements NestInterceptor {
+	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+		// console.log("Before...", context.[_events]);
+
+		const now = Date.now();
+		return next.handle().pipe(tap(() => console.log(`After... ${Date.now() - now}ms`)));
 	}
 }

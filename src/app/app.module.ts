@@ -12,7 +12,7 @@ import { AppExceptionsFilter } from "../utils/exception.filter";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
-import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
+import { AppLoggingInterceptor, HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
 
 import { LoggerModule } from "modules/log/logger.module";
 
@@ -102,6 +102,10 @@ import { UploadModule } from "modules/upload/uploads.module";
 		// 	provide: APP_FILTER,
 		// 	useClass: AppExceptionsFilter,
 		// },
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: AppLoggingInterceptor,
+		},
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,
