@@ -6,6 +6,8 @@ import { get } from "lodash";
 
 import { getCode, getErrorMessage } from "./exception.error";
 
+// This is structure of ( @nestjs-exception-interceptor ) !
+
 @Catch()
 export class AppExceptionsFilter implements ExceptionFilter {
 	private readonly logger: Logger = new Logger(AppExceptionsFilter.name);
