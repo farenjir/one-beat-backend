@@ -112,7 +112,7 @@ export class AppLoggingInterceptor implements NestInterceptor {
 	public intercept(context: ExecutionContext, call$: CallHandler): Observable<unknown> {
 		const req: Request = context.switchToHttp().getRequest();
 		const { method, url, body, headers, user } = req;
-		const userId = `userId${user.id || 0}`;
+		const userId = `userId:${user?.id || 0}`;
 		const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${method} - ${url} - ${userId}`;
 		const message: string = `Incoming request - ${method} - ${url} - ${userId}`;
 		// logging
@@ -128,7 +128,7 @@ export class AppLoggingInterceptor implements NestInterceptor {
 	// *** handles
 	private logNext(body: unknown, req: Request): void {
 		const { method, url, user } = req;
-		const userId = `userId${user.id || 0}`;
+		const userId = `userId:${user?.id || 0}`;
 		const statusCode: number = req.res.statusCode;
 		const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${statusCode} - ${method} - ${url} - ${userId}`;
 		const message: string = `Outgoing response - ${statusCode} - ${method} - ${url} - ${userId}`;
@@ -137,7 +137,7 @@ export class AppLoggingInterceptor implements NestInterceptor {
 	}
 	private logError(error: Error, req: Request): void {
 		const { method, url, body, user } = req;
-		const userId = `userId${user.id || 0}`;
+		const userId = `userId:${user?.id || 0}`;
 		if (error instanceof HttpException) {
 			const statusCode: number = error.getStatus();
 			const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${statusCode} - ${method} - ${url} - ${userId}`;
