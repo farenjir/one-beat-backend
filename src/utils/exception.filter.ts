@@ -56,6 +56,7 @@ export class AppExceptionsFilter implements ExceptionFilter {
 			message: filterMessages(message) || message,
 			appCode: Number(message),
 			timestamp: new Date().toISOString(),
+			method: request.method,
 			path: request.url,
 		});
 	}
