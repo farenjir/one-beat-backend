@@ -98,10 +98,10 @@ import { UploadModule } from "modules/upload/uploads.module";
 				whitelist: true,
 			}),
 		},
-		// {
-		// 	provide: APP_FILTER,
-		// 	useClass: AppExceptionsFilter,
-		// },
+		{
+			provide: APP_FILTER,
+			useClass: AppExceptionsFilter,
+		},
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: AppLoggingInterceptor,

@@ -10,7 +10,7 @@ import {
 	OneToOne,
 } from "typeorm";
 
-import { Role } from "guards/guards.decorator";
+import { Role } from "global/guards.decorator";
 
 import { Profile } from "./profile/profile.entity";
 

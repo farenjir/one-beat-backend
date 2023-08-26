@@ -2,7 +2,7 @@ import { IsArray, IsEmail, IsOptional, IsString, MaxLength, MinLength } from "cl
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
-import { Role } from "guards/guards.decorator";
+import { Role } from "global/guards.decorator";
 
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
