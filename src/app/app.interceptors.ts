@@ -22,7 +22,7 @@ export interface ISerialize {
 }
 
 @Injectable()
-export class AppResponseTransformation<T> implements NestInterceptor<T, AppResponseDto<T>> {
+export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponseDto<T>> {
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
