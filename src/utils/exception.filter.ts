@@ -51,9 +51,12 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		}
 		// return response
 		response.status(status).send({
-			code,
-			message,
 			status,
+			code,
+			message: filterMessages(message) || message,
+			appCode: Number(message),
+			timestamp: new Date().toISOString(),
+			path: request.url,
 		});
 	}
 }
@@ -124,5 +127,5 @@ const filterMessages = (stringCode: string | number) => {
 		default: "Unknown_Server_Error",
 	};
 	// return
-	return messages[stringCode] || stringCode || messages.default;
+	return messages[stringCode] || messages.default;
 };
