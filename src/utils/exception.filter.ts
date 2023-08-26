@@ -1,37 +1,60 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from "@nestjs/common";
-import { HttpAdapterHost } from "@nestjs/core";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { HttpArgumentsHost } from "@nestjs/common/interfaces";
+
+import { Request, Response } from "express";
+import { get } from "lodash";
+
+import { getCode, getErrorMessage } from "./exception.error";
 
 @Catch()
 export class AppExceptionsFilter implements ExceptionFilter {
-	constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+	private readonly logger: Logger = new Logger(AppExceptionsFilter.name);
 	// catch
-	catch(exception: unknown, host: ArgumentsHost): void {
-		const ctx = host.switchToHttp();
-		const { httpAdapter } = this.httpAdapterHost;
-		// variables
-		let statusCode: number;
-		let message: string;
-		let code: string | number;
-		// init variables
+	public catch(exception: any, host: ArgumentsHost): void {
+		const ctx: HttpArgumentsHost = host.switchToHttp();
+		const request: Request = ctx.getRequest();
+		const response: Response = ctx.getResponse();
+		// options
+		let status: number = HttpStatus.INTERNAL_SERVER_ERROR;
+		let code: string = HttpStatus[HttpStatus.INTERNAL_SERVER_ERROR];
+		let message: string = "An internal server error occurred";
+		let exceptionStack: string = "";
+		// exception
 		if (exception instanceof HttpException) {
-			statusCode = exception.getStatus();
-			code = exception.message;
-			message = filterMessages(code);
-		} else {
-			statusCode = 500;
-			code = 500;
-			message = filterMessages(statusCode);
+			status = exception.getStatus();
+			code = getCode(exception.getResponse());
+			message = getErrorMessage(exception.getResponse());
+			exceptionStack = "stack" in exception ? exception.stack : "";
+		} else if (get(exception, "type") === "entity.too.large") {
+			status = HttpStatus.PAYLOAD_TOO_LARGE;
+			code = HttpStatus[HttpStatus.PAYLOAD_TOO_LARGE];
+			message = `
+							Your request entity size is too big for the server to process it:
+									- request size: ${get(exception, "length")};
+									- request limit: ${get(exception, "limit")}.`;
 		}
-		// responseBody
-		const responseBody = {
-			statusCode,
-			code: Number(code) || statusCode,
-			message,
-			timestamp: new Date().toISOString(),
-			path: httpAdapter.getRequestUrl(ctx.getRequest()),
-		};
+		// error and warning
+		if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+			this.logger.error(
+				{
+					message: `${status} [${request.method} ${request.url}] has thrown a critical error`,
+					headers: request.headers,
+				},
+				exceptionStack,
+			);
+		} else if (status >= HttpStatus.BAD_REQUEST) {
+			this.logger.warn({
+				message: `${status} [${request.method} ${request.url}] has thrown an HTTP client error`,
+				exceptionStack,
+				headers: request.headers,
+			});
+		}
 		// return response
-		httpAdapter.reply(ctx.getResponse(), responseBody, statusCode);
+		response.status(status).send({
+			code,
+			message,
+			status,
+		});
 	}
 }
 

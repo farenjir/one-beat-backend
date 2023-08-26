@@ -8,13 +8,17 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
 import { CustomDBLoggerOnTypeORM } from "utils/db.logger";
-import { AppExceptionsFilter } from "../utils/exception.filter";
+import { AppExceptionsFilter } from "utils/exception.filter";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
-import { HttpCacheInterceptor, TimeoutInterceptor } from "./app.interceptor";
-
-import { LoggerModule } from "modules/log/logger.module";
+import {
+	AppLoggingInterceptor,
+	AppResponseInterceptor,
+	HttpCacheInterceptor,
+	SerializeInterceptor,
+	TimeoutInterceptor,
+} from "./app.interceptors";
 
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
@@ -46,7 +50,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 				type: "postgres",
 				synchronize: true,
 				host: config.get<string>("DB_HOST"),
-				port: config.get<number>("DB_PORT"),
+				port: +config.get<number>("DB_PORT"),
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				logger: new CustomDBLoggerOnTypeORM(),
@@ -80,7 +84,6 @@ import { UploadModule } from "modules/upload/uploads.module";
 		// }),
 		ScheduleModule.forRoot(),
 		// app modules
-		LoggerModule,
 		BasesModule,
 		VersionModule,
 		AuthModule,
@@ -98,10 +101,22 @@ import { UploadModule } from "modules/upload/uploads.module";
 				whitelist: true,
 			}),
 		},
+		{
+			provide: APP_FILTER,
+			useClass: AppExceptionsFilter,
+		},
 		// {
-		// 	provide: APP_FILTER,
-		// 	useClass: AppExceptionsFilter,
+		// 	provide: APP_INTERCEPTOR,
+		// 	useClass: AppLoggingInterceptor,
 		// },
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: AppResponseInterceptor,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: SerializeInterceptor,
+		},
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpCacheInterceptor,

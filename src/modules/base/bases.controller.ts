@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { AppGuards, Role } from "guards/guards.decorator";
-import { AppResponseDto, appResponse } from "utils/response.filter";
-import { SwaggerDocumentaryApi } from "utils/swagger.decorator";
+import { AppGuards, Role } from "global/guards.decorator";
+import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 
 import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
 import { ValidationQueryPipe } from "./bases.pipe";
 import { BaseService } from "./bases.service";
+import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Bases")
 @Controller("base")
@@ -16,9 +16,9 @@ export class BaseController {
 	// get all types
 	@SwaggerDocumentaryApi(BaseDto, { responseIsObject: false, useAuth: false })
 	@Get("getAll")
-	async getBases(): Promise<AppResponseDto<BaseDto>> {
-		const bases: BaseDto[] = await this.typeService.findAllBases();
-		return appResponse(bases);
+	@ResponseMessage("")
+	async getBases(): Promise<BaseDto[]> {
+		return await this.typeService.findAllBases();
 	}
 	// get children of type
 	@SwaggerDocumentaryApi(BaseDto, {
@@ -38,10 +38,11 @@ export class BaseController {
 		],
 	})
 	@Get("children")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
-		const { parentId, parentType } = query;
-		const children: BaseDto[] = await this.typeService.findBaseChildren(parentId, parentType);
-		return appResponse(children);
+	@ResponseMessage("")
+	async getChildrenOfParent(
+		@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {},
+	): Promise<BaseDto[]> {
+		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// get one type
 	@SwaggerDocumentaryApi(BaseDto, {
@@ -60,41 +61,39 @@ export class BaseController {
 		],
 	})
 	@Get("getBase")
-	async getBase(@Query(new ValidationQueryPipe()) query: BaseQuery = {}): Promise<AppResponseDto<BaseDto>> {
-		const { baseId, baseType } = query;
-		const base = await this.typeService.findBase(baseId, baseType);
-		return appResponse(base);
+	@ResponseMessage("")
+	async getBase(@Query(new ValidationQueryPipe()) { baseId, baseType }: BaseQuery = {}): Promise<BaseDto> {
+		return await this.typeService.findBase(baseId, baseType);
 	}
 	// add new types
 	@SwaggerDocumentaryApi(CreateBaseDto)
-	// @AppGuards(Role.Admin)
+	@AppGuards(Role.Admin)
 	@Post("addBase")
-	async addNewBase(@Body() body: CreateBaseDto): Promise<AppResponseDto<BaseDto>> {
-		const createdBase = await this.typeService.create(body);
-		return appResponse(createdBase, "2007");
+	@ResponseMessage("2007")
+	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
+		return await this.typeService.create(body);
 	}
 	@SwaggerDocumentaryApi(CreateBasesDto)
-	// @AppGuards(Role.Admin)
+	@AppGuards(Role.Admin)
 	@Post("addBase/withChildren")
-	async addNewBaseWithChildren(@Body() body: CreateBasesDto): Promise<AppResponseDto<BaseDto>> {
-		const createdBase = await this.typeService.createWithChildren(body);
-		return appResponse(createdBase, "2007");
+	@ResponseMessage("2007")
+	async addNewBaseWithChildren(@Body() body: CreateBasesDto): Promise<BaseDto> {
+		return await this.typeService.createWithChildren(body);
 	}
 	// update pre types
 	@SwaggerDocumentaryApi(BaseDto)
-	// @AppGuards(Role.Admin)
+	@AppGuards(Role.Admin)
 	@Patch("updateBy/:id")
-	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<AppResponseDto<BaseDto>> {
-		const updatedBase = await this.typeService.updateById(id, body);
-		return appResponse(updatedBase, "2008");
+	@ResponseMessage("2008")
+	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
+		return await this.typeService.updateById(id, body);
 	}
 	// delete types
 	@SwaggerDocumentaryApi(BaseDto)
 	@AppGuards(Role.Admin)
 	@Delete("deleteBy/:id")
-	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<AppResponseDto<BaseDto>> {
-		const deletedBase = await this.typeService.removeById(id);
-		Object.assign(deletedBase, { id });
-		return appResponse(deletedBase, "2008");
+	@ResponseMessage("2008")
+	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<BaseDto> {
+		return await this.typeService.removeById(id);
 	}
 }
