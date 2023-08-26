@@ -8,7 +8,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
 import { CustomDBLoggerOnTypeORM } from "utils/db.logger";
-import { AppExceptionsFilter } from "../utils/exception.filter";
+import { AppExceptionsFilter } from "utils/exception.filter";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
@@ -52,7 +52,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 				type: "postgres",
 				synchronize: true,
 				host: config.get<string>("DB_HOST"),
-				port: config.get<number>("DB_PORT"),
+				port: +config.get<number>("DB_PORT"),
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
 				logger: new CustomDBLoggerOnTypeORM(),

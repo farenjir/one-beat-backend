@@ -1,23 +1,33 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, RequestTimeoutException } from "@nestjs/common";
+import {
+	Injectable,
+	NestInterceptor,
+	ExecutionContext,
+	CallHandler,
+	RequestTimeoutException,
+	Logger,
+	HttpException,
+	HttpStatus,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+
+import { Request, Response } from "express";
 
 import { CacheInterceptor } from "@nestjs/cache-manager";
+import { plainToClass } from "class-transformer";
 
 import { Observable, throwError, TimeoutError } from "rxjs";
 import { catchError, timeout, tap, map as rxMap } from "rxjs/operators";
-
-import { Reflector } from "@nestjs/core";
-import { plainToClass } from "class-transformer";
 
 import { ResponseKey } from "global/response.decorator";
 import { SerializeKey } from "global/serialize.decorator";
 
 import { appResponse, AppResponseDto } from "utils/response.filter";
 
-export interface ClassConstructor<T = any> {
+export interface IClassConstructor<T = any> {
 	new (...args: any[]): T;
 }
 export interface ISerialize {
-	dto: ClassConstructor;
+	dto: IClassConstructor | null;
 	exclude?: boolean;
 }
 
@@ -48,16 +58,6 @@ export class SerializeInterceptor implements NestInterceptor {
 }
 
 @Injectable()
-export class AppLoggingInterceptor implements NestInterceptor {
-	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-		// console.log("Before...", context.[_events]);
-
-		const now = Date.now();
-		return next.handle().pipe(tap(() => console.log(`After... ${Date.now() - now}ms`)));
-	}
-}
-
-@Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
 	private readonly includePaths: Array<string> = ["base", "version"];
 	// trackBy
@@ -82,7 +82,7 @@ export class HttpCacheInterceptor extends CacheInterceptor {
 @Injectable()
 export class TimeoutInterceptor implements NestInterceptor {
 	// intercept
-	intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
+	intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
 		return next.handle().pipe(
 			timeout(5000),
 			catchError((err) => {
@@ -92,5 +92,66 @@ export class TimeoutInterceptor implements NestInterceptor {
 				return throwError(() => err);
 			}),
 		);
+	}
+}
+
+@Injectable()
+// This is structure of ( @nestjs-logging-interceptor ) !
+export class AppLoggingInterceptor implements NestInterceptor {
+	private readonly ctxPrefix: string = AppLoggingInterceptor.name;
+	private readonly logger: Logger = new Logger(this.ctxPrefix);
+	// setUserPrefix
+	private userPrefix: string = "";
+	public setUserPrefix(prefix: string): void {
+		this.userPrefix = `${prefix} - `;
+	}
+	// intercept
+	public intercept(context: ExecutionContext, call$: CallHandler): Observable<unknown> {
+		const req: Request = context.switchToHttp().getRequest();
+		const { method, url, body, headers, user } = req;
+		const userId = `userId${user.id || 0}`;
+		const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${method} - ${url} - ${userId}`;
+		const message: string = `Incoming request - ${method} - ${url} - ${userId}`;
+		// logging
+		this.logger.log({ message, method, body, headers, user }, ctx);
+		// return
+		return call$.handle().pipe(
+			tap({
+				next: (val: unknown): void => this.logNext(val, req),
+				error: (err: Error): void => this.logError(err, req),
+			}),
+		);
+	}
+	// *** handles
+	private logNext(body: unknown, req: Request): void {
+		const { method, url, user } = req;
+		const userId = `userId${user.id || 0}`;
+		const statusCode: number = req.res.statusCode;
+		const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${statusCode} - ${method} - ${url} - ${userId}`;
+		const message: string = `Outgoing response - ${statusCode} - ${method} - ${url} - ${userId}`;
+		// logging
+		this.logger.log({ message, body, user }, ctx);
+	}
+	private logError(error: Error, req: Request): void {
+		const { method, url, body, user } = req;
+		const userId = `userId${user.id || 0}`;
+		if (error instanceof HttpException) {
+			const statusCode: number = error.getStatus();
+			const ctx: string = `${this.userPrefix}${this.ctxPrefix} - ${statusCode} - ${method} - ${url} - ${userId}`;
+			const message: string = `Outgoing response - ${statusCode} - ${method} - ${url} - ${userId}`;
+			// logging
+			if (statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
+				this.logger.error({ method, url, body, message, error, user }, error.stack, ctx);
+			} else {
+				this.logger.warn({ method, url, error, body, message, user }, ctx);
+			}
+		} else {
+			// logging
+			this.logger.error(
+				{ message: `Outgoing response - ${method} - ${url} - ${userId}`, user },
+				error.stack,
+				`${this.userPrefix}${this.ctxPrefix} - ${method} - ${url} - ${userId}`,
+			);
+		}
 	}
 }
