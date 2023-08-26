@@ -20,8 +20,6 @@ import {
 	TimeoutInterceptor,
 } from "./app.interceptors";
 
-import { LoggerModule } from "modules/log/logger.module";
-
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
@@ -86,7 +84,6 @@ import { UploadModule } from "modules/upload/uploads.module";
 		// }),
 		ScheduleModule.forRoot(),
 		// app modules
-		LoggerModule,
 		BasesModule,
 		VersionModule,
 		AuthModule,
@@ -108,10 +105,10 @@ import { UploadModule } from "modules/upload/uploads.module";
 			provide: APP_FILTER,
 			useClass: AppExceptionsFilter,
 		},
-		{
-			provide: APP_INTERCEPTOR,
-			useClass: AppLoggingInterceptor,
-		},
+		// {
+		// 	provide: APP_INTERCEPTOR,
+		// 	useClass: AppLoggingInterceptor,
+		// },
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: AppResponseInterceptor,

@@ -8,18 +8,18 @@ import { Serialize } from "global/serialize.decorator";
 
 import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 import { UsersService } from "./user.service";
-import { AppResponse } from "global/response.decorator";
+import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Users")
 @Controller("user")
-@Serialize(UserIgnoredDto, false)
+@Serialize(UserIgnoredDto)
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 	// currentUser
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards()
 	@Get("whoAmI")
-	@AppResponse("2002")
+	@ResponseMessage("2002")
 	async whoAmI(@Req() { user }: Request): Promise<UserDto> {
 		return await this.usersService.findBy({ id: user.id }, true);
 	}
@@ -27,7 +27,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards()
 	@Get("userProfile")
-	@AppResponse("")
+	@ResponseMessage("")
 	async findProfile(@Req() { user }: Request): Promise<UserProfileDto> {
 		return await this.usersService.findUserWithProfile({ id: user.id }, true);
 	}
@@ -35,7 +35,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UpdateProfileDto)
 	@AppGuards()
 	@Patch("updateUser")
-	@AppResponse("2005")
+	@ResponseMessage("2005")
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
 		return await this.usersService.updateUserProfile(user.id, body);
 	}
@@ -43,7 +43,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
 	@AppGuards(Role.Admin)
 	@Get("getUsers")
-	@AppResponse("")
+	@ResponseMessage("")
 	async findAllUser(): Promise<UserDto[]> {
 		return await this.usersService.findUsers();
 	}
@@ -58,7 +58,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards(Role.Admin)
 	@Patch("updateBy/:id")
-	@AppResponse("2005")
+	@ResponseMessage("2005")
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UserProfileDto): Promise<UserProfileDto> {
 		return await this.usersService.updateById(id, body);
 	}
@@ -66,7 +66,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards(Role.Admin)
 	@Delete("deleteBy/:id")
-	@AppResponse("2006")
+	@ResponseMessage("2006")
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<UserDto> {
 		return await this.usersService.removeById(id);
 	}

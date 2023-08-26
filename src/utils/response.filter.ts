@@ -13,7 +13,7 @@ export class AppResponseDto<TData> {
 	result: TData[] | TData;
 }
 
-export const appResponse = <T>(result: T | T[], code = "2000", descriptionCode?: string): AppResponseDto<T> => ({
+export const appResponse = <T>(result: T | T[], code: string, descriptionCode?: string): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),

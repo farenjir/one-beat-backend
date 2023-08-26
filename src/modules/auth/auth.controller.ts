@@ -9,7 +9,7 @@ import { Serialize } from "global/serialize.decorator";
 import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { UserDto } from "modules/user/user.dto";
-import { AppResponse } from "global/response.decorator";
+import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -19,7 +19,7 @@ export class AuthController {
 	// auth services
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signIn")
-	@AppResponse("2002")
+	@ResponseMessage("2002")
 	async signIn(@Body() body: SignInDto, @Res({ passthrough: true }) res: Response): Promise<UserDto> {
 		const params = {
 			email: body?.email?.toLowerCase(),
@@ -33,7 +33,7 @@ export class AuthController {
 	// signUp
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signUp")
-	@AppResponse("2003")
+	@ResponseMessage("2003")
 	async createUser(@Body() body: AuthSignUpDto): Promise<UserDto> {
 		const params = {
 			email: body.email.toLowerCase(),
@@ -46,7 +46,7 @@ export class AuthController {
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards()
 	@Post("signOut")
-	@AppResponse("2004")
+	@ResponseMessage("2004")
 	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): any {
 		res.clearCookie("app-token");
 		return user;

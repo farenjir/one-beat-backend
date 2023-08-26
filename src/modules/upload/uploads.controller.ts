@@ -11,7 +11,7 @@ import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
 
 import { UploadService } from "./uploads.service";
 import { UploadDto, UploadQueryDto, UploadResponseDto } from "./upload.dto";
-import { AppResponse } from "global/response.decorator";
+import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Uploads")
 @Controller("upload")
@@ -22,7 +22,7 @@ export class UploadController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("image")
 	@Post("image")
-	@AppResponse("2009")
+	@ResponseMessage("2009")
 	async uploadImageFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Image)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -35,7 +35,7 @@ export class UploadController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("music")
 	@Post("music")
-	@AppResponse("2009")
+	@ResponseMessage("2009")
 	async uploadMusicFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Music)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -48,7 +48,7 @@ export class UploadController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@FileUploadConfig("zipFile")
 	@Post("zipFile")
-	@AppResponse("2009")
+	@ResponseMessage("2009")
 	async uploadZipFile(
 		@UploadedFile(new FileValidationPipe(UploadTypes.Zip)) file: Express.Multer.File,
 		@Body() body: UploadDto,
@@ -79,7 +79,7 @@ export class UploadController {
 	})
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("filesList")
-	@AppResponse("2009")
+	@ResponseMessage("2009")
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<UploadResponseDto[]> {
 		return await this.uploadService.findBy(query);
 	}
@@ -87,7 +87,7 @@ export class UploadController {
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards()
 	@Get("getBy/:id")
-	@AppResponse("")
+	@ResponseMessage("")
 	async getFile(@Param("id", ParseIntPipe) id: string): Promise<UploadResponseDto> {
 		return await this.uploadService.findById(id);
 	}
@@ -95,7 +95,7 @@ export class UploadController {
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Patch("updateBy/:id")
-	@AppResponse("2010")
+	@ResponseMessage("2010")
 	async updateUserById(@Param("id", ParseIntPipe) id: string, @Body() body: UploadDto): Promise<UploadResponseDto> {
 		return await this.uploadService.updateById(id, body);
 	}
@@ -103,7 +103,7 @@ export class UploadController {
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Delete("deleteBy/:id")
-	@AppResponse("2011")
+	@ResponseMessage("2011")
 	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<UploadResponseDto> {
 		return await this.uploadService.removeById(id);
 	}
