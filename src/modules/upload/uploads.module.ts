@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { CommonModule } from "global/common.module";
+import { CommonModule } from "global/global.module";
 
 import { Upload } from "./upload.entity";
 import { UploadController } from "./uploads.controller";
