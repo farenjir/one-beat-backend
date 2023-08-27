@@ -1,24 +1,25 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+
+import { pickBy as _pickBy } from "lodash";
+
 import { JwtService } from "@nestjs/jwt";
+import { MailService } from "modules/mail/mail.service";
 
 import { UserDto } from "modules/user/user.dto";
 import { UsersService } from "modules/user/user.service";
 
 import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
 import { hashPassword, cookieOptions, handleHashPassword } from "./auth.configs";
-import { pickBy as _pickBy } from "lodash";
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService, private jwtService: JwtService, private config: ConfigService) {}
-	// generateToken
-	async generateToken(user: UserDto): Promise<string> {
-		return this.jwtService.signAsync(
-			{ id: user.id, roles: user.roles },
-			{ secret: this.config.get<string>("JWT_KEY") },
-		);
-	}
+	constructor(
+		private usersService: UsersService,
+		private jwtService: JwtService,
+		private mailService: MailService,
+		private config: ConfigService,
+	) {}
 	// signup
 	async signup(userParams: AuthSignUpDto): Promise<UserDto> {
 		const { email, password, username } = userParams;
@@ -33,8 +34,12 @@ export class AuthService {
 		}
 		// hashedPassword
 		const hashedPassword = await hashPassword(password);
+		// create user
+		const userCreated = await this.usersService.create({ username, email, password: hashedPassword });
+		// send confirmation mail
+		await this.sendConfirmMail(userCreated);
 		// return new user
-		return await this.usersService.create({ username, email, password: hashedPassword });
+		return userCreated;
 	}
 	// signin
 	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
@@ -55,5 +60,13 @@ export class AuthService {
 			token: await this.generateToken(user),
 			...user,
 		};
+	}
+	// handles
+	async generateToken({ roles, id }: UserDto): Promise<string> {
+		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
+	}
+	async sendConfirmMail(user: UserDto): Promise<void> {
+		const token = await this.generateToken(user);
+		await this.mailService.sendUserConfirmation(user, token);
 	}
 }

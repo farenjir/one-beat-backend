@@ -72,15 +72,6 @@ import { UploadModule } from "modules/upload/uploads.module";
 				max: +config.get<number>("CACHE_MAX"),
 			}),
 		}),
-		// MulterModule.registerAsync({
-		// 	inject: [ConfigService],
-		// 	useFactory: (config: ConfigService) => ({
-		// 		storage: diskStorage({
-		// 			destination: config.get<string>("FILE_DEST"),
-		// 			filename: multerFilename,
-		// 		}),
-		// 	}),
-		// }),
 		ScheduleModule.forRoot(),
 		// app modules
 		BasesModule,
