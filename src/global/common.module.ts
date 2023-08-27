@@ -6,7 +6,6 @@ import { BasesModule } from "modules/base/bases.module";
 
 @Module({
 	imports: [JwtModule, BasesModule],
-	providers: [],
 	exports: [JwtModule, BasesModule],
 })
 export class CommonModule {}
