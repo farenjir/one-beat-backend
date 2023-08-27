@@ -54,4 +54,13 @@ export class Users extends DefaultEntity {
 	@OneToOne(() => UserKYC, { eager: true })
 	@JoinColumn()
 	userKyc: UserKYC;
+
+	// *** logging
+	// @AfterLoad(){} 
+	// @BeforeInsert(){} 
+	// @AfterInsert(){} 
+	// @BeforeUpdate(){} 
+	// @AfterUpdate(){} 
+	// @BeforeRemove(){} 
+	// @BeforeRemove(){} 
 }

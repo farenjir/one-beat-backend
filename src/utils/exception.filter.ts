@@ -55,7 +55,7 @@ export class AppExceptionsFilter implements ExceptionFilter {
 		response.status(status).send({
 			status,
 			code,
-			message: filterMessages(message) || message,
+			message: filterMessages(message),
 			appCode: Number(message),
 			timestamp: new Date().toISOString(),
 			method: request.method,
@@ -64,7 +64,7 @@ export class AppExceptionsFilter implements ExceptionFilter {
 	}
 }
 
-const filterMessages = (stringCode: string | number) => {
+const filterMessages = (messageCode: string | number) => {
 	const messages = {
 		// custom codes
 		4000: "Invalid Query or Params",
@@ -130,5 +130,5 @@ const filterMessages = (stringCode: string | number) => {
 		default: "Unknown_Server_Error",
 	};
 	// return
-	return messages[stringCode] || messages.default;
+	return messages[messageCode] || messageCode || messages.default;
 };
