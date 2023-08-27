@@ -7,9 +7,10 @@ import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
-import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto } from "./auth.dto";
-import { AuthService } from "./auth.service";
 import { UserDto } from "modules/user/user.dto";
+
+import { AuthService } from "./auth.service";
+import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto } from "./auth.dto";
 
 @ApiTags("Auth")
 @Controller("auth")

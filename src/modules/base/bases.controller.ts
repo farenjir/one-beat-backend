@@ -5,9 +5,9 @@ import { AppGuards, Role } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
-import { ValidationQueryPipe } from "./bases.pipe";
 import { BaseService } from "./bases.service";
+import { ValidationQueryPipe } from "./bases.pipe";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
 
 @ApiTags("Bases")
 @Controller("base")

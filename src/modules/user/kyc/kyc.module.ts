@@ -5,8 +5,8 @@ import { CommonModule } from "global/common.module";
 
 import { UsersModule } from "../user.module";
 
-import { UserKycService } from "./kyc.service";
 import { UserKYC } from "./kyc.entity";
+import { UserKycService } from "./kyc.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([UserKYC]), UsersModule, CommonModule],
