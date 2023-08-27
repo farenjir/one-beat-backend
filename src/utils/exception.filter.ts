@@ -51,7 +51,6 @@ export class AppExceptionsFilter implements ExceptionFilter {
 				headers: request.headers,
 			});
 		}
-		console.log(message);
 		// return response
 		response.status(status).send({
 			status,
