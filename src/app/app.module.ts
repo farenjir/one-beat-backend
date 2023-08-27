@@ -48,11 +48,12 @@ import { UploadModule } from "modules/upload/uploads.module";
 			inject: [ConfigService],
 			useFactory: (config: ConfigService): TypeOrmModuleOptions => ({
 				type: "postgres",
-				synchronize: true,
 				host: config.get<string>("DB_HOST"),
 				port: +config.get<number>("DB_PORT"),
 				username: config.get<string>("DB_USER"),
 				password: config.get<string>("DB_PASS"),
+				synchronize: true,
+				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities
 				entities: [Bases, Version, Users, Profile, UserKYC, Upload],
