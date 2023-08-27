@@ -5,10 +5,10 @@ import { Request } from "express";
 import { AppGuards, Role } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
+import { ResponseMessage } from "global/response.decorator";
 
 import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 import { UsersService } from "./user.service";
-import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Users")
 @Controller("user")
@@ -56,7 +56,7 @@ export class UsersController {
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileDto)
-	@AppGuards(Role.Admin)
+	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
 	@ResponseMessage("2005")
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UserProfileDto): Promise<UserProfileDto> {

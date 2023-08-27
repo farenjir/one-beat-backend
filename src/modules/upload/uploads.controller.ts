@@ -4,6 +4,7 @@ import { Express, Request } from "express";
 
 import { AppGuards, Role } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { ResponseMessage } from "global/response.decorator";
 
 import { UploadTypes } from "./upload.configs";
 import { FileUploadConfig } from "./upload.interceptor";
@@ -11,7 +12,6 @@ import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
 
 import { UploadService } from "./uploads.service";
 import { UploadDto, UploadQueryDto, UploadResponseDto } from "./upload.dto";
-import { ResponseMessage } from "global/response.decorator";
 
 @ApiTags("Uploads")
 @Controller("upload")
