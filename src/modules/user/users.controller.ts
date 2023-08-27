@@ -7,8 +7,8 @@ import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 import { UsersService } from "./user.service";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
 
 @ApiTags("Users")
 @Controller("user")
