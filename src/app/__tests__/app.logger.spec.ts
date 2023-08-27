@@ -1,4 +1,4 @@
-import { AppLoggingInterceptor } from "app/app.interceptors";
+import { AppLoggingInterceptor } from "app/app.interceptor";
 
 describe("AppLoggingInterceptor", () => {
 	let interceptor: AppLoggingInterceptor;

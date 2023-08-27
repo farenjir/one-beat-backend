@@ -1,9 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { JwtModule } from "@nestjs/jwt";
 
-import { Bases } from "modules/base/base.entity";
-import { BaseService } from "modules/base/bases.service";
+import { CommonModule } from "global/common.module";
 
 import { Profile } from "./profile/profile.entity";
 import { ProfileService } from "./profile/profile.service";
@@ -16,8 +14,9 @@ import { UsersService } from "./user.service";
 import { UsersController } from "./users.controller";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Users, Bases, Profile, UserKYC]), JwtModule],
+	imports: [TypeOrmModule.forFeature([Users, Profile, UserKYC]), CommonModule],
 	controllers: [UsersController],
-	providers: [UsersService, BaseService, ProfileService, UserKycService],
+	providers: [UsersService, ProfileService, UserKycService],
+	exports: [UsersService],
 })
 export class UsersModule {}
