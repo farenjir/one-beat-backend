@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UploadedFile } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
@@ -17,6 +17,7 @@ import { UploadDto, UploadQueryDto, UploadResponseDto } from "./upload.dto";
 @Controller("upload")
 export class UploadController {
 	constructor(private uploadService: UploadService) {}
+
 	// uploadFile images
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
@@ -83,12 +84,21 @@ export class UploadController {
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<UploadResponseDto[]> {
 		return await this.uploadService.findBy(query);
 	}
+	// Streamable File class
+	// @Get("getFileBy/:id")
+	// @Header("Content-Type", "application/json")
+	// @Header("Content-Disposition", "attachment;")
+	// async getStaticFile(@Param("id") id: string): Promise<StreamableFile> {
+	// 	const { name } = await this.uploadService.findById(id);
+	// 	const file = await createReadStreamFile(process.cwd(), name);
+	// 	return new StreamableFile(file);
+	// }
 	// getById
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards()
-	@Get("getBy/:id")
+	@Get("getInfoBy/:id")
 	@ResponseMessage("")
-	async getFile(@Param("id", ParseIntPipe) id: string): Promise<UploadResponseDto> {
+	async getFile(@Param("id") id: string): Promise<UploadResponseDto> {
 		return await this.uploadService.findById(id);
 	}
 	// updateFile
@@ -96,7 +106,7 @@ export class UploadController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Patch("updateBy/:id")
 	@ResponseMessage("2010")
-	async updateUserById(@Param("id", ParseIntPipe) id: string, @Body() body: UploadDto): Promise<UploadResponseDto> {
+	async updateUserById(@Param("id") id: string, @Body() body: UploadDto): Promise<UploadResponseDto> {
 		return await this.uploadService.updateById(id, body);
 	}
 	// removeFile
@@ -104,7 +114,7 @@ export class UploadController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Delete("deleteBy/:id")
 	@ResponseMessage("2011")
-	async deleteFile(@Param("id", ParseIntPipe) id: string): Promise<UploadResponseDto> {
+	async deleteFile(@Param("id") id: string): Promise<UploadResponseDto> {
 		return await this.uploadService.removeById(id);
 	}
 }
