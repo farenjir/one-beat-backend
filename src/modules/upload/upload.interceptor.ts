@@ -5,6 +5,7 @@ import { diskStorage } from "multer";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
+
 export const multerFilename = (_request: any, fileObj: any, cb: any): void => {
 	const uploadFilename = path.parse(fileObj.originalname);
 	// return new file name
@@ -21,3 +22,8 @@ export function FileUploadConfig(folderName: string): ReturnType<typeof UseInter
 		}),
 	);
 }
+
+// export const createReadStreamFile = async (processCWD: any, fileName: string) => {
+// 	import { createReadStream } from "fs";
+// 	return await createReadStream(path.join(processCWD, fileName));
+// };

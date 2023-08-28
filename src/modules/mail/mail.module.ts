@@ -6,7 +6,7 @@ import { EjsAdapter } from "@nestjs-modules/mailer/dist/adapters/ejs.adapter";
 
 import { MailService } from "./mail.service";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line
 const path = require("path");
 
 @Module({
@@ -30,7 +30,7 @@ const path = require("path");
 				template: {
 					dir: path.join(__dirname, "templates"),
 					adapter: new EjsAdapter({
-						// inlineCssEnabled: true,
+						inlineCssEnabled: true,
 					}),
 					options: {
 						strict: true,
