@@ -8,4 +8,4 @@ import { BasesModule } from "modules/base/bases.module";
 	imports: [JwtModule, BasesModule],
 	exports: [JwtModule, BasesModule],
 })
-export class CommonModule {}
+export class GlobalModule {}

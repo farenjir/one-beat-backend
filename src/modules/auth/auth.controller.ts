@@ -1,6 +1,6 @@
-import { Controller, Body, Post, Res, Req } from "@nestjs/common";
+import { Controller, Body, Post, Res, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { Response, Request } from "express";
+import { Response } from "express";
 
 import { AppGuards } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
@@ -48,8 +48,13 @@ export class AuthController {
 	@AppGuards()
 	@Post("signOut")
 	@ResponseMessage("2004")
-	signOut(@Res({ passthrough: true }) res: Response, @Req() { user }: Request): any {
-		res.clearCookie("app-token");
-		return user;
+	async signOut(@Res({ passthrough: true }) res: Response): Promise<void> {
+		await res.clearCookie("app-token");
+	}
+	// confirm email
+	@Post("confirm/:token")
+	@ResponseMessage("")
+	async confirm(@Param("token") token: string): Promise<void> {
+		await this.authService.confirmUserEmail(token);
 	}
 }
