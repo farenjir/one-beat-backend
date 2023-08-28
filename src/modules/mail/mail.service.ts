@@ -1,5 +1,5 @@
-import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
+import { MailerService } from "@nestjs-modules/mailer";
 import { ConfigService } from "@nestjs/config";
 
 import { UserDto } from "modules/user/user.dto";

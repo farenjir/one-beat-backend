@@ -16,7 +16,9 @@ const path = require("path");
 			useFactory: async (config: ConfigService) => ({
 				transport: {
 					host: config.get("MAIL_HOST"),
+					port: +config.get("MAIL_PORT"),
 					secure: false,
+					ignoreTLS: true,
 					auth: {
 						user: config.get("MAIL_USER"),
 						pass: config.get("MAIL_PASSWORD"),
@@ -27,7 +29,9 @@ const path = require("path");
 				},
 				template: {
 					dir: path.join(__dirname, "templates"),
-					adapter: new EjsAdapter(),
+					adapter: new EjsAdapter({
+						// inlineCssEnabled: true,
+					}),
 					options: {
 						strict: true,
 					},
