@@ -65,15 +65,16 @@ export class UsersService {
 	): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
+		const kycId = user?.userKyc?.id;
 		// profile
-		const createOrUpdated = profileId
-			? await this.profileService.updateById(profileId, profile)
-			: await this.profileService.create(profile);
+		const createOrUpdated = profile ? await this.profileService.createOrUpdate(profileId, profile) : null;
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
+		// updateKyc
+		const kycUpdated = userKyc ? await this.kycService.updateById(kycId, userKyc) : null;
 		// relations
 		const updatedData = _pickBy<object>(
-			{ password: hashedPassword, email, username, profile: createOrUpdated, userKyc, roles },
+			{ password: hashedPassword, email, username, profile: createOrUpdated, userKyc: kycUpdated, roles },
 			(isTruthy: any) => isTruthy,
 		);
 		// updateUserData
@@ -85,9 +86,7 @@ export class UsersService {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
 		// profile
-		const createOrUpdated = profileId
-			? await this.profileService.updateById(profileId, profile)
-			: await this.profileService.create(profile);
+		const createOrUpdated = profile ? await this.profileService.createOrUpdate(profileId, profile) : null;
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// relations

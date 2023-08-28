@@ -61,6 +61,15 @@ export class AuthService {
 			...user,
 		};
 	}
+	async confirmUserEmail(token: string): Promise<UserDto> {
+		const { id } = await this.decodeToken(token);
+		// confirmEmail
+		return await this.usersService.updateById(id, {
+			userKyc: {
+				emailKyc: true,
+			},
+		});
+	}
 	// handles
 	async generateToken({ roles, id }: UserDto): Promise<string> {
 		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
@@ -68,5 +77,16 @@ export class AuthService {
 	async sendConfirmMail(user: UserDto): Promise<void> {
 		const token = await this.generateToken(user);
 		await this.mailService.sendUserConfirmation(user, token);
+	}
+	async decodeToken(token: string): Promise<Partial<UserDto>> {
+		let user: Partial<UserDto>;
+		try {
+			user = await this.jwtService.verifyAsync(token, {
+				secret: this.config.get<string>("JWT_KEY"),
+			});
+		} catch (error) {
+			user = { id: 0 };
+		}
+		return user;
 	}
 }
