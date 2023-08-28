@@ -23,7 +23,8 @@ class CreateSaveProfileDto {
 	// *** relations params
 	@ApiProperty({ type: Number })
 	@IsInt()
-	genderId: number;
+	@IsOptional()
+	genderId?: number;
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
@@ -61,7 +62,8 @@ class UpdateProfileDto {
 	// *** relations params
 	@ApiProperty({ type: Number })
 	@IsInt()
-	genderId: number;
+	@IsOptional()
+	genderId?: number;
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()

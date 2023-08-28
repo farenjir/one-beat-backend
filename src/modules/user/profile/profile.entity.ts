@@ -28,6 +28,7 @@ export class Profile {
 
 	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"], 
 	@JoinColumn()
+	@IsOptional()
 	gender: Bases;
 
 	@ManyToMany(() => Bases, { eager: true, nullable: true })
