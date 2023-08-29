@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
-import { Request, Response } from "express";
+import { Request } from "express";
 
 import { CacheInterceptor } from "@nestjs/cache-manager";
 import { plainToClass } from "class-transformer";
