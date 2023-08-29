@@ -32,7 +32,7 @@ class UserDto {
 	roles?: Role[];
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
-	userKyc: UserKycDto;
+	kyc: UserKycDto;
 }
 class CreateSaveUserDto {
 	@IsString()
@@ -76,7 +76,7 @@ class UserProfileDto {
 	roles?: Role[];
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
-	userKyc?: UserKycDto;
+	kyc?: UserKycDto;
 	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
 	profile?: CreateSaveProfileDto;

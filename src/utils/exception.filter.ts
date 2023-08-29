@@ -78,6 +78,7 @@ const filterMessages = (messageCode: string | number) => {
 		4008: "Parent not Found",
 		4009: "Version not Found",
 		4010: "User Kyc not Found",
+		4011: "Your account is Inactive",
 		// default status http codes
 		100: "CONTINUE",
 		101: "SWITCHING_PROTOCOLS",

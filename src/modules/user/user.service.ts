@@ -20,9 +20,9 @@ export class UsersService {
 	) {}
 	// create
 	async create(params: CreateSaveUserDto): Promise<Users> {
-		const userKyc = await this.kycService.create({ userKyc: true });
+		const kyc = await this.kycService.create({ userKyc: true });
 		// create
-		const user = this.repo.create({ ...params, profile: {}, userKyc });
+		const user = this.repo.create({ ...params, profile: {}, kyc });
 		return this.repo.save(user);
 	}
 	// findAll
@@ -59,22 +59,19 @@ export class UsersService {
 		return user;
 	}
 	// update
-	async updateById(
-		id: number,
-		{ profile, username, email, password, roles, userKyc }: Partial<UserProfileDto>,
-	): Promise<Users> {
+	async updateById(id: number, { profile, username, email, password, roles, kyc }: Partial<UserProfileDto>): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
-		const kycId = user?.userKyc?.id;
+		const kycId = user?.kyc?.id;
 		// profile
 		const createOrUpdated = profile ? await this.profileService.createOrUpdate(profileId, profile) : null;
 		// hashedPassword
 		const hashedPassword = password ? await hashPassword(password) : null;
 		// updateKyc
-		const kycUpdated = userKyc ? await this.kycService.updateById(kycId, userKyc) : null;
+		const kycUpdated = kyc ? await this.kycService.updateById(kycId, kyc) : null;
 		// relations
 		const updatedData = _pickBy<object>(
-			{ password: hashedPassword, email, username, profile: createOrUpdated, userKyc: kycUpdated, roles },
+			{ password: hashedPassword, email, username, profile: createOrUpdated, kyc: kycUpdated, roles },
 			(isTruthy: any) => isTruthy,
 		);
 		// updateUserData

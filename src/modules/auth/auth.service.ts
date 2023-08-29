@@ -54,6 +54,10 @@ export class AuthService {
 		if (storedHash !== hash) {
 			throw new UnauthorizedException("4003");
 		}
+		// check activated
+		if (!user.kyc.userKyc) {
+			throw new BadRequestException("4011");
+		}
 		// return JWT token
 		return {
 			cookieOptions,
@@ -65,8 +69,9 @@ export class AuthService {
 		const { id } = await this.decodeToken(token);
 		// confirmEmail
 		return await this.usersService.updateById(id, {
-			userKyc: {
+			kyc: {
 				emailKyc: true,
+				userKyc: true,
 			},
 		});
 	}
