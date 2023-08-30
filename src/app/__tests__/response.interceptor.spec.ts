@@ -17,7 +17,7 @@ describe("AppResponseInterceptor", () => {
 	});
 
 	it("should return data with custom response message if ResponseKey is defined in the handler", (done) => {
-		const mockResponseMessage = "Custom response message";
+		const mockResponseMessageCode = "2000";
 
 		const mockHandler: CallHandler<any> = {
 			handle: () => of("response data"),
@@ -32,14 +32,15 @@ describe("AppResponseInterceptor", () => {
 			})),
 		} as any;
 
-		reflector.get = jest.fn(() => mockResponseMessage);
+		reflector.get = jest.fn(() => mockResponseMessageCode);
 
 		const result$ = interceptor.intercept(mockContext, mockHandler) as Observable<AppResponseDto<any>>;
 
 		result$.subscribe((result) => {
 			expect(result).toBeDefined();
 			expect(result.result).toEqual("response data"); // return response data
-			expect(result.message).toEqual(mockResponseMessage); // return response data
+			expect(result.message).toEqual("succeed"); // response message
+			expect(result.description).toEqual("succeed"); // description message
 		});
 
 		done();
