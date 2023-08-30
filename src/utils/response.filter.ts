@@ -13,7 +13,7 @@ export class AppResponseDto<TData> {
 	result: TData[] | TData;
 }
 
-export const appResponse = <T>(result: T | T[], code: string, descriptionCode?: string): AppResponseDto<T> => ({
+export const appResponse = <T>(result: T | T[], code = "2000", descriptionCode = ""): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
@@ -40,11 +40,11 @@ const responseMessage = (statusCode: string) => {
 		2014: "Version Deleted",
 	};
 	// return
-	return messages[statusCode];
+	return messages[statusCode] || statusCode;
 };
 
 const descriptionMessage = (descriptionCode: string) => {
 	const messages = {};
 	// return
-	return messages[descriptionCode] || "";
+	return messages[descriptionCode] || descriptionCode;
 };
