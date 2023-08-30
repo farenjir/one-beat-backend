@@ -12,23 +12,25 @@ describe("AppModule", () => {
 		const moduleRef = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
-
+		// modules
 		appController = moduleRef.get<AppController>(AppController);
 		appService = moduleRef.get<AppService>(AppService);
 	});
 
 	describe("AppController", () => {
 		describe("controller", () => {
-			it("should return TEST_AppController", () => {
+			it("should return TEST_AppController", (done) => {
 				expect(appController.getTest()).toBe("TEST_AppController");
+				done();
 			});
 		});
 	});
 
 	describe("AppService", () => {
 		describe("service", () => {
-			it("should return TEST_AppService", () => {
+			it("should return TEST_AppService", (done) => {
 				expect(appService.getTest()).toBe("TEST_AppService");
+				done();
 			});
 		});
 	});

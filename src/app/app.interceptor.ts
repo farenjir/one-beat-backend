@@ -36,11 +36,11 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
-		const responseMessage = this.reflector.get<string>(ResponseKey, context.getHandler()) || "2000";
+		const responseMessage = this.reflector.get<string>(ResponseKey, context.getHandler());
 		// return
 		return next.handle().pipe(
 			rxMap((data) => {
-				return appResponse(data, responseMessage);
+				return appResponse(data, responseMessage || "2000");
 			}),
 		);
 	}
