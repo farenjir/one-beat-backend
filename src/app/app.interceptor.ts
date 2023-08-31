@@ -36,25 +36,22 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
-		const responseMessage = this.reflector.get<string>(ResponseKey, context.getHandler()) || "2000";
+		const [messageCode, descriptionCode] = this.reflector.get<string>(ResponseKey, context.getHandler());
 		// return
 		return next.handle().pipe(
 			rxMap((data) => {
-				return appResponse(data, responseMessage);
+				return appResponse(data, messageCode, descriptionCode);
 			}),
 		);
 	}
 }
 
 @Injectable()
-export class SerializeInterceptor implements NestInterceptor {
+export class SerializeDataInterceptor implements NestInterceptor {
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, handler: CallHandler): Observable<any> {
-		const { dto, exclude = false } = this.reflector.getAllAndOverride<ISerialize>(SerializeKey, [
-			context.getHandler(),
-			context.getClass(),
-		]);
+		const { dto, exclude = false } = this.reflector.get<ISerialize>(SerializeKey, context.getClass()) || {};
 		return handler.handle().pipe(
 			rxMap((data) => {
 				return plainToClass(dto, data, { excludeExtraneousValues: exclude });

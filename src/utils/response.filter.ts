@@ -13,7 +13,7 @@ export class AppResponseDto<TData> {
 	result: TData[] | TData;
 }
 
-export const appResponse = <T>(result: T | T[], code: string, descriptionCode?: string): AppResponseDto<T> => ({
+export const appResponse = <T>(result: T | T[], code: string, descriptionCode: string): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
@@ -23,7 +23,7 @@ export const appResponse = <T>(result: T | T[], code: string, descriptionCode?: 
 
 const responseMessage = (statusCode: string) => {
 	const messages = {
-		2000: "Succeed",
+		2000: "succeed",
 		2001: "User Created",
 		2002: "User SignIn",
 		2003: "User SignUp",
@@ -40,11 +40,13 @@ const responseMessage = (statusCode: string) => {
 		2014: "Version Deleted",
 	};
 	// return
-	return messages[statusCode];
+	return messages[statusCode] || messages["2000"];
 };
 
 const descriptionMessage = (descriptionCode: string) => {
-	const messages = {};
+	const messages = {
+		2000: "succeed",
+	};
 	// return
-	return messages[descriptionCode] || "";
+	return messages[descriptionCode] || messages["2000"];
 };

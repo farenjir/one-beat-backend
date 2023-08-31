@@ -16,7 +16,7 @@ import {
 	AppLoggingInterceptor,
 	AppResponseInterceptor,
 	HttpCacheInterceptor,
-	SerializeInterceptor,
+	SerializeDataInterceptor,
 	TimeoutInterceptor,
 } from "./app.interceptor";
 
@@ -103,7 +103,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 		},
 		{
 			provide: APP_INTERCEPTOR,
-			useClass: SerializeInterceptor,
+			useClass: SerializeDataInterceptor,
 		},
 		{
 			provide: APP_INTERCEPTOR,
