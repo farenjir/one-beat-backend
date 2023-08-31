@@ -47,7 +47,7 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 }
 
 @Injectable()
-export class SerializeInterceptor implements NestInterceptor {
+export class SerializeDataInterceptor implements NestInterceptor {
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, handler: CallHandler): Observable<any> {
