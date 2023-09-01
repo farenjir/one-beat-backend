@@ -39,9 +39,7 @@ export class BaseController {
 	})
 	@Get("children")
 	@ResponseMessage("")
-	async getChildrenOfParent(
-		@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {},
-	): Promise<BaseDto[]> {
+	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {
 		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// get one type
