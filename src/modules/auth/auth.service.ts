@@ -37,7 +37,8 @@ export class AuthService {
 		// create user
 		const userCreated = await this.usersService.create({ username, email, password: hashedPassword });
 		// send confirmation mail
-		await this.sendConfirmMail(userCreated);
+		const token = await this.generateToken(userCreated);
+		await this.mailService.sendUserConfirmation(userCreated, token);
 		// return new user
 		return userCreated;
 	}
@@ -67,7 +68,7 @@ export class AuthService {
 	}
 	async confirmUserEmail(token: string): Promise<UserDto> {
 		const { id } = await this.decodeToken(token);
-		// confirmEmail
+		// update kyc
 		return await this.usersService.updateById(id, {
 			kyc: {
 				emailKyc: true,
@@ -75,13 +76,25 @@ export class AuthService {
 			},
 		});
 	}
+	async forgetPassword({ email, username }: Partial<UserDto>): Promise<UserDto> {
+		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		const user = await this.usersService.findBy(params, true);
+		// send new password
+		const token = await this.generateToken(user);
+		await this.mailService.sendUserPassword(user, token);
+		// return new user
+		return user;
+	}
+	async recoverPassword(token: string): Promise<UserDto> {
+		const { id } = await this.decodeToken(token);
+		// update password
+		return await this.usersService.updateById(id, {
+			password: "P@ssword123", // change password to default
+		});
+	}
 	// handles
 	async generateToken({ roles, id }: UserDto): Promise<string> {
 		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
-	}
-	async sendConfirmMail(user: UserDto): Promise<void> {
-		const token = await this.generateToken(user);
-		await this.mailService.sendUserConfirmation(user, token);
 	}
 	async decodeToken(token: string): Promise<Partial<UserDto>> {
 		let user: Partial<UserDto>;

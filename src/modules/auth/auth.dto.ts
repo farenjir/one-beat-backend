@@ -2,7 +2,7 @@ import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-valid
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
-export { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto };
+export { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto };
 
 // *** params
 class SignInDto {
@@ -42,6 +42,20 @@ class AuthSignUpDto {
 	password: string;
 }
 
+class ForgetPassDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@IsOptional()
+	@MaxLength(24)
+	@MinLength(4)
+	username?: string;
+	@ApiProperty({ default: "test@test.com" })
+	@IsEmail()
+	@IsOptional()
+	@MaxLength(64)
+	@MinLength(5)
+	email?: string;
+}
 // *** response
 class AuthIgnoredDto {
 	@Exclude()

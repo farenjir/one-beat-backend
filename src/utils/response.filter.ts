@@ -38,6 +38,8 @@ const responseMessage = (statusCode: string) => {
 		2012: "Version Added",
 		2013: "Version Updated",
 		2014: "Version Deleted",
+		2015: "Email Sent",
+		2016: "Password changed to default",
 	};
 	// return
 	return messages[statusCode] || messages["2000"];
@@ -46,6 +48,7 @@ const responseMessage = (statusCode: string) => {
 const descriptionMessage = (descriptionCode: string) => {
 	const messages = {
 		2000: "succeed",
+		2001: "default password : P@ssword123",
 	};
 	// return
 	return messages[descriptionCode] || messages["2000"];
