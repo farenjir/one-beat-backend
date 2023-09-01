@@ -56,11 +56,11 @@ export class Users extends DefaultEntity {
 	kyc: UserKYC;
 
 	// *** logging
-	// @AfterLoad(){} 
-	// @BeforeInsert(){} 
-	// @AfterInsert(){} 
-	// @BeforeUpdate(){} 
-	// @AfterUpdate(){} 
-	// @BeforeRemove(){} 
-	// @BeforeRemove(){} 
+	// @AfterLoad(){}
+	// @BeforeInsert(){}
+	// @AfterInsert(){}
+	// @BeforeUpdate(){}
+	// @AfterUpdate(){}
+	// @BeforeRemove(){}
+	// @BeforeRemove(){}
 }

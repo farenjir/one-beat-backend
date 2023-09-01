@@ -51,7 +51,7 @@ async function bootstrap() {
 	// swagger apply on app
 	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, config));
 	// etag setup options
-	(<any>app).set("etag", false);
+	// (<any>app).set("etag", false);
 	// listen
 	await app.listen(3000);
 }
