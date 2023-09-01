@@ -78,11 +78,11 @@ export class AuthService {
 				audience: clientId,
 			});
 			googleUser = ticket.getPayload();
-			if (!googleUser) {
-				throw new UnauthorizedException();
-			}
 		} catch (error) {
 			throw new UnauthorizedException(error);
+		}
+		if (!googleUser?.email) {
+			throw new UnauthorizedException();
 		}
 		// user auth with google
 		let user = await this.usersService.findBy({ email: googleUser.email });
