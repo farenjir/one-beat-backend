@@ -10,9 +10,10 @@ export class MailService {
 		private mailerService: MailerService,
 		private config: ConfigService,
 	) {}
+	private baseUrl = this.config.get("BASE_URL");
+	// services
 	async sendUserPassword(user: Partial<UserDto>, token: string) {
-		const baseUrl = this.config.get("BASE_URL");
-		const url = `${baseUrl}/auth/forget/${token}`;
+		const url = `${this.baseUrl}/auth/forget/${token}`;
 		// sendMail
 		await this.mailerService.sendMail({
 			to: user.email,
@@ -25,12 +26,10 @@ export class MailService {
 		});
 	}
 	async sendUserConfirmation(user: Partial<UserDto>, token: string) {
-		const baseUrl = this.config.get("BASE_URL");
-		const url = `${baseUrl}/auth/confirm/${token}`;
+		const url = `${this.baseUrl}/auth/confirm/${token}`;
 		// sendMail
 		await this.mailerService.sendMail({
 			to: user.email,
-			// from: '"Support Team" <support@example.com>', // override default from
 			subject: "Welcome to Nice App! Confirm your Email",
 			template: "./confirmation",
 			context: {
