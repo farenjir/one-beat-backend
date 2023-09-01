@@ -13,6 +13,7 @@ import {
 import { Role } from "global/guards.decorator";
 
 import { Profile } from "./profile/profile.entity";
+import { IsOptional } from "class-validator";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -35,7 +36,8 @@ export class Users extends DefaultEntity {
 	email!: string;
 
 	@Column()
-	password!: string;
+	@IsOptional()
+	password: string;
 
 	@Column({
 		array: true,
@@ -45,15 +47,18 @@ export class Users extends DefaultEntity {
 	})
 	roles!: Role[];
 
+	@Column({ default: false })
+	@IsOptional()
+	isRegisteredWithGoogle?: boolean;
+
 	// *** relations
+	@OneToOne(() => UserKYC, { eager: true })
+	@JoinColumn()
+	kyc: UserKYC;
 
 	@OneToOne(() => Profile)
 	@JoinColumn()
 	profile: Profile;
-
-	@OneToOne(() => UserKYC, { eager: true })
-	@JoinColumn()
-	kyc: UserKYC;
 
 	// *** logging
 	// @AfterLoad(){}

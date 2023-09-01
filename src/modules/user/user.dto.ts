@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
@@ -46,7 +46,11 @@ class CreateSaveUserDto {
 	@IsString()
 	@MaxLength(100)
 	@MinLength(8)
-	password: string;
+	@IsOptional()
+	password?: string;
+	@IsOptional()
+	@IsBoolean()
+	isRegisteredWithGoogle?: boolean;
 }
 
 // *** profile

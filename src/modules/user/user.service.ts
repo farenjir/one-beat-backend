@@ -19,8 +19,8 @@ export class UsersService {
 		private kycService: UserKycService,
 	) {}
 	// create
-	async create(params: CreateSaveUserDto): Promise<Users> {
-		const kyc = await this.kycService.create({ userKyc: true });
+	async create(params: CreateSaveUserDto, isCreateWithGoogle: boolean = false): Promise<Users> {
+		const kyc = await this.kycService.create({ userKyc: true, emailKyc: isCreateWithGoogle });
 		// create
 		const user = this.repo.create({ ...params, profile: {}, kyc });
 		return this.repo.save(user);
