@@ -1,8 +1,8 @@
-import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
-export { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto };
+export { AuthSignUpDto, AuthExtraDto, SignInDto, SignInWithGoogleDto, AuthIgnoredDto, ForgetPassDto };
 
 // *** params
 class SignInDto {
@@ -23,6 +23,12 @@ class SignInDto {
 	@MaxLength(100)
 	@MinLength(8)
 	password: string;
+}
+class SignInWithGoogleDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	token: string;
 }
 class AuthSignUpDto {
 	@ApiProperty({ default: "test" })

@@ -36,7 +36,8 @@ export class Users extends DefaultEntity {
 	email!: string;
 
 	@Column()
-	password!: string;
+	@IsOptional()
+	password: string;
 
 	@Column({
 		array: true,
@@ -51,13 +52,13 @@ export class Users extends DefaultEntity {
 	isRegisteredWithGoogle?: boolean;
 
 	// *** relations
-	@OneToOne(() => Profile)
-	@JoinColumn()
-	profile: Profile;
-
 	@OneToOne(() => UserKYC, { eager: true })
 	@JoinColumn()
 	kyc: UserKYC;
+
+	@OneToOne(() => Profile)
+	@JoinColumn()
+	profile: Profile;
 
 	// *** logging
 	// @AfterLoad(){}

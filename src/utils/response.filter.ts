@@ -40,6 +40,7 @@ const responseMessage = (statusCode: string) => {
 		2014: "Version Deleted",
 		2015: "Email Sent",
 		2016: "Password changed to default",
+		2017: "Sign with Google",
 	};
 	// return
 	return messages[statusCode] || messages["2000"];

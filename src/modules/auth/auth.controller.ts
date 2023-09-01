@@ -10,7 +10,7 @@ import { ResponseMessage } from "global/response.decorator";
 import { UserDto } from "modules/user/user.dto";
 
 import { AuthService } from "./auth.service";
-import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto } from "./auth.dto";
+import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto, SignInWithGoogleDto } from "./auth.dto";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -31,6 +31,7 @@ export class AuthController {
 		res.cookie("app-token", token, cookieOptions);
 		return user;
 	}
+
 	// signUp
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signUp")
@@ -50,6 +51,18 @@ export class AuthController {
 	@ResponseMessage("2004")
 	async signOut(@Res({ passthrough: true }) res: Response): Promise<void> {
 		await res.clearCookie("app-token");
+	}
+	// auth services
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
+	@Post("google")
+	@ResponseMessage("2017")
+	async signInWithGoogle(
+		@Body() { token: gToken }: SignInWithGoogleDto,
+		@Res({ passthrough: true }) res: Response,
+	): Promise<UserDto> {
+		const { token, cookieOptions, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
+		res.cookie("app-token", token, cookieOptions);
+		return user;
 	}
 	// confirm email
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
