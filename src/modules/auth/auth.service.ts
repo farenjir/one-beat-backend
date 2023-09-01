@@ -66,6 +66,29 @@ export class AuthService {
 			...user,
 		};
 	}
+	async signinWithGoogle(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
+		const { username, email, password } = userParams;
+		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		// get
+		const user = await this.usersService.findBy(params, true);
+		// stored password
+		const [salt, storedHash] = user.password.split(".");
+		const hash = await handleHashPassword(password, salt);
+		// check password
+		if (storedHash !== hash) {
+			throw new UnauthorizedException("4003");
+		}
+		// check activated
+		if (!user.kyc.userKyc) {
+			throw new BadRequestException("4011");
+		}
+		// return JWT token
+		return {
+			cookieOptions,
+			token: await this.generateToken(user),
+			...user,
+		};
+	}
 	async confirmUserEmail(token: string): Promise<UserDto> {
 		const { id } = await this.decodeToken(token);
 		// update kyc

@@ -13,6 +13,7 @@ import {
 import { Role } from "global/guards.decorator";
 
 import { Profile } from "./profile/profile.entity";
+import { IsOptional } from "class-validator";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -45,8 +46,11 @@ export class Users extends DefaultEntity {
 	})
 	roles!: Role[];
 
-	// *** relations
+	@Column({ default: false })
+	@IsOptional()
+	isRegisteredWithGoogle?: boolean;
 
+	// *** relations
 	@OneToOne(() => Profile)
 	@JoinColumn()
 	profile: Profile;
