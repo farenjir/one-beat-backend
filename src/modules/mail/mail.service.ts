@@ -10,7 +10,20 @@ export class MailService {
 		private mailerService: MailerService,
 		private config: ConfigService,
 	) {}
-	// sendUserConfirmation
+	async sendUserPassword(user: Partial<UserDto>, token: string) {
+		const baseUrl = this.config.get("BASE_URL");
+		const url = `${baseUrl}/auth/forget/${token}`;
+		// sendMail
+		await this.mailerService.sendMail({
+			to: user.email,
+			subject: "Forget Password",
+			template: "./forgetPassword",
+			context: {
+				name: user.username,
+				url,
+			},
+		});
+	}
 	async sendUserConfirmation(user: Partial<UserDto>, token: string) {
 		const baseUrl = this.config.get("BASE_URL");
 		const url = `${baseUrl}/auth/confirm/${token}`;

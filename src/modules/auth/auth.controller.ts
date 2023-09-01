@@ -10,7 +10,7 @@ import { ResponseMessage } from "global/response.decorator";
 import { UserDto } from "modules/user/user.dto";
 
 import { AuthService } from "./auth.service";
-import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto } from "./auth.dto";
+import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto } from "./auth.dto";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -52,9 +52,27 @@ export class AuthController {
 		await res.clearCookie("app-token");
 	}
 	// confirm email
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("confirm/:token")
-	@ResponseMessage("")
-	async confirm(@Param("token") token: string): Promise<void> {
-		await this.authService.confirmUserEmail(token);
+	@ResponseMessage("2015")
+	async confirm(@Param("token") token: string): Promise<UserDto> {
+		return await this.authService.confirmUserEmail(token);
+	}
+	// forget password
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
+	@Post("forget/password")
+	@ResponseMessage("2015")
+	async forgetPass(@Body() body: ForgetPassDto): Promise<UserDto> {
+		const params = {
+			email: body?.email?.toLowerCase(),
+			username: body?.username?.toLowerCase(),
+		};
+		return await this.authService.forgetPassword(params);
+	}
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
+	@Post("recover/password/:token")
+	@ResponseMessage("2016", "2001")
+	async recoverPass(@Param("token") token: string): Promise<UserDto> {
+		return await this.authService.recoverPassword(token);
 	}
 }
