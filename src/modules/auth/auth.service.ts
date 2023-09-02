@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException, ForbiddenException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { OAuth2Client } from "google-auth-library";
@@ -58,7 +58,7 @@ export class AuthService {
 		}
 		// check activated
 		if (!user.kyc.userKyc) {
-			throw new BadRequestException("4011");
+			throw new ForbiddenException("4011");
 		}
 		// return JWT token
 		return {
@@ -69,17 +69,18 @@ export class AuthService {
 	}
 	async authWithGoogle(token: string): Promise<UserDto & AuthExtraDto> {
 		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID");
-		const client = new OAuth2Client(clientId);
+		// const clientSecret = this.config.get<string>("GOOGLE_AUTH_CLIENT_SECRET");
+		const client = new OAuth2Client(clientId); // clientId , clientSecret , redirectUri
 		let googleUser;
-		// ticket
 		try {
+			// ticket
 			const ticket = await client.verifyIdToken({
 				idToken: token,
 				audience: clientId,
 			});
 			googleUser = ticket.getPayload();
 		} catch (error) {
-			throw new UnauthorizedException(error);
+			throw new ForbiddenException(error);
 		}
 		if (!googleUser?.email) {
 			throw new UnauthorizedException();
@@ -91,6 +92,7 @@ export class AuthService {
 				{
 					email: googleUser.email,
 					username: googleUser.name,
+					password: googleUser.name,
 					isRegisteredWithGoogle: true,
 				},
 				true, // isRegistered with google
