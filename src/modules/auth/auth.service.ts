@@ -67,8 +67,7 @@ export class AuthService {
 		};
 	}
 	async authWithGoogle(token: string): Promise<UserDto & AuthExtraDto> {
-		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID");
-		// const clientSecret = this.config.get<string>("GOOGLE_AUTH_CLIENT_SECRET");
+		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID"); // "GOOGLE_AUTH_CLIENT_SECRET"
 		const client = new OAuth2Client(clientId); // clientId , clientSecret , redirectUri
 		let googleUser;
 		try {
