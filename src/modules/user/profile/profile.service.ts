@@ -7,7 +7,7 @@ import { pickBy as _pickBy } from "lodash";
 import { BaseService } from "modules/base/bases.service";
 
 import { Profile } from "./profile.entity";
-import { UpdateProfileDto, CreateSaveProfileDto, ProfileDto } from "./profile.dto";
+import { UpdateProfileDto, CreateSaveProfileDto } from "./profile.dto";
 
 @Injectable()
 export class ProfileService {
@@ -30,7 +30,7 @@ export class ProfileService {
 	// findOne
 	async findById(profileId: number): Promise<Profile> {
 		const options: FindOneOptions<Profile> = {
-			where: _pickBy<object>({ id: profileId }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id: profileId }, (isTruthy: unknown) => isTruthy),
 			// relations: ["gender", "expertise", "skills", "favorites"],
 		};
 		return await this.repo.findOne(options);

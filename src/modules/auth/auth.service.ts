@@ -11,7 +11,7 @@ import { UserDto } from "modules/user/user.dto";
 import { UsersService } from "modules/user/user.service";
 
 import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
-import { hashPassword, cookieOptions, handleHashPassword } from "./auth.configs";
+import { hashPassword, handleHashPassword } from "./auth.configs";
 
 @Injectable()
 export class AuthService {
@@ -46,7 +46,7 @@ export class AuthService {
 	// signin
 	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
 		const { username, email, password } = userParams;
-		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
 		// get
 		const user = await this.usersService.findBy(params, true);
 		// stored password
@@ -62,7 +62,6 @@ export class AuthService {
 		}
 		// return JWT token
 		return {
-			cookieOptions,
 			token: await this.generateToken(user),
 			...user,
 		};
@@ -100,7 +99,6 @@ export class AuthService {
 		}
 		// return JWT token
 		return {
-			cookieOptions,
 			token: await this.generateToken(user),
 			...user,
 		};
@@ -116,7 +114,7 @@ export class AuthService {
 		});
 	}
 	async forgetPassword({ email, username }: Partial<UserDto>): Promise<UserDto> {
-		const params = _pickBy<object>({ username, email }, (isTruthy: any) => isTruthy);
+		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
 		const user = await this.usersService.findBy(params, true);
 		// send new password
 		const token = await this.generateToken(user);

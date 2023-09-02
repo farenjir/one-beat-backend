@@ -21,7 +21,7 @@ export class BaseService {
 			throw new BadRequestException("4000");
 		}
 		const options: FindOneOptions<Bases> = {
-			where: _pickBy<object>({ id, type }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id, type }, (isTruthy: unknown) => isTruthy),
 		};
 		return await this.repo.findOne(options);
 	}

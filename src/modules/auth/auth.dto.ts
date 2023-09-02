@@ -75,6 +75,4 @@ class AuthExtraDto {
 	@IsString()
 	@IsOptional()
 	token?: string;
-	@IsOptional()
-	cookieOptions?: object;
 }

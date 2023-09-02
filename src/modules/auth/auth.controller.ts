@@ -9,6 +9,7 @@ import { ResponseMessage } from "global/response.decorator";
 
 import { UserDto } from "modules/user/user.dto";
 
+import { cookieOptions } from "./auth.configs";
 import { AuthService } from "./auth.service";
 import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto, SignInWithGoogleDto } from "./auth.dto";
 
@@ -27,7 +28,7 @@ export class AuthController {
 			username: body?.username?.toLowerCase(),
 			password: body.password,
 		};
-		const { token, cookieOptions, ...user }: UserDto & AuthExtraDto = await this.authService.signin(params);
+		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.signin(params);
 		res.cookie("app-token", token, cookieOptions);
 		return user;
 	}
@@ -60,7 +61,7 @@ export class AuthController {
 		@Body() { token: gToken }: SignInWithGoogleDto,
 		@Res({ passthrough: true }) res: Response,
 	): Promise<UserDto> {
-		const { token, cookieOptions, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
+		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
 		res.cookie("app-token", token, cookieOptions);
 		return user;
 	}

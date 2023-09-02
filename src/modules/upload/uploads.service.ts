@@ -39,7 +39,7 @@ export class UploadService {
 			throw new BadRequestException("4000");
 		}
 		const options: FindManyOptions<Upload> = {
-			where: _pickBy<object>(query, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>(query, (isTruthy: unknown) => isTruthy),
 		};
 		const files = await this.repo.find(options);
 		if (!files) {

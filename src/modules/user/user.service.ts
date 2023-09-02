@@ -32,7 +32,7 @@ export class UsersService {
 	// findOne
 	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
-			where: _pickBy<object>({ id, email, username }, (isTruthy: any) => isTruthy),
+			where: _pickBy<object>({ id, email, username }, (isTruthy: unknown) => isTruthy),
 		};
 		if (_isEmpty(options.where)) {
 			throw new BadRequestException("4000");
@@ -72,7 +72,7 @@ export class UsersService {
 		// relations
 		const updatedData = _pickBy<object>(
 			{ password: hashedPassword, email, username, profile: createOrUpdated, kyc: kycUpdated, roles },
-			(isTruthy: any) => isTruthy,
+			(isTruthy: unknown) => isTruthy,
 		);
 		// updateUserData
 		Object.assign(user, updatedData);
@@ -89,7 +89,7 @@ export class UsersService {
 		// relations
 		const updatedData = _pickBy<object>(
 			{ password: hashedPassword, email, username, profile: createOrUpdated },
-			(isTruthy: any) => isTruthy,
+			(isTruthy: unknown) => isTruthy,
 		);
 		// updateUserData
 		Object.assign(user, updatedData);
