@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, UnauthorizedException, ForbiddenException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
+import { JwtService } from "@nestjs/jwt";
 import { OAuth2Client } from "google-auth-library";
 import { pickBy as _pickBy } from "lodash";
 
-import { JwtService } from "@nestjs/jwt";
-import { MailService } from "modules/mail/mail.service";
-
 import { hashPassword, handleHashPassword } from "utils/auth.handles";
+
+import { MailService } from "modules/mail/mail.service";
 
 import { UserDto } from "modules/user/user.dto";
 import { UsersService } from "modules/user/user.service";
@@ -91,7 +91,7 @@ export class AuthService {
 				{
 					email: googleUser.email,
 					username: googleUser.name,
-					password: googleUser.name,
+					password: "",
 				},
 				true, // isRegistered with google
 			);
