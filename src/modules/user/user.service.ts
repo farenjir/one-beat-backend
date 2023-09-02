@@ -3,7 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from "typeorm";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
-import { hashPassword } from "modules/auth/auth.configs";
+
+import { handleHashPassword, hashPassword } from "utils/auth.handles";
 
 import { ProfileService } from "./profile/profile.service";
 import { UserKycService } from "./kyc/kyc.service";
@@ -19,8 +20,12 @@ export class UsersService {
 		private kycService: UserKycService,
 	) {}
 	// create
-	async create(params: CreateSaveUserDto, isCreateWithGoogle: boolean = false): Promise<Users> {
-		const kyc = await this.kycService.create({ userKyc: true, emailKyc: isCreateWithGoogle });
+	async create(params: CreateSaveUserDto, authWithGoogle: boolean = false): Promise<Users> {
+		const kyc = await this.kycService.create({
+			userKyc: authWithGoogle,
+			emailKyc: authWithGoogle,
+			googleKyc: authWithGoogle,
+		});
 		// create
 		const user = this.repo.create({ ...params, profile: {}, kyc });
 		return this.repo.save(user);
@@ -79,13 +84,25 @@ export class UsersService {
 		return await this.repo.save(user);
 	}
 	// update with profile
-	async updateUserProfile(id: number, { profile, username, email, password }: Partial<UpdateProfileDto>): Promise<Users> {
+	async updateUserProfile(
+		id: number,
+		{ profile, username, email, password, currentPassword }: Partial<UpdateProfileDto>,
+	): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
 		// profile
 		const createOrUpdated = profile ? await this.profileService.createOrUpdate(profileId, profile) : null;
-		// hashedPassword
-		const hashedPassword = password ? await hashPassword(password) : null;
+		// stored password
+		let hashedPassword = null;
+		if (password && currentPassword) {
+			const [salt, storedHash] = user.password.split(".");
+			const hash = await handleHashPassword(currentPassword, salt);
+			// check password
+			if (storedHash !== hash) {
+				throw new BadRequestException("2018");
+			}
+			hashedPassword = await hashPassword(password);
+		}
 		// relations
 		const updatedData = _pickBy<object>(
 			{ password: hashedPassword, email, username, profile: createOrUpdated },

@@ -7,8 +7,8 @@ import { Role } from "global/guards.decorator";
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
 
-export { UserDto, UserIgnoredDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto };
-export { IUserQuery };
+export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto };
+export { IUserQuery, UserIgnoredDto, UserProfileResponseDto };
 
 // *** user params
 class UserDto {
@@ -48,9 +48,6 @@ class CreateSaveUserDto {
 	@MinLength(8)
 	@IsOptional()
 	password?: string;
-	@IsOptional()
-	@IsBoolean()
-	isRegisteredWithGoogle?: boolean;
 }
 
 // *** profile
@@ -86,6 +83,33 @@ class UserProfileDto {
 	profile?: CreateSaveProfileDto;
 }
 
+class UserProfileResponseDto {
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@MaxLength(24)
+	@MinLength(4)
+	username: string;
+	@ApiProperty({ default: "test@test.com" })
+	@IsEmail()
+	@MaxLength(64)
+	@MinLength(5)
+	email: string;
+	@IsArray()
+	@IsOptional()
+	@ApiProperty({
+		name: "roles",
+		enum: Role,
+		default: [Role.User],
+	})
+	roles?: Role[];
+	@ApiProperty({ default: UserKycDto })
+	@IsOptional()
+	kyc?: UserKycDto;
+	@ApiProperty({ default: CreateSaveProfileDto })
+	@IsOptional()
+	profile?: CreateSaveProfileDto;
+}
+
 class UpdateProfileDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
@@ -105,6 +129,12 @@ class UpdateProfileDto {
 	@MinLength(8)
 	@IsOptional()
 	password?: string;
+	@ApiProperty({ default: "P@ssword123" })
+	@IsString()
+	@MaxLength(100)
+	@MinLength(8)
+	@IsOptional()
+	currentPassword?: string;
 	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
 	profile?: CreateSaveProfileDto;

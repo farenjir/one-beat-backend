@@ -7,11 +7,12 @@ import { pickBy as _pickBy } from "lodash";
 import { JwtService } from "@nestjs/jwt";
 import { MailService } from "modules/mail/mail.service";
 
+import { hashPassword, handleHashPassword } from "utils/auth.handles";
+
 import { UserDto } from "modules/user/user.dto";
 import { UsersService } from "modules/user/user.service";
 
 import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
-import { hashPassword, handleHashPassword } from "./auth.configs";
 
 @Injectable()
 export class AuthService {
@@ -91,7 +92,6 @@ export class AuthService {
 					email: googleUser.email,
 					username: googleUser.name,
 					password: googleUser.name,
-					isRegisteredWithGoogle: true,
 				},
 				true, // isRegistered with google
 			);

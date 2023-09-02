@@ -8,7 +8,7 @@ import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./user.service";
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto,UserProfileResponseDto } from "./user.dto";
 
 @ApiTags("Users")
 @Controller("user")
@@ -24,7 +24,7 @@ export class UsersController {
 		return await this.usersService.findBy({ id: user.id }, true);
 	}
 	// profile
-	@SwaggerDocumentaryApi(UserProfileDto)
+	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
 	@Get("userProfile")
 	@ResponseMessage("")
@@ -32,7 +32,7 @@ export class UsersController {
 		return await this.usersService.findUserWithProfile({ id: user.id }, true);
 	}
 	// updateUser with profile
-	@SwaggerDocumentaryApi(UpdateProfileDto)
+	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
 	@Patch("updateUser")
 	@ResponseMessage("2005")
@@ -55,7 +55,7 @@ export class UsersController {
 		return await this.usersService.findUserWithProfile({ id });
 	}
 	// updateUser
-	@SwaggerDocumentaryApi(UserProfileDto)
+	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Patch("updateBy/:id")
 	@ResponseMessage("2005")

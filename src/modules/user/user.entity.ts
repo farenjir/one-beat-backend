@@ -47,10 +47,6 @@ export class Users extends DefaultEntity {
 	})
 	roles!: Role[];
 
-	@Column({ default: false })
-	@IsOptional()
-	isRegisteredWithGoogle?: boolean;
-
 	// *** relations
 	@OneToOne(() => UserKYC, { eager: true })
 	@JoinColumn()

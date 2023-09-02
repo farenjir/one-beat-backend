@@ -17,6 +17,10 @@ export class UserKYC {
 
 	@Column({ default: false })
 	@IsOptional()
+	googleKyc: boolean;
+
+	@Column({ default: false })
+	@IsOptional()
 	emailKyc: boolean;
 
 	@Column({ default: false })

@@ -9,9 +9,15 @@ import { UserKycDto } from "./kyc.dto";
 export class UserKycService {
 	constructor(@InjectRepository(UserKYC) private repo: Repository<UserKYC>) {}
 	// create
-	async create({ userKyc, mobileKyc = false, emailKyc = false, producerKyc = false }: UserKycDto): Promise<UserKYC> {
+	async create({
+		userKyc,
+		mobileKyc = false,
+		emailKyc = false,
+		producerKyc = false,
+		googleKyc = false,
+	}: UserKycDto): Promise<UserKYC> {
 		// create
-		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc });
+		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
 		return this.repo.save(kyc);
 	}
 	// findAll
@@ -32,9 +38,9 @@ export class UserKycService {
 	// update
 	async updateById(kycId: number, attrs: Partial<UserKYC> = {}): Promise<UserKYC> {
 		const kyc = await this.findById(kycId, true);
-		const { userKyc, mobileKyc, emailKyc, producerKyc } = attrs;
+		const { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc } = attrs;
 		// update
-		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, producerKyc });
+		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
 		return await this.repo.save(kyc);
 	}
 	// remove

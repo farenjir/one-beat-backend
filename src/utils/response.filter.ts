@@ -41,6 +41,7 @@ const responseMessage = (statusCode: string) => {
 		2015: "Email Sent",
 		2016: "Password changed to default",
 		2017: "Sign with Google",
+		2018: "Current password is not correct",
 	};
 	// return
 	return messages[statusCode] || messages["2000"];

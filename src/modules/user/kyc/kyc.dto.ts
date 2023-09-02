@@ -19,6 +19,11 @@ class UserKycDto {
 	@ApiProperty({ default: false })
 	@IsBoolean()
 	@IsOptional()
+	googleKyc?: boolean;
+
+	@ApiProperty({ default: false })
+	@IsBoolean()
+	@IsOptional()
 	emailKyc?: boolean;
 
 	@ApiProperty({ default: false })
