@@ -18,10 +18,3 @@ export async function hashPassword(password: string): Promise<string> {
 	// hashedPassword
 	return `${salt}.${hash}`;
 }
-
-export const cookieOptions = {
-	path: "/",
-	maxAge: 24 * 24 * 3600,
-	httpOnly: true,
-	secure: true,
-};

@@ -2,6 +2,8 @@ import { Controller, Body, Post, Res, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
+import { cookieKey, cookieOptions } from "utils/cookie.configs";
+
 import { AppGuards } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
@@ -9,7 +11,6 @@ import { ResponseMessage } from "global/response.decorator";
 
 import { UserDto } from "modules/user/user.dto";
 
-import { cookieOptions } from "./auth.configs";
 import { AuthService } from "./auth.service";
 import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto, SignInWithGoogleDto } from "./auth.dto";
 
@@ -29,7 +30,7 @@ export class AuthController {
 			password: body.password,
 		};
 		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.signin(params);
-		res.cookie("app-token", token, cookieOptions);
+		res.cookie(cookieKey, token, cookieOptions);
 		return user;
 	}
 
@@ -51,7 +52,7 @@ export class AuthController {
 	@Post("signOut")
 	@ResponseMessage("2004")
 	async signOut(@Res({ passthrough: true }) res: Response): Promise<void> {
-		await res.clearCookie("app-token");
+		await res.clearCookie(cookieKey);
 	}
 	// auth services
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
@@ -62,7 +63,7 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response,
 	): Promise<UserDto> {
 		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
-		res.cookie("app-token", token, cookieOptions);
+		res.cookie(cookieKey, token, cookieOptions);
 		return user;
 	}
 	// confirm email
