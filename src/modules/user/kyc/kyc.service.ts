@@ -9,13 +9,8 @@ import { UserKycDto } from "./kyc.dto";
 export class UserKycService {
 	constructor(@InjectRepository(UserKYC) private repo: Repository<UserKYC>) {}
 	// create
-	async create({
-		userKyc,
-		mobileKyc = false,
-		emailKyc = false,
-		producerKyc = false,
-		googleKyc = false,
-	}: UserKycDto): Promise<UserKYC> {
+	async create(params: UserKycDto): Promise<UserKYC> {
+		const { userKyc = false, mobileKyc = false, emailKyc = false, producerKyc = false, googleKyc = false } = params;
 		// create
 		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
 		return this.repo.save(kyc);
