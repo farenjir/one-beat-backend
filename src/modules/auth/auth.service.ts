@@ -94,14 +94,14 @@ export class AuthService {
 			password: "P@ssword123", // change password to default
 		});
 	}
-	async authWithGoogle(token: string): Promise<UserDto & AuthExtraDto> {
+	async authWithGoogle(gToken: string): Promise<UserDto & AuthExtraDto> {
 		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID"); // "GOOGLE_AUTH_CLIENT_SECRET"
 		const client = new OAuth2Client(clientId); // clientId , clientSecret , redirectUri
 		let googleUser;
 		try {
 			// ticket
 			const ticket = await client.verifyIdToken({
-				idToken: token,
+				idToken: gToken,
 				audience: clientId,
 			});
 			googleUser = ticket.getPayload();
