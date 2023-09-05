@@ -112,11 +112,11 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 		// user auth with google
-		let user = await this.usersService.findBy({ email: googleUser.email });
+		let user = await this.usersService.findBy({ email: googleUser.email.toLowerCase() });
 		if (!user) {
 			user = await this.usersService.create(
 				{
-					email: googleUser.email,
+					email: googleUser.email.toLowerCase(),
 					username: googleUser.name,
 					password: "",
 				},
@@ -159,12 +159,12 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 		// user auth with apple
-		let user = await this.usersService.findBy({ email: appleUser.email });
+		let user = await this.usersService.findBy({ email: appleUser.email.toLowerCase() });
 		if (!user) {
 			const [username] = appleUser.email.split("@");
 			user = await this.usersService.create(
 				{
-					email: appleUser.email,
+					email: appleUser.email.toLowerCase(),
 					username,
 					password: "",
 				},
