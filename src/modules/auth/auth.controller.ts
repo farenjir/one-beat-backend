@@ -12,7 +12,15 @@ import { ResponseMessage } from "global/response.decorator";
 import { UserDto } from "modules/user/user.dto";
 
 import { AuthService } from "./auth.service";
-import { AuthSignUpDto, AuthExtraDto, SignInDto, AuthIgnoredDto, ForgetPassDto, SignInWithGoogleDto } from "./auth.dto";
+import {
+	AuthSignUpDto,
+	AuthExtraDto,
+	SignInDto,
+	AuthIgnoredDto,
+	ForgetPassDto,
+	SignInWithAppleDto,
+	SignInWithGoogleDto,
+} from "./auth.dto";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -63,6 +71,14 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response,
 	): Promise<UserDto> {
 		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
+		res.cookie(cookieKey, token, cookieOptions);
+		return user;
+	}
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
+	@Post("apple")
+	@ResponseMessage("2019")
+	async signInWithApple(@Body() { code }: SignInWithAppleDto, @Res({ passthrough: true }) res: Response): Promise<UserDto> {
+		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithApple(code);
 		res.cookie(cookieKey, token, cookieOptions);
 		return user;
 	}

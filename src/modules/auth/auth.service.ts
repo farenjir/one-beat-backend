@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable, UnauthorizedException, ForbiddenException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-
 import { JwtService } from "@nestjs/jwt";
+
+import appleSignin from "apple-signin-auth";
 import { OAuth2Client } from "google-auth-library";
 import { pickBy as _pickBy } from "lodash";
 
@@ -67,6 +68,32 @@ export class AuthService {
 			...user,
 		};
 	}
+	async confirmUserEmail(token: string): Promise<UserDto> {
+		const { id } = await this.decodeToken(token);
+		// update kyc
+		return await this.usersService.updateById(id, {
+			kyc: {
+				emailKyc: true,
+				userKyc: true,
+			},
+		});
+	}
+	async forgetPassword({ email, username }: Partial<UserDto>): Promise<UserDto> {
+		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
+		const user = await this.usersService.findBy(params, true);
+		// send new password
+		const token = await this.generateToken(user);
+		await this.mailService.sendUserPassword(user, token);
+		// return new user
+		return user;
+	}
+	async recoverPassword(token: string): Promise<UserDto> {
+		const { id } = await this.decodeToken(token);
+		// update password
+		return await this.usersService.updateById(id, {
+			password: "P@ssword123", // change password to default
+		});
+	}
 	async authWithGoogle(token: string): Promise<UserDto & AuthExtraDto> {
 		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID"); // "GOOGLE_AUTH_CLIENT_SECRET"
 		const client = new OAuth2Client(clientId); // clientId , clientSecret , redirectUri
@@ -102,33 +129,56 @@ export class AuthService {
 			...user,
 		};
 	}
-	async confirmUserEmail(token: string): Promise<UserDto> {
-		const { id } = await this.decodeToken(token);
-		// update kyc
-		return await this.usersService.updateById(id, {
-			kyc: {
-				emailKyc: true,
-				userKyc: true,
-			},
-		});
+	async authWithApple(code: string): Promise<UserDto & AuthExtraDto> {
+		let appleUser;
+		try {
+			const clientSecret = appleSignin.getClientSecret({
+				clientID: this.config.get<string>("APPLE_CLIENT_ID"),
+				teamID: this.config.get<string>("APPLE_TEAM_ID"),
+				keyIdentifier: this.config.get<string>("APPLE_KEY_ID"),
+				privateKey: this.config.get<string>("APPLE_PRIVATE_KEY"),
+			});
+			// tokens
+			const tokens = await appleSignin.getAuthorizationToken(code, {
+				clientSecret,
+				clientID: this.config.get<string>("APPLE_CLIENT_ID"),
+				redirectUri: this.config.get<string>("FRONT_BASE_URL"),
+			});
+			// tokenId
+			if (!tokens.id_token) {
+				throw new ForbiddenException();
+			} else {
+				appleUser = await appleSignin.verifyIdToken(tokens.id_token, {
+					ignoreExpiration: true,
+				});
+			}
+		} catch (error) {
+			throw new ForbiddenException(error);
+		}
+		if (!appleUser?.email) {
+			throw new UnauthorizedException();
+		}
+		// user auth with apple
+		let user = await this.usersService.findBy({ email: appleUser.email });
+		if (!user) {
+			const [username] = appleUser.email.split("@");
+			user = await this.usersService.create(
+				{
+					email: appleUser.email,
+					username,
+					password: "",
+				},
+				true, // isRegistered with apple
+			);
+		}
+		// return JWT token
+		return {
+			token: await this.generateToken(user),
+			...user,
+		};
 	}
-	async forgetPassword({ email, username }: Partial<UserDto>): Promise<UserDto> {
-		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
-		const user = await this.usersService.findBy(params, true);
-		// send new password
-		const token = await this.generateToken(user);
-		await this.mailService.sendUserPassword(user, token);
-		// return new user
-		return user;
-	}
-	async recoverPassword(token: string): Promise<UserDto> {
-		const { id } = await this.decodeToken(token);
-		// update password
-		return await this.usersService.updateById(id, {
-			password: "P@ssword123", // change password to default
-		});
-	}
-	// handles
+
+	// *** handles
 	async generateToken({ roles, id }: UserDto): Promise<string> {
 		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
 	}
