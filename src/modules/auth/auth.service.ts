@@ -2,8 +2,8 @@ import { BadRequestException, Injectable, UnauthorizedException, ForbiddenExcept
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import appleSignin from "apple-signin-auth";
-import { OAuth2Client } from "google-auth-library";
+import appleSignin, { AppleIdTokenType } from "apple-signin-auth";
+import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { pickBy as _pickBy } from "lodash";
 
 import { hashPassword, handleHashPassword } from "utils/auth.handles";
@@ -97,7 +97,7 @@ export class AuthService {
 	async authWithGoogle(gToken: string): Promise<UserDto & AuthExtraDto> {
 		const clientId = this.config.get<string>("GOOGLE_AUTH_CLIENT_ID"); // "GOOGLE_AUTH_CLIENT_SECRET"
 		const client = new OAuth2Client(clientId); // clientId , clientSecret , redirectUri
-		let googleUser;
+		let googleUser: TokenPayload;
 		try {
 			// ticket
 			const ticket = await client.verifyIdToken({
@@ -130,7 +130,7 @@ export class AuthService {
 		};
 	}
 	async authWithApple(code: string): Promise<UserDto & AuthExtraDto> {
-		let appleUser;
+		let appleUser: AppleIdTokenType;
 		try {
 			const clientSecret = appleSignin.getClientSecret({
 				clientID: this.config.get<string>("APPLE_CLIENT_ID"),
