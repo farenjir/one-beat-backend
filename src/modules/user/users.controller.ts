@@ -8,7 +8,7 @@ import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./user.service";
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto,UserProfileResponseDto } from "./user.dto";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto } from "./user.dto";
 
 @ApiTags("Users")
 @Controller("user")
@@ -51,6 +51,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards(Role.Admin, Role.User)
 	@Get("getBy/:id")
+	@ResponseMessage("")
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<UserProfileDto> {
 		return await this.usersService.findUserWithProfile({ id });
 	}
