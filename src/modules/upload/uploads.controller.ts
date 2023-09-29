@@ -6,7 +6,7 @@ import { AppGuards, Role } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
-import { UploadTypes } from "./upload.configs";
+import { UploadTypes } from "../../utils/configs/upload.configs";
 import { FileUploadConfig } from "./upload.interceptor";
 import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
 

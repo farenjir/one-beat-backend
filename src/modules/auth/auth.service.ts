@@ -6,7 +6,7 @@ import appleSignin, { AppleIdTokenType } from "apple-signin-auth";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { pickBy as _pickBy } from "lodash";
 
-import { hashPassword, handleHashPassword } from "utils/auth.handles";
+import { hashPassword, handleHashPassword } from "utils/configs/auth.configs";
 
 import { MailService } from "modules/mail/mail.service";
 

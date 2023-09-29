@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { cookieKey } from "utils/cookie.configs";
+import { cookieKey } from "utils/configs/cookie.configs";
 
 declare module "express" {
 	interface Request {

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 import { IsOptional } from "class-validator";
 
-import { UploadEnum } from "./upload.configs";
+import { UploadEnum } from "utils/configs/upload.configs";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
