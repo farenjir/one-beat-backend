@@ -23,8 +23,8 @@ import { SerializeKey } from "global/serialize.decorator";
 
 import { appResponse, AppResponseDto } from "utils/response.filter";
 
-export interface IClassConstructor<T = any> {
-	new (...args: any[]): T;
+export interface IClassConstructor<InstanceType = unknown> {
+	new (...args: unknown[]): InstanceType;
 }
 export interface ISerialize {
 	dto: IClassConstructor | null;
@@ -50,7 +50,7 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 export class SerializeDataInterceptor implements NestInterceptor {
 	constructor(private reflector: Reflector) {}
 	// intercept
-	intercept(context: ExecutionContext, handler: CallHandler): Observable<any> {
+	intercept(context: ExecutionContext, handler: CallHandler): Observable<unknown> {
 		const { dto, exclude = false } = this.reflector.get<ISerialize>(SerializeKey, context.getClass()) || {};
 		return handler.handle().pipe(
 			rxMap((data) => {
