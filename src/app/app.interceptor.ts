@@ -21,7 +21,7 @@ import { catchError, timeout, tap, map as rxMap } from "rxjs/operators";
 import { ResponseKey } from "global/response.decorator";
 import { SerializeKey } from "global/serialize.decorator";
 
-import { appResponse, AppResponseDto } from "utils/response.filter";
+import { appResponse, AppResponseDto } from "utils/filters/response.filter";
 
 export interface IClassConstructor<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;

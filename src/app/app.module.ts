@@ -8,7 +8,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
 import { CustomDBLoggerOnTypeORM } from "utils/db.logger";
-import { AppExceptionsFilter } from "utils/exception.filter";
+import { AppExceptionsFilter } from "utils/filters/exception.filter";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
