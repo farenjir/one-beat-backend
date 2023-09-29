@@ -4,7 +4,7 @@ import { FindOneOptions, Repository } from "typeorm";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 
-import { handleHashPassword, hashPassword } from "utils/auth.handles";
+import { handleHashPassword, hashPassword } from "utils/configs/auth.configs";
 
 import { ProfileService } from "./profile/profile.service";
 import { UserKycService } from "./kyc/kyc.service";

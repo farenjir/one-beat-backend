@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { Expose } from "class-transformer";
 
-import { UploadEnum } from "./upload.configs";
+import { UploadEnum } from "utils/configs/upload.configs";
 
 export { UploadDto, FileDto, UploadQueryDto, UploadResponseDto };
 
