@@ -7,7 +7,7 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
-import { CustomDBLoggerOnTypeORM } from "utils/db.logger";
+import { CustomDBLoggerOnTypeORM } from "utils/logs/db.logger";
 import { AppExceptionsFilter } from "utils/filters/exception.filter";
 
 import { AppService } from "./app.service";

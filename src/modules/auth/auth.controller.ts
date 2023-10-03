@@ -41,7 +41,6 @@ export class AuthController {
 		res.cookie(cookieKey, token, cookieOptions);
 		return user;
 	}
-
 	// signUp
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signUp")

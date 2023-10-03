@@ -2,9 +2,9 @@ import { BadRequestException, Injectable, UnauthorizedException, ForbiddenExcept
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
+import { pickBy as _pickBy } from "lodash";
 import appleSignin, { AppleIdTokenType } from "apple-signin-auth";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
-import { pickBy as _pickBy } from "lodash";
 
 import { hashPassword, handleHashPassword } from "utils/configs/auth.configs";
 
@@ -23,7 +23,27 @@ export class AuthService {
 		private mailService: MailService,
 		private config: ConfigService,
 	) {}
-	// signup
+	async signin({ username, email, password }: SignInDto): Promise<UserDto & AuthExtraDto> {
+		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
+		// get
+		const user = await this.usersService.findBy(params, true);
+		// stored password
+		const [salt, storedHash] = user.password.split(".");
+		const hash = await handleHashPassword(password, salt);
+		// check password
+		if (storedHash !== hash) {
+			throw new UnauthorizedException("4003");
+		}
+		// check activated
+		if (!user.kyc.userKyc) {
+			throw new ForbiddenException("4011");
+		}
+		// return JWT token
+		return {
+			token: await this.generateToken(user),
+			...user,
+		};
+	}
 	async signup(userParams: AuthSignUpDto): Promise<UserDto> {
 		const { email, password, username } = userParams;
 		// validation unique params
@@ -44,29 +64,6 @@ export class AuthService {
 		await this.mailService.sendUserConfirmation(userCreated, token);
 		// return new user
 		return userCreated;
-	}
-	// signin
-	async signin(userParams: SignInDto): Promise<UserDto & AuthExtraDto> {
-		const { username, email, password } = userParams;
-		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
-		// get
-		const user = await this.usersService.findBy(params, true);
-		// stored password
-		const [salt, storedHash] = user.password.split(".");
-		const hash = await handleHashPassword(password, salt);
-		// check password
-		if (storedHash !== hash) {
-			throw new UnauthorizedException("4003");
-		}
-		// check activated
-		if (!user.kyc.userKyc) {
-			throw new ForbiddenException("4011");
-		}
-		// return JWT token
-		return {
-			token: await this.generateToken(user),
-			...user,
-		};
 	}
 	async confirmUserEmail(token: string): Promise<UserDto> {
 		const { id } = await this.decodeToken(token);

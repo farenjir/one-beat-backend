@@ -4,10 +4,10 @@ import { plainToInstance } from "class-transformer";
 
 import { BaseQuery } from "./base.dto";
 
-type AllowedTypes = string | boolean | number | Array<any> | object;
+type AllowedTypes = string | boolean | number | Array<unknown> | object;
 
 @Injectable()
-export class ValidationQueryPipe implements PipeTransform<any> {
+export class ValidationQueryPipe implements PipeTransform<unknown> {
 	// transform
 	async transform(value: BaseQuery, { metatype }: ArgumentMetadata) {
 		if (!metatype || !this.toValidate(metatype)) {
