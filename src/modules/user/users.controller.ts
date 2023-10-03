@@ -26,7 +26,7 @@ export class UsersController {
 	// profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
-	@Get("userProfile")
+	@Get("getUser")
 	@ResponseMessage("")
 	async findProfile(@Req() { user }: Request): Promise<UserProfileDto> {
 		return await this.usersService.findUserWithProfile({ id: user.id }, true);
