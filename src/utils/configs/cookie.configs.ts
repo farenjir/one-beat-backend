@@ -1,4 +1,4 @@
-export const cookieKey = "app-token";
+export const COOKIE_Key = "app-token";
 
 export const cookieOptions = {
 	path: "/",

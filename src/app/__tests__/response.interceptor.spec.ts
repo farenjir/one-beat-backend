@@ -4,8 +4,8 @@ import { CallHandler, ExecutionContext } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 
 import { AppResponseInterceptor } from "../app.interceptor";
+import { AppResponseDto } from "utils/filters/response.filter";
 
-import { AppResponseDto } from "utils/response.filter";
 
 describe("AppResponseInterceptor", () => {
 	let interceptor: AppResponseInterceptor<any>;
@@ -16,7 +16,7 @@ describe("AppResponseInterceptor", () => {
 		interceptor = new AppResponseInterceptor(reflector);
 	});
 
-	it("should return data with custom response message if ResponseKey is defined in the handler", (done) => {
+	it("should return data with custom response message if RESPONSE_KEY is defined in the handler", (done) => {
 		const mockResponseMessageCode = "2000";
 
 		const mockHandler: CallHandler<any> = {

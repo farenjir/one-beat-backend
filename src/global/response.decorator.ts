@@ -1,6 +1,6 @@
 import { SetMetadata } from "@nestjs/common";
 
-export const ResponseKey = "ResponseMessage";
+export const RESPONSE_KEY = "ResponseMessage";
 
 export const ResponseMessage = (messageCode: string, descriptionCode?: string) =>
-	SetMetadata(ResponseKey, [messageCode || "", descriptionCode || ""]);
+	SetMetadata(RESPONSE_KEY, [messageCode || "", descriptionCode || ""]);

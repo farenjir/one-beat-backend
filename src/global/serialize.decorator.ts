@@ -1,6 +1,6 @@
 import { SetMetadata } from "@nestjs/common";
 import { IClassConstructor } from "app/app.interceptor";
 
-export const SerializeKey = "SerializeKey";
+export const SERIALIZE_KEY = "SerializeKey";
 
-export const Serialize = (dto: IClassConstructor, exclude?: boolean) => SetMetadata(SerializeKey, { dto, exclude });
+export const Serialize = (dto: IClassConstructor, exclude?: boolean) => SetMetadata(SERIALIZE_KEY, { dto, exclude });

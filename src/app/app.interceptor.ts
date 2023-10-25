@@ -18,8 +18,8 @@ import { plainToClass } from "class-transformer";
 import { Observable, throwError, TimeoutError } from "rxjs";
 import { catchError, timeout, tap, map as rxMap } from "rxjs/operators";
 
-import { ResponseKey } from "global/response.decorator";
-import { SerializeKey } from "global/serialize.decorator";
+import { RESPONSE_KEY } from "global/response.decorator";
+import { SERIALIZE_KEY } from "global/serialize.decorator";
 
 import { appResponse, AppResponseDto } from "utils/filters/response.filter";
 
@@ -36,7 +36,7 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
-		const [messageCode, descriptionCode] = this.reflector.get<string>(ResponseKey, context.getHandler());
+		const [messageCode, descriptionCode] = this.reflector.get<string>(RESPONSE_KEY, context.getHandler());
 		// return
 		return next.handle().pipe(
 			rxMap((data) => {
@@ -51,7 +51,7 @@ export class SerializeDataInterceptor implements NestInterceptor {
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, handler: CallHandler): Observable<unknown> {
-		const { dto, exclude = false } = this.reflector.get<ISerialize>(SerializeKey, context.getClass()) || {};
+		const { dto, exclude = false } = this.reflector.get<ISerialize>(SERIALIZE_KEY, context.getClass()) || {};
 		return handler.handle().pipe(
 			rxMap((data) => {
 				return plainToClass(dto, data, { excludeExtraneousValues: exclude });
