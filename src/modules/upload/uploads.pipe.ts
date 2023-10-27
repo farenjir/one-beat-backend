@@ -3,7 +3,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
-import { ItemUploadType } from "../../utils/configs/upload.configs";
+import { ItemUploadType } from "utils/configs/upload.configs";
 import { UploadQueryDto } from "./upload.dto";
 
 type AllowedTypes = string | boolean | number | Array<any> | object;
@@ -38,7 +38,7 @@ export class FileValidationPipe implements PipeTransform {
 		if (!value) {
 			throw new BadRequestException("4005");
 		}
-		const { size, mimetype } = value;
+		const { size, mimetype } = value || {};
 		// validations
 		if (!types.includes(mimetype)) {
 			throw new BadRequestException("4006");

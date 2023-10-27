@@ -8,6 +8,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
 import { AppExceptionsFilter } from "utils/filters/exception.filter";
+import { CustomDBLoggerOnTypeORM } from "utils/logs/db.logger";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
@@ -51,7 +52,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 				password: config.get<string>("DB_PASS"),
 				synchronize: true,
 				// autoLoadEntities: true,
-				// logger: new CustomDBLoggerOnTypeORM(),
+				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities
 				entities: [Bases, Version, Users, Profile, UserKYC, Upload],
 			}),
