@@ -1,4 +1,4 @@
-import { Controller, Body, Get, Patch, Delete, Param, ParseIntPipe, Req } from "@nestjs/common";
+import { Controller, Body, Get, Put, Delete, Param, ParseIntPipe, Req } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
@@ -34,7 +34,7 @@ export class UsersController {
 	// updateUser with profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
-	@Patch("updateUser")
+	@Put("updateUser")
 	@ResponseMessage("2005")
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
 		return await this.usersService.updateUserProfile(user.id, body);
@@ -58,7 +58,7 @@ export class UsersController {
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards(Role.Admin, Role.User)
-	@Patch("updateBy/:id")
+	@Put("updateBy/:id")
 	@ResponseMessage("2005")
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UserProfileDto): Promise<UserProfileDto> {
 		return await this.usersService.updateById(id, body);

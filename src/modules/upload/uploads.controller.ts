@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Put, Post, Query, Req, UploadedFile } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
@@ -103,7 +103,7 @@ export class UploadController {
 	// updateFile
 	@SwaggerDocumentaryApi(UploadResponseDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Patch("updateBy/:id")
+	@Put("updateBy/:id")
 	@ResponseMessage("2010")
 	async updateUserById(@Param("id") id: string, @Body() body: UploadDto): Promise<UploadResponseDto> {
 		return await this.uploadService.updateById(id, body);

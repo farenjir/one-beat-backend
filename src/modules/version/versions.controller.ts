@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Param } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
@@ -64,7 +64,7 @@ export class VersionController {
 	// update pre types
 	@SwaggerDocumentaryApi(VersionDto)
 	@AppGuards(Role.Admin, Role.Editor)
-	@Patch("updateBy/:id")
+	@Put("updateBy/:id")
 	@ResponseMessage("2013")
 	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: VersionCreateUpdateDto): Promise<VersionDto> {
 		return await this.versionServices.updateById(id, body);

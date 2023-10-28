@@ -11,7 +11,11 @@ import { AppModule } from "app/app.module";
 
 async function bootstrap() {
 	const app = await NestFactory.create<INestApplication<any>>(AppModule, {
-		// cors
+		cors: {
+			origin: ["http://localhost:3000"],
+			methods: ["GET", "POST", "PUT", "DELETE"],
+			credentials: true,
+		},
 		// bodyParser
 		// httpsOptions
 		// abortOnError
@@ -53,7 +57,7 @@ async function bootstrap() {
 	// etag setup options
 	// (<any>app).set("etag", false);
 	// listen
-	await app.listen(3000);
+	await app.listen(3010);
 }
 // launcher
 bootstrap();
