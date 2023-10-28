@@ -7,6 +7,17 @@ export const swaggerConfig = new DocumentBuilder()
 	.addCookieAuth("app-token")
 	.build();
 
+export const mainConfigs = {
+	cors: {
+		origin: ["http://localhost:3000"],
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true,
+	},
+	// bodyParser
+	// httpsOptions
+	// abortOnError
+};
+
 export const sessionConfigs = {
 	secret: "keyOfSession",
 	resave: false,
@@ -15,6 +26,7 @@ export const sessionConfigs = {
 
 export const helmetConfigs = {
 	crossOriginEmbedderPolicy: false,
+	crossOriginOpenerPolicy: false,
 	xPoweredBy: false,
 	contentSecurityPolicy: {
 		directives: {
