@@ -15,14 +15,8 @@ export const SwaggerDocumentaryApi = (
 	responseDto: IClassConstructor,
 	{ responseIsObject = true, useAuth = true, query = [], description = "" }: IOptions = {},
 ) => {
-	let queryArray = [];
-	let auth = [];
-	if (query?.length) {
-		queryArray = query.map(ApiQuery);
-	}
-	if (useAuth) {
-		auth = [ApiCookieAuth()];
-	}
+	const queryArray = query.map(ApiQuery);
+	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// return
 	return applyDecorators(
 		...auth,

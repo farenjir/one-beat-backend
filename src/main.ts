@@ -1,20 +1,21 @@
 import { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { SwaggerModule } from "@nestjs/swagger";
 
+import helmet from "helmet";
 import * as cookieParser from "cookie-parser";
 import * as session from "express-session";
 
-import helmet from "helmet";
-import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { helmetConfigs, sessionConfigs, swaggerConfig } from "utils/configs/main.configs";
 
 import { AppModule } from "app/app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create<INestApplication<any>>(AppModule, {
+	const app = await NestFactory.create<INestApplication<unknown>>(AppModule, {
 		cors: {
 			origin: ["http://localhost:3000"],
 			methods: ["GET", "POST", "PUT", "DELETE"],
-			credentials: true,
+			credentials: false,
 		},
 		// bodyParser
 		// httpsOptions
@@ -23,37 +24,11 @@ async function bootstrap() {
 	// cookieParser
 	app.use(cookieParser());
 	// session
-	app.use(
-		session({
-			secret: "keyOfSession",
-			resave: false,
-			saveUninitialized: false,
-		}),
-	);
+	app.use(session(sessionConfigs));
 	// headers
-	app.use(
-		helmet({
-			crossOriginEmbedderPolicy: false,
-			xPoweredBy: false,
-			contentSecurityPolicy: {
-				directives: {
-					imgSrc: [`'self'`],
-					scriptSrc: [`'self'`],
-					manifestSrc: [`'self'`],
-					frameSrc: [`'self'`],
-				},
-			},
-		}),
-	);
-	// swagger
-	const config = new DocumentBuilder()
-		.setTitle("1BEAT")
-		.setDescription("api of 1BEAT")
-		.setVersion("1.0")
-		.addCookieAuth("app-token")
-		.build();
+	app.use(helmet(helmetConfigs));
 	// swagger apply on app
-	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, config));
+	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, swaggerConfig));
 	// etag setup options
 	// (<any>app).set("etag", false);
 	// listen
