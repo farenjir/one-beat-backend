@@ -1,3 +1,5 @@
+import { NestApplicationOptions } from "@nestjs/common/interfaces/nest-application-options.interface";
+import { HelmetOptions } from "helmet";
 import { DocumentBuilder } from "@nestjs/swagger";
 
 export const swaggerConfig = new DocumentBuilder()
@@ -7,7 +9,7 @@ export const swaggerConfig = new DocumentBuilder()
 	.addCookieAuth("app-token")
 	.build();
 
-export const mainConfigs = {
+export const mainConfigs: NestApplicationOptions = {
 	cors: {
 		origin: ["http://localhost:3000"],
 		methods: ["GET", "POST", "PUT", "DELETE"],
@@ -18,24 +20,23 @@ export const mainConfigs = {
 	// abortOnError
 };
 
+export const helmetConfigs: Readonly<HelmetOptions> = {
+	crossOriginResourcePolicy: { policy: "same-site" },
+	crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+	crossOriginEmbedderPolicy: { policy: "credentialless" },
+	contentSecurityPolicy: {
+		directives: {
+			"script-src": ["'self'", "http://localhost:3000"],
+		},
+	},
+	xXssProtection: true,
+	xPoweredBy: false,
+};
+
 export const sessionConfigs = {
 	secret: "keyOfSession",
 	resave: false,
 	saveUninitialized: false,
-};
-
-export const helmetConfigs = {
-	crossOriginEmbedderPolicy: false,
-	crossOriginOpenerPolicy: false,
-	xPoweredBy: false,
-	contentSecurityPolicy: {
-		directives: {
-			imgSrc: [`'self'`],
-			scriptSrc: [`'self'`],
-			manifestSrc: [`'self'`],
-			frameSrc: [`'self'`],
-		},
-	},
 };
 
 export const COOKIE_Key = "app-token";
