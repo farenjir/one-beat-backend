@@ -11,7 +11,7 @@ import { helmetConfigs, mainConfigs, sessionConfigs, swaggerConfig } from "utils
 import { AppModule } from "app/app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create<INestApplication<unknown>>(AppModule, mainConfigs);
+	const app = await NestFactory.create<INestApplication<any>>(AppModule, mainConfigs);
 	// cookieParser
 	app.use(cookieParser());
 	// session
