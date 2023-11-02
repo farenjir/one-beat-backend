@@ -21,7 +21,7 @@ export class UsersController {
 	@Get("whoAmI")
 	@ResponseMessage("2002")
 	async whoAmI(@Req() { user }: Request): Promise<UserDto> {
-		return await this.usersService.findBy({ id: user.id }, true);
+		return await this.usersService.findBy({ id: user?.id }, true);
 	}
 	// profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
@@ -29,7 +29,7 @@ export class UsersController {
 	@Get("getUser")
 	@ResponseMessage("")
 	async findProfile(@Req() { user }: Request): Promise<UserProfileDto> {
-		return await this.usersService.findUserWithProfile({ id: user.id }, true);
+		return await this.usersService.findUserWithProfile({ id: user?.id }, true);
 	}
 	// updateUser with profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
@@ -37,7 +37,7 @@ export class UsersController {
 	@Put("updateUser")
 	@ResponseMessage("2005")
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
-		return await this.usersService.updateUserProfile(user.id, body);
+		return await this.usersService.updateUserProfile(user?.id, body);
 	}
 	// findAllUsers
 	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
