@@ -69,7 +69,7 @@ const filterMessages = (messageCode: string | number) => {
 		// custom codes
 		4000: "Invalid Query or Params",
 		4001: "User Not Found",
-		4002: "Email is Already in Use",
+		4002: "Email or Username is Already in Use",
 		4003: "Invalid Password or Email",
 		4004: "Base Not Found",
 		4005: "File Not Found",

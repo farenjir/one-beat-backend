@@ -61,7 +61,7 @@ export class AuthService {
 		const userCreated = await this.usersService.create({ username, email, password: hashedPassword });
 		// send confirmation mail
 		const token = await this.generateToken(userCreated);
-		await this.mailService.sendUserConfirmation(userCreated, token);
+		// await this.mailService.sendUserConfirmation(userCreated, token);
 		// return new user
 		return userCreated;
 	}

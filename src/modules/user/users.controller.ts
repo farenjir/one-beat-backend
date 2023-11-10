@@ -19,7 +19,7 @@ export class UsersController {
 	@SwaggerDocumentaryApi(UserDto)
 	@AppGuards()
 	@Get("whoAmI")
-	@ResponseMessage("2002")
+	@ResponseMessage("")
 	async whoAmI(@Req() { user }: Request): Promise<UserDto> {
 		return await this.usersService.findBy({ id: user?.id }, true);
 	}

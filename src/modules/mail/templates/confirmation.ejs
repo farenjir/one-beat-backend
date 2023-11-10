@@ -1,12 +1,18 @@
-<header>
-	<h1>Hey <%= name || "" %>,</h1>
-</header>
-
-<main>
-	<p>Please click below to confirm your email</p>
-	<a href="<%= url %>">Confirm</a>
-</main>
-
-<footer>
-	<p>If you did not request this email you can safely ignore it.</p>
-</footer>
+<!doctype html>
+<html>
+	<head>
+		<title>Email Confirmation</title>
+	</head>
+	<body>
+		<header id="header">
+			<h1>Hey <%= name || "" %>,</h1>
+		</header>
+		<main id="main">
+			<p>Please click below to confirm your email</p>
+			<a href="<%= url || "" %>">Confirm</a>
+		</main>
+		<footer id="footer">
+			<p>If you did not request this email, you can safely ignore it.</p>
+		</footer>
+	</body>
+</html>
