@@ -13,16 +13,16 @@ class BaseDto {
 	@MaxLength(30)
 	@MinLength(1)
 	type: string;
-	@ApiProperty({ default: "Name" })
+	@ApiProperty({ default: "enName" })
 	@Expose()
 	@MaxLength(30)
 	@MinLength(1)
-	name: string;
-	@ApiProperty({ default: "NameFa" })
+	enName: string;
+	@ApiProperty({ default: "faName" })
 	@Expose()
 	@MaxLength(30)
 	@MinLength(1)
-	nameFa: string;
+	faName: string;
 	@Expose()
 	parent?: BaseDto;
 	@ApiProperty({ default: [BaseDto] })
@@ -39,16 +39,16 @@ class CreateBaseDto {
 	@MaxLength(30)
 	@MinLength(1)
 	type: string;
-	@ApiProperty({ default: "Name" })
+	@ApiProperty({ default: "enName" })
 	@IsString()
 	@MaxLength(30)
 	@MinLength(1)
-	name: string;
-	@ApiProperty({ default: "NameFa" })
+	enName: string;
+	@ApiProperty({ default: "faName" })
 	@IsString()
 	@MaxLength(30)
 	@MinLength(1)
-	nameFa: string;
+	faName: string;
 }
 
 class CreateBasesDto {
@@ -57,16 +57,16 @@ class CreateBasesDto {
 	@MaxLength(30)
 	@MinLength(1)
 	type: string;
-	@ApiProperty({ default: "Name" })
+	@ApiProperty({ default: "enName" })
 	@IsString()
 	@MaxLength(30)
 	@MinLength(1)
-	name: string;
-	@ApiProperty({ default: "NameFa" })
+	enName: string;
+	@ApiProperty({ default: "faName" })
 	@IsString()
 	@MaxLength(30)
 	@MinLength(1)
-	nameFa: string;
+	faName: string;
 	@ApiProperty({ default: [CreateBaseDto] })
 	@IsArray()
 	children: CreateBaseDto[];
@@ -80,14 +80,14 @@ class UpdateBaseDto {
 	@IsString()
 	@IsOptional()
 	type: string;
-	@ApiProperty({ default: "Name" })
+	@ApiProperty({ default: "enName" })
 	@IsString()
 	@IsOptional()
-	name: string;
-	@ApiProperty({ default: "NameFa" })
+	enName: string;
+	@ApiProperty({ default: "faName" })
 	@IsString()
 	@IsOptional()
-	nameFa: string;
+	faName: string;
 }
 
 class BaseQuery {

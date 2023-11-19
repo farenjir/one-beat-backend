@@ -50,8 +50,8 @@ export class BaseService {
 		const base = this.repo.create(baseParams);
 		return this.repo.save(base);
 	}
-	async createWithChildren({ type, name, nameFa, children = [] }: CreateBasesDto): Promise<Bases> {
-		const createBaseParent = await this.create({ parentId: 0, type, name, nameFa });
+	async createWithChildren({ type, enName, faName, children = [] }: CreateBasesDto): Promise<Bases> {
+		const createBaseParent = await this.create({ parentId: 0, type, enName, faName });
 		const createChildren = await this.handleSaveChildren(createBaseParent.id, children);
 		return Object.assign({}, createBaseParent, { children: createChildren });
 	}
@@ -81,6 +81,6 @@ export class BaseService {
 	}
 	// handles
 	async handleSaveChildren(parentId: number, children: CreateBaseDto[]): Promise<Bases[]> {
-		return await Promise.all(children.map(({ type, name, nameFa }) => this.create({ parentId, type, name, nameFa })));
+		return await Promise.all(children.map(({ type, enName, faName }) => this.create({ parentId, type, enName, faName })));
 	}
 }

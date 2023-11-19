@@ -10,10 +10,10 @@ export class Bases {
 	type!: string;
 
 	@Column()
-	name!: string;
+	enName!: string;
 
 	@Column()
-	nameFa!: string;
+	faName!: string;
 
 	// TreeChildren
 	@TreeChildren()
