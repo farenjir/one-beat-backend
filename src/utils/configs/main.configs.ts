@@ -39,7 +39,7 @@ export const sessionConfigs = {
 	saveUninitialized: false,
 };
 
-export const COOKIE_Key = "app-token";
+export const TOKEN_KEY = "app-token";
 export const cookieOptions = {
 	path: "/",
 	maxAge: 24 * 24 * 3600,

@@ -174,7 +174,6 @@ export class AuthService {
 			...user,
 		};
 	}
-
 	// *** handles
 	async generateToken({ roles, id }: UserDto): Promise<string> {
 		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
