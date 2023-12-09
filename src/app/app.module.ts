@@ -35,6 +35,9 @@ import { UserKYC } from "modules/user/kyc/kyc.entity";
 import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
 
+import { Products } from "modules/product/product.entity";
+import { ProductModule } from "modules/product/product.module";
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -53,8 +56,8 @@ import { UploadModule } from "modules/upload/uploads.module";
 				synchronize: true,
 				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
-				// app entities
-				entities: [Bases, Version, Users, Profile, UserKYC, Upload],
+				// app entities join(__dirname, "../modules/**/*.entity.ts")
+				entities: [Bases, Version, Users, Profile, UserKYC, Upload, Products],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -78,6 +81,7 @@ import { UploadModule } from "modules/upload/uploads.module";
 		VersionModule,
 		AuthModule,
 		UsersModule,
+		ProductModule,
 		UploadModule,
 	],
 	controllers: [AppController],

@@ -6,9 +6,9 @@ import { validate } from "class-validator";
 import { ItemUploadType } from "utils/configs/upload.configs";
 import { UploadQueryDto } from "./upload.dto";
 
-type AllowedTypes = string | boolean | number | Array<any> | object;
+type AllowedTypes = string | boolean | number | Array<unknown> | object;
 @Injectable()
-export class ValidationQueryPipe implements PipeTransform<any> {
+export class ValidationQueryPipe implements PipeTransform<unknown> {
 	// transform
 	async transform(value: UploadQueryDto, { metatype }: ArgumentMetadata) {
 		if (!metatype || !this.toValidate(metatype)) {
@@ -32,7 +32,7 @@ export class ValidationQueryPipe implements PipeTransform<any> {
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
 	constructor(public readonly optionsAsArray: ItemUploadType) {}
-	// transform
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	transform(value: any): Promise<any> {
 		const { types, maxFileSize } = this.optionsAsArray;
 		if (!value) {

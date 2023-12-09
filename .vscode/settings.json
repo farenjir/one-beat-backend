@@ -1,19 +1,8 @@
 {
-    "cSpell.words": [
-        "farshid",
-        "metatype",
-        "navid",
-        "nestjs",
-        "resave",
-        "signin",
-        "signout",
-        "ssword",
-        "Streamable",
-        "typeorm"
-    ],
-    "workbench.colorCustomizations": {
-        "activityBar.background": "#4D1943",
-        "titleBar.activeBackground": "#6C225E",
-        "titleBar.activeForeground": "#FDF8FC"
-    }
+	"cSpell.words": ["farshid", "metatype", "navid", "nestjs", "resave", "signin", "signout", "ssword", "Streamable", "typeorm"],
+	"workbench.colorCustomizations": {
+		"activityBar.background": "#4D1943",
+		"titleBar.activeBackground": "#6C225E",
+		"titleBar.activeForeground": "#FDF8FC"
+	}
 }

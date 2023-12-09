@@ -12,7 +12,7 @@ import { getCode, getErrorMessage } from "./exception.error";
 export class AppExceptionsFilter implements ExceptionFilter {
 	private readonly logger: Logger = new Logger(AppExceptionsFilter.name);
 	// catch
-	public catch(exception: any, host: ArgumentsHost): void {
+	public catch(exception: unknown, host: ArgumentsHost): void {
 		const ctx: HttpArgumentsHost = host.switchToHttp();
 		const request: Request = ctx.getRequest();
 		const response: Response = ctx.getResponse();

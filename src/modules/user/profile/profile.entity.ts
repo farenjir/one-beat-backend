@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, Column, ManyToMany, JoinTable } from "typeorm";
 
-import { Bases } from "modules/base/base.entity";
 import { IsOptional } from "class-validator";
+
+import { Bases } from "modules/base/base.entity";
 
 @Entity()
 export class Profile {
@@ -25,7 +26,6 @@ export class Profile {
 	age: number;
 
 	// *** relations params
-
 	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"],
 	@JoinColumn()
 	@IsOptional()
