@@ -6,7 +6,6 @@ import { Observable, of } from "rxjs";
 import { AppResponseInterceptor } from "../app.interceptor";
 import { AppResponseDto } from "utils/filters/response.filter";
 
-
 describe("AppResponseInterceptor", () => {
 	let interceptor: AppResponseInterceptor<any>;
 	let reflector: Reflector;
