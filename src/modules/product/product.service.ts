@@ -7,4 +7,8 @@ import { Products } from "./product.entity";
 @Injectable()
 export class ProductsService {
 	constructor(@InjectRepository(Products) private repo: Repository<Products>) {}
+	// findAll
+	async findAll(): Promise<Products[]> {
+		return await this.repo.find();
+	}
 }

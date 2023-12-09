@@ -14,6 +14,7 @@ import {
 
 import { IsOptional } from "class-validator";
 
+import { Users } from "modules/user/user.entity";
 import { Bases } from "modules/base/base.entity";
 import { Upload } from "modules/upload/upload.entity";
 
@@ -50,9 +51,9 @@ export class Products extends DefaultEntity {
 	// @JoinColumn()
 	// kyc: ProductKYC;
 
-	// @OneToOne(() => Users, { eager: true })
-	// @JoinColumn()
-	// producer: Users;
+	@OneToOne(() => Users, { eager: true })
+	@JoinColumn()
+	producer: Users;
 
 	@OneToOne(() => Upload, { eager: true })
 	@JoinColumn()
