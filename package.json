@@ -17,7 +17,8 @@
 		"test:spec": "cross-env NODE_ENV=test jest --config ./jest.config.js --watch",
 		"test:e2e": "cross-env NODE_ENV=test jest --config ./jest.e2e.config.js --watch",
 		"test": "cross-env NODE_ENV=test jest",
-		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+		"commit": "npm run lint && npx prettier --write . && git add . && git commit -m "
 	},
 	"dependencies": {
 		"@nestjs-modules/mailer": "^1.9.1",
