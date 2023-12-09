@@ -23,8 +23,8 @@ import { SERIALIZE_KEY } from "global/serialize.decorator";
 
 import { appResponse, AppResponseDto } from "utils/filters/response.filter";
 
-export interface IClassConstructor<InstanceType = any> {
-	new (...args: any[]): InstanceType;
+export interface IClassConstructor<InstanceType = unknown> {
+	new (...args: unknown[]): InstanceType;
 }
 export interface ISerialize {
 	dto: IClassConstructor | null;
@@ -120,13 +120,13 @@ export class AppLoggingInterceptor implements NestInterceptor {
 		// return
 		return call$.handle().pipe(
 			tap({
-				next: (val: any): void => this.logNext(val, req),
+				next: (val: unknown): void => this.logNext(val, req),
 				error: (err: Error): void => this.logError(err, req),
 			}),
 		);
 	}
 	// *** handles
-	private logNext(body: any, req: Request): void {
+	private logNext(body: unknown, req: Request): void {
 		const { method, url, user } = req;
 		const userId = `userId:${user?.id || 0}`;
 		const statusCode: number = req.res.statusCode;

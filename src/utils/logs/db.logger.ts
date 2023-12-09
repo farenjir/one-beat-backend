@@ -1,6 +1,7 @@
 import { AbstractLogger, LogLevel, LogMessage, QueryRunner } from "typeorm";
 
 export class CustomDBLoggerOnTypeORM extends AbstractLogger {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	protected writeLog(level: LogLevel, logMessage: LogMessage | LogMessage[], queryRunner?: QueryRunner) {
 		const messages = this.prepareLogMessages(logMessage, {
 			highlightSql: false,

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
-import { Expose, Type, Exclude } from "class-transformer";
+import { IsArray, MaxLength, MinLength } from "class-validator";
+import { Expose } from "class-transformer";
 import { Upload } from "modules/upload/upload.entity";
 import { Users } from "modules/user/user.entity";
 import { Bases } from "modules/base/base.entity";
