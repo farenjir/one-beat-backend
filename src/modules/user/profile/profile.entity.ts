@@ -27,27 +27,15 @@ export class Profile {
 	@IsOptional()
 	genderId: number;
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	@IsOptional()
 	expertiseIds: number[];
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	@IsOptional()
 	skillIds: number[];
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	@IsOptional()
 	favoriteIds: number[];
 }

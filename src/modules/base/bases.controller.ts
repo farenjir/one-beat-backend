@@ -65,7 +65,7 @@ export class BaseController {
 	}
 	// add new types
 	@SwaggerDocumentaryApi(CreateBaseDto)
-	@AppGuards(Role.Admin)
+	// @AppGuards(Role.Admin)
 	@Post("addBase")
 	@ResponseMessage("2007")
 	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {

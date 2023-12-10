@@ -43,32 +43,16 @@ export class Products extends DefaultEntity {
 	@Column()
 	demoFileName: string;
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	genreIds: number[];
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	tempoIds: number[];
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	groupIds: number[];
 
-	@Column({
-		array: true,
-		type: Number,
-		default: [],
-	})
+	@Column("int", { array: true, default: [] })
 	moodIds: number[];
 
 	// *** relations

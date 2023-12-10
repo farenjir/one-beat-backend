@@ -11,9 +11,6 @@ export class Version {
 	@Column()
 	baseVersion!: number;
 
-	@Column("text", {
-		array: true,
-		default: [],
-	})
+	@Column("text", { array: true, default: [] })
 	description!: string[];
 }
