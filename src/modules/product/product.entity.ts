@@ -12,11 +12,8 @@ import {
 	OneToOne,
 } from "typeorm";
 
-import { IsOptional } from "class-validator";
-
 import { Users } from "modules/user/user.entity";
 import { Bases } from "modules/base/base.entity";
-import { Upload } from "modules/upload/upload.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -36,15 +33,19 @@ export class Products extends DefaultEntity {
 	faName!: string;
 
 	@Column({ unique: true })
-	@IsOptional()
 	enName: string;
 
 	@Column()
 	faDescription!: string;
 
 	@Column()
-	@IsOptional()
 	enDescription: string;
+
+	@Column()
+	coverFileName: string;
+
+	@Column()
+	demoFileName: string;
 
 	// *** relations
 	// @OneToOne(() => ProductKYC, { eager: true })
@@ -54,14 +55,6 @@ export class Products extends DefaultEntity {
 	@OneToOne(() => Users, { eager: true })
 	@JoinColumn()
 	producer: Users;
-
-	@OneToOne(() => Upload, { eager: true })
-	@JoinColumn()
-	cover: Upload;
-
-	@OneToOne(() => Upload, { eager: true })
-	@JoinColumn()
-	demo: Upload;
 
 	// *** relations params
 	@ManyToOne(() => Bases, { eager: true, nullable: true }) // cascade: ["insert", "update", "recover"],

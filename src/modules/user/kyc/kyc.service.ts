@@ -13,7 +13,7 @@ export class UserKycService {
 		const { userKyc = false, mobileKyc = false, emailKyc = false, producerKyc = false, googleKyc = false } = params;
 		// create
 		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
-		return this.repo.save(kyc);
+		return await this.repo.save(kyc);
 	}
 	// findAll
 	async find(): Promise<UserKYC[]> {

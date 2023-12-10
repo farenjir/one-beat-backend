@@ -35,7 +35,7 @@ export class BaseService {
 			throw new NotFoundException("4008");
 		}
 		const options: FindTreeOptions = { relations: ["parent", "children"] };
-		const { children } = await this.repo.findDescendantsTree(parent, options);
+		const { children } = (await this.repo.findDescendantsTree(parent, options)) || {};
 		return children;
 	}
 	// create
@@ -48,7 +48,7 @@ export class BaseService {
 			Object.assign(baseParams, { parent });
 		}
 		const base = this.repo.create(baseParams);
-		return this.repo.save(base);
+		return await this.repo.save(base);
 	}
 	async createWithChildren({ type, enName, faName, children = [] }: CreateBasesDto): Promise<Bases> {
 		const createBaseParent = await this.create({ parentId: 0, type, enName, faName });

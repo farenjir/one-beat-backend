@@ -21,7 +21,7 @@ export class ProfileService {
 		const { gender, expertise, skills, favorites, ...profileData }: Partial<Profile> = await this.getRelationsParams(params);
 		// create
 		const profile = this.repo.create({ gender, expertise, skills, favorites, ...profileData });
-		return this.repo.save(profile);
+		return await this.repo.save(profile);
 	}
 	// findAll
 	async find(): Promise<Profile[]> {

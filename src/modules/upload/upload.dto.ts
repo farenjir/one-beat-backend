@@ -7,6 +7,14 @@ import { UploadEnum } from "utils/configs/upload.configs";
 export { UploadDto, FileDto, UploadQueryDto, UploadResponseDto };
 
 class UploadDto {
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	id: string;
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	name: string;
 	@ApiProperty({ name: "category", enumName: "UploadEnum", enum: UploadEnum })
 	@Expose()
 	@IsString()

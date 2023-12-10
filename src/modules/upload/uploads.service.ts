@@ -20,7 +20,7 @@ export class UploadService {
 			category,
 		};
 		const file = this.repo.create(params);
-		return this.repo.save(file);
+		return await this.repo.save(file);
 	}
 	// findAll
 	async findFiles(): Promise<Upload[]> {
