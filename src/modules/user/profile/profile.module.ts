@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { GlobalModule } from "global/global.module";
+import { JwtModule } from "@nestjs/jwt";
 
 import { Profile } from "./profile.entity";
 import { ProfileService } from "./profile.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Profile]), GlobalModule],
+	imports: [TypeOrmModule.forFeature([Profile]), JwtModule],
 	providers: [ProfileService],
 	exports: [ProfileService],
 })

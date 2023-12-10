@@ -32,11 +32,11 @@ class CreateSaveProfileDto {
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
-	skillsIds?: number[];
+	skillIds?: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
-	favoritesIds?: number[];
+	favoriteIds?: number[];
 }
 class ProfileDto extends CreateSaveProfileDto {
 	@ApiProperty()
@@ -71,9 +71,9 @@ class UpdateProfileDto {
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
-	skillsIds: number[];
+	skillIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@IsOptional()
-	favoritesIds?: number[];
+	favoriteIds?: number[];
 }

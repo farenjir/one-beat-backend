@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-
-import { GlobalModule } from "global/global.module";
+import { JwtModule } from "@nestjs/jwt";
 
 import { Users } from "./user.entity";
 import { UsersService } from "./user.service";
@@ -10,7 +9,7 @@ import { ProfileModule } from "./profile/profile.module";
 import { UserKycModule } from "./kyc/kyc.module";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Users]), ProfileModule, UserKycModule, GlobalModule],
+	imports: [TypeOrmModule.forFeature([Users]), JwtModule, ProfileModule, UserKycModule],
 	controllers: [UsersController],
 	providers: [UsersService],
 	exports: [UsersService],

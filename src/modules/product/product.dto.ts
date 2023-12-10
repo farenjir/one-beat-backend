@@ -3,7 +3,6 @@ import { IsArray, MaxLength, MinLength } from "class-validator";
 import { Expose } from "class-transformer";
 
 import { UserDto } from "modules/user/user.dto";
-import { BaseDto } from "modules/base/base.dto";
 
 export { ProductDto, CreateProductDto };
 
@@ -37,27 +36,26 @@ class ProductDto {
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
 	demoFileName: string;
+	@ApiProperty({ type: [Number], default: [] })
+	@IsArray()
+	@Expose()
+	genreIds: number[];
+	@ApiProperty({ type: [Number], default: [] })
+	@IsArray()
+	@Expose()
+	tempoIds: number[];
+	@ApiProperty({ type: [Number], default: [] })
+	@IsArray()
+	@Expose()
+	groupIds: number[];
+	@ApiProperty({ type: [Number], default: [] })
+	@IsArray()
+	@Expose()
+	moodIds: number[];
 	// relations
 	@ApiProperty({ default: UserDto })
 	@Expose()
 	producer?: UserDto;
-	// base relations
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	genre: BaseDto[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	tempo: BaseDto[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	group: BaseDto[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	mood: BaseDto[];
 	// defaults
 	@ApiProperty({ type: Date })
 	@Expose()
@@ -101,17 +99,17 @@ class CreateProductDto {
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
-	genre: BaseDto[];
+	genreIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
-	tempo: BaseDto[];
+	tempoIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
-	group: BaseDto[];
+	groupIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
-	mood: BaseDto[];
+	moodIds: number[];
 }

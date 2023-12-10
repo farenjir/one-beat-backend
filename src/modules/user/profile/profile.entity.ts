@@ -1,8 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 import { IsOptional } from "class-validator";
-
-import { Bases } from "modules/base/base.entity";
 
 @Entity()
 export class Profile {
@@ -25,24 +23,31 @@ export class Profile {
 	@IsOptional()
 	age: number;
 
-	// *** relations params
-	@ManyToOne(() => Bases, { eager: true, nullable: true }) //cascade: ["insert", "update", "recover"],
-	@JoinColumn()
+	@Column()
 	@IsOptional()
-	gender: Bases;
+	genderId: number;
 
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
 	@IsOptional()
-	expertise: Bases[];
+	expertiseIds: number[];
 
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
 	@IsOptional()
-	skills: Bases[];
+	skillIds: number[];
 
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
 	@IsOptional()
-	favorites: Bases[];
+	favoriteIds: number[];
 }

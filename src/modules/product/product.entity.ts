@@ -6,14 +6,10 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
-	ManyToOne,
-	ManyToMany,
-	JoinTable,
 	OneToOne,
 } from "typeorm";
 
 import { Users } from "modules/user/user.entity";
-import { Bases } from "modules/base/base.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -47,6 +43,34 @@ export class Products extends DefaultEntity {
 	@Column()
 	demoFileName: string;
 
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
+	genreIds: number[];
+
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
+	tempoIds: number[];
+
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
+	groupIds: number[];
+
+	@Column({
+		array: true,
+		type: Number,
+		default: [],
+	})
+	moodIds: number[];
+
 	// *** relations
 	// @OneToOne(() => ProductKYC, { eager: true })
 	// @JoinColumn()
@@ -55,23 +79,6 @@ export class Products extends DefaultEntity {
 	@OneToOne(() => Users, { eager: true })
 	@JoinColumn()
 	producer: Users;
-
-	// *** relations params
-	@ManyToOne(() => Bases, { eager: true, nullable: true }) // cascade: ["insert", "update", "recover"],
-	@JoinColumn()
-	genre: Bases[];
-
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
-	tempo: Bases[];
-
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
-	group: Bases[];
-
-	@ManyToMany(() => Bases, { eager: true, nullable: true })
-	@JoinTable()
-	mood: Bases[];
 
 	// *** logging
 	// @AfterLoad(){}
