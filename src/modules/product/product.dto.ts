@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, MaxLength, MinLength } from "class-validator";
+import { IsArray, Length } from "class-validator";
 import { Expose } from "class-transformer";
 
 import { UserDto } from "modules/user/user.dto";
@@ -12,23 +12,19 @@ class ProductDto {
 	id: string;
 	@ApiProperty({ default: "faName" })
 	@Expose()
-	@MaxLength(30)
-	@MinLength(1)
+	@Length(1, 30)
 	faName: string;
 	@ApiProperty({ default: "enName" })
 	@Expose()
-	@MaxLength(30)
-	@MinLength(1)
+	@Length(1, 30)
 	enName: string;
 	@ApiProperty({ default: "faDescription" })
 	@Expose()
-	@MaxLength(300)
-	@MinLength(30)
+	@Length(30, 300)
 	faDescription: string;
 	@ApiProperty({ default: "enDescription" })
 	@Expose()
-	@MaxLength(300)
-	@MinLength(30)
+	@Length(30, 300)
 	enDescription: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
@@ -71,23 +67,19 @@ class ProductDto {
 class CreateProductDto {
 	@ApiProperty({ default: "faName" })
 	@Expose()
-	@MaxLength(30)
-	@MinLength(1)
+	@Length(1, 30)
 	faName: string;
 	@ApiProperty({ default: "enName" })
 	@Expose()
-	@MaxLength(30)
-	@MinLength(1)
+	@Length(1, 30)
 	enName: string;
 	@ApiProperty({ default: "faDescription" })
 	@Expose()
-	@MaxLength(300)
-	@MinLength(30)
+	@Length(30, 300)
 	faDescription: string;
 	@ApiProperty({ default: "enDescription" })
 	@Expose()
-	@MaxLength(300)
-	@MinLength(30)
+	@Length(30, 300)
 	enDescription: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()

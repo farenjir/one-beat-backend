@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
@@ -9,19 +9,15 @@ class SignInDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
 	@IsOptional()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 65)
 	username?: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	@IsOptional()
-	@MaxLength(64)
-	@MinLength(5)
 	email?: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	password: string;
 }
 class SignInWithGoogleDto {
@@ -39,18 +35,14 @@ class SignInWithAppleDto {
 class AuthSignUpDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@MaxLength(64)
-	@MinLength(5)
 	email: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	password: string;
 }
 
@@ -58,14 +50,11 @@ class ForgetPassDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
 	@IsOptional()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username?: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	@IsOptional()
-	@MaxLength(64)
-	@MinLength(5)
 	email?: string;
 }
 // *** response

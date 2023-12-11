@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsEmail, IsOptional, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
@@ -16,12 +16,9 @@ class UserDto {
 	id: number;
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
-	@MaxLength(64)
-	@MinLength(5)
 	email: string;
 	@ApiProperty({
 		name: "roles",
@@ -36,16 +33,12 @@ class UserDto {
 }
 class CreateSaveUserDto {
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username: string;
 	@IsEmail()
-	@MaxLength(64)
-	@MinLength(5)
 	email: string;
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	@IsOptional()
 	password?: string;
 }
@@ -54,18 +47,14 @@ class CreateSaveUserDto {
 class UserProfileDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@MaxLength(64)
-	@MinLength(5)
 	email: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	password: string;
 	@IsArray()
 	@IsOptional()
@@ -86,13 +75,10 @@ class UserProfileDto {
 class UserProfileResponseDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@MaxLength(64)
-	@MinLength(5)
 	email: string;
 	@IsArray()
 	@IsOptional()
@@ -113,26 +99,21 @@ class UserProfileResponseDto {
 class UpdateProfileDto {
 	@ApiProperty({ default: "test" })
 	@IsString()
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	@IsOptional()
 	username?: string;
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
-	@MaxLength(64)
-	@MinLength(5)
 	@IsOptional()
 	email?: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	@IsOptional()
 	password?: string;
 	@ApiProperty({ default: "P@ssword123" })
 	@IsString()
-	@MaxLength(100)
-	@MinLength(8)
+	@Length(8, 100)
 	@IsOptional()
 	currentPassword?: string;
 	@ApiProperty({ default: CreateSaveProfileDto })

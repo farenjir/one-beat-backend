@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsOptional, Length, Max, MaxLength, Min, MinLength } from "class-validator";
+import { IsArray, IsInt, IsOptional, Length, Max, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export { UpdateProfileDto, ProfileDto, CreateSaveProfileDto };
@@ -6,15 +6,13 @@ export { UpdateProfileDto, ProfileDto, CreateSaveProfileDto };
 // *** params
 class CreateSaveProfileDto {
 	@ApiProperty({ default: "test" })
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	firstName: string;
 	@ApiProperty({ default: "test" })
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	lastName: string;
 	@ApiProperty({ default: "09388227228" })
-	@Length(11)
+	@Length(11, 11)
 	mobileNumber: string;
 	@ApiProperty({ default: 12 })
 	@Min(12)
@@ -45,15 +43,13 @@ class ProfileDto extends CreateSaveProfileDto {
 
 class UpdateProfileDto {
 	@ApiProperty({ default: "test" })
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	firstName?: string;
 	@ApiProperty({ default: "test" })
-	@MaxLength(24)
-	@MinLength(4)
+	@Length(4, 24)
 	lastName?: string;
 	@ApiProperty({ default: "09388227228" })
-	@Length(11)
+	@Length(11, 11)
 	mobileNumber?: string;
 	@ApiProperty({ default: 12 })
 	@Min(12)
