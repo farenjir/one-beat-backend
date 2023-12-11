@@ -4,11 +4,13 @@ import { JwtService } from "@nestjs/jwt";
 
 import { TOKEN_KEY } from "utils/configs/main.configs";
 
+import { Role } from "global/guards.decorator";
+
 declare module "express" {
 	interface Request {
 		user?: {
 			id: number;
-			roles: string[];
+			role: Role;
 		};
 	}
 }

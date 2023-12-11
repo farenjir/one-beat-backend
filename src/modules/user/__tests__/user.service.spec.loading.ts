@@ -1,6 +1,8 @@
 import { NotFoundException, BadRequestException } from "@nestjs/common";
 import { Repository } from "typeorm";
 
+import { Role } from "global/guards.decorator";
+
 import { Users } from "../user.entity";
 import { UsersService } from "../user.service";
 import { CreateSaveUserDto } from "../user.dto";
@@ -36,7 +38,7 @@ describe("UsersService", () => {
 			};
 			const expectedUser: Users = {
 				id: 1,
-				roles: [],
+				role: Role.User,
 				profile: new Profile(),
 				kyc: new UserKYC(),
 				createdAt: undefined,
@@ -67,7 +69,7 @@ describe("UsersService", () => {
 					username: "farshid",
 					email: "farshid@gmail.com",
 					password: "P@ssword123",
-					roles: [],
+					role: Role.User,
 					profile: new Profile(),
 					kyc: new UserKYC(),
 					createdAt: undefined,
@@ -94,7 +96,7 @@ describe("UsersService", () => {
 				username: "farshid",
 				email: "",
 				password: "",
-				roles: [],
+				role: Role.User,
 				profile: new Profile(),
 				kyc: new UserKYC(),
 				createdAt: undefined,
