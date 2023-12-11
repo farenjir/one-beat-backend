@@ -25,9 +25,4 @@ class UserKycDto {
 	@IsBoolean()
 	@IsOptional()
 	emailKyc?: boolean;
-
-	@ApiProperty({ default: false })
-	@IsBoolean()
-	@IsOptional()
-	producerKyc?: boolean;
 }
