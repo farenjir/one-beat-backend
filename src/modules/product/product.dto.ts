@@ -13,7 +13,7 @@ export { ProductDto, CreateUpdateProductDto };
 class ProductDto {
 	@ApiProperty()
 	@Expose()
-	id: string;
+	id: number;
 	@ApiProperty({ default: "faName" })
 	@Expose()
 	@Length(1, 30)

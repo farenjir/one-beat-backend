@@ -19,17 +19,6 @@ export class UsersService {
 		private profileService: ProfileService,
 		private kycService: UserKycService,
 	) {}
-	// create
-	async create(params: CreateSaveUserDto, authWithGoogle: boolean = false): Promise<Users> {
-		const kyc = await this.kycService.create({
-			userKyc: authWithGoogle,
-			emailKyc: authWithGoogle,
-			googleKyc: authWithGoogle,
-		});
-		// create
-		const user = this.repo.create({ ...params, profile: {}, kyc });
-		return this.repo.save(user);
-	}
 	// findAll
 	async findUsers(): Promise<Users[]> {
 		return await this.repo.find();
@@ -47,6 +36,17 @@ export class UsersService {
 			throw new NotFoundException("4001");
 		}
 		return user;
+	}
+	// createOne
+	async create(params: CreateSaveUserDto, authWithGoogle: boolean = false): Promise<Users> {
+		const kyc = await this.kycService.create({
+			userKyc: authWithGoogle,
+			emailKyc: authWithGoogle,
+			googleKyc: authWithGoogle,
+		});
+		// create
+		const user = this.repo.create({ ...params, profile: {}, kyc });
+		return this.repo.save(user);
 	}
 	// findOne with profile
 	async findUserWithProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {

@@ -3,16 +3,13 @@ import { FindOneOptions, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserKYC } from "./kyc.entity";
-import { UserKycDto } from "./kyc.dto";
 
 @Injectable()
 export class UserKycService {
 	constructor(@InjectRepository(UserKYC) private repo: Repository<UserKYC>) {}
 	// create
-	async create(params: UserKycDto): Promise<UserKYC> {
-		const { userKyc = false, mobileKyc = false, emailKyc = false, producerKyc = false, googleKyc = false } = params;
-		// create
-		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
+	async create(params: Partial<UserKYC>): Promise<UserKYC> {
+		const kyc = this.repo.create(params);
 		return await this.repo.save(kyc);
 	}
 	// findAll
@@ -31,11 +28,9 @@ export class UserKycService {
 		return kyc;
 	}
 	// update
-	async updateById(kycId: number, attrs: Partial<UserKYC> = {}): Promise<UserKYC> {
+	async updateById(kycId: number, attrs: Partial<UserKYC>): Promise<UserKYC> {
 		const kyc = await this.findById(kycId, true);
-		const { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc } = attrs;
-		// update
-		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
+		Object.assign(kyc, attrs);
 		return await this.repo.save(kyc);
 	}
 	// remove

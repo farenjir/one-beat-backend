@@ -9,8 +9,8 @@ export { UploadDto, FileDto, UploadQueryDto, UploadResponseDto };
 class UploadDto {
 	@ApiProperty()
 	@Expose()
-	@IsString()
-	id: string;
+	@IsInt()
+	id: number;
 	@ApiProperty()
 	@Expose()
 	@IsString()
@@ -47,8 +47,8 @@ class UploadQueryDto {
 class UploadResponseDto {
 	@ApiProperty()
 	@Expose()
-	@IsString()
-	id: string;
+	@IsInt()
+	id: number;
 	@ApiProperty()
 	@Expose()
 	@IsInt()

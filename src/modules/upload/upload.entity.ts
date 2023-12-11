@@ -14,8 +14,8 @@ abstract class DefaultEntity {
 
 @Entity()
 export class Upload extends DefaultEntity {
-	@PrimaryGeneratedColumn("uuid")
-	id: string;
+	@PrimaryGeneratedColumn()
+	id: number;
 
 	@Column()
 	userId!: number;

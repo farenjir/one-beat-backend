@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
@@ -31,7 +31,7 @@ export class ProductsController {
 	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
 	@Get("getProduct")
 	@ResponseMessage("")
-	async getProduct(@Param("id") id: string): Promise<ProductDto> {
+	async getProduct(@Param("id", ParseIntPipe) id: number): Promise<ProductDto> {
 		return await this.productServices.findOne(id);
 	}
 	// add new product
@@ -47,7 +47,11 @@ export class ProductsController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Put("updateBy/:id")
 	@ResponseMessage("2021")
-	async updateBase(@Req() req: Request, @Param("id") id: string, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
+	async updateBase(
+		@Req() req: Request,
+		@Param("id", ParseIntPipe) id: number,
+		@Body() body: CreateUpdateProductDto,
+	): Promise<ProductDto> {
 		return await this.productServices.updateOne(id, body, req);
 	}
 	// delete product
@@ -55,7 +59,7 @@ export class ProductsController {
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Delete("deleteBy/:id")
 	@ResponseMessage("2022")
-	async deleteBase(@Req() req: Request, @Param("id") id: string): Promise<CreateUpdateProductDto> {
+	async deleteBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number): Promise<CreateUpdateProductDto> {
 		return await this.productServices.deleteOne(id, req);
 	}
 }

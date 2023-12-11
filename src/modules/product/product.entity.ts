@@ -27,8 +27,8 @@ abstract class DefaultEntity {
 
 @Entity()
 export class Products extends DefaultEntity {
-	@PrimaryGeneratedColumn("uuid")
-	id: string;
+	@PrimaryGeneratedColumn()
+	id: number;
 
 	@Column({ unique: true })
 	faName!: string;

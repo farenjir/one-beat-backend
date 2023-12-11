@@ -6,7 +6,6 @@ import { Request } from "express";
 import { pickBy as _pickBy } from "lodash";
 
 import { Role } from "global/guards.decorator";
-
 import { UsersService } from "modules/user/user.service";
 
 import { Products } from "./product.entity";
@@ -23,7 +22,7 @@ export class ProductsService {
 		return await this.repo.find();
 	}
 	// find one
-	async findOne(id: string): Promise<Products> {
+	async findOne(id: number): Promise<Products> {
 		const options: FindOneOptions<Products> = {
 			where: _pickBy<object>({ id }, (isTruthy: unknown) => isTruthy),
 		};
@@ -45,7 +44,7 @@ export class ProductsService {
 	}
 	// create one
 	async updateOne(
-		id: string,
+		id: number,
 		{ level, status, ...updatedAttrs }: Partial<CreateUpdateProductDto>,
 		{ user }: Pick<Request, "user">,
 	): Promise<Products> {
@@ -60,7 +59,7 @@ export class ProductsService {
 		}
 	}
 	// delete one
-	async deleteOne(id: string, { user }: Pick<Request, "user">): Promise<Products> {
+	async deleteOne(id: number, { user }: Pick<Request, "user">): Promise<Products> {
 		const product = await this.findOne(id);
 		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
 			return await this.repo.remove(product);

@@ -26,7 +26,7 @@ export class UsersController {
 	// profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
-	@Get("getUser")
+	@Get("profile")
 	@ResponseMessage("")
 	async findProfile(@Req() { user }: Request): Promise<UserProfileDto> {
 		return await this.usersService.findUserWithProfile({ id: user?.id }, true);
@@ -34,7 +34,7 @@ export class UsersController {
 	// updateUser with profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
 	@AppGuards()
-	@Put("updateUser")
+	@Put("update")
 	@ResponseMessage("2005")
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
 		return await this.usersService.updateUserProfile(user?.id, body);
@@ -42,7 +42,7 @@ export class UsersController {
 	// findAllUsers
 	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
 	@AppGuards(Role.Admin)
-	@Get("getUsers")
+	@Get("all")
 	@ResponseMessage("")
 	async findAllUser(): Promise<UserDto[]> {
 		return await this.usersService.findUsers();
@@ -53,7 +53,7 @@ export class UsersController {
 	@Get("getBy/:id")
 	@ResponseMessage("")
 	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<UserProfileDto> {
-		return await this.usersService.findUserWithProfile({ id });
+		return await this.usersService.findUserWithProfile({ id }, true);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)

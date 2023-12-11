@@ -27,7 +27,7 @@ export class UploadService {
 		return await this.repo.find();
 	}
 	// findOne
-	async findById(id: string): Promise<Upload> {
+	async findById(id: number): Promise<Upload> {
 		const options: FindOneOptions<Upload> = {
 			where: { id },
 		};
@@ -48,7 +48,7 @@ export class UploadService {
 		return files;
 	}
 	// update
-	async updateById(id: string, attrs: Partial<Upload>): Promise<Upload> {
+	async updateById(id: number, attrs: Partial<Upload>): Promise<Upload> {
 		const file = await this.findById(id);
 		if (!file) {
 			throw new NotFoundException("4005");
@@ -57,7 +57,7 @@ export class UploadService {
 		return await this.repo.save(file);
 	}
 	// remove
-	async removeById(id: string): Promise<Upload> {
+	async removeById(id: number): Promise<Upload> {
 		const file = await this.findById(id);
 		if (!file) {
 			throw new NotFoundException("4005");

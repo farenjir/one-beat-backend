@@ -2,6 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 import { IsOptional } from "class-validator";
 
+import { ProducerLevel } from "./kyc.enum";
+
 @Entity()
 export class UserKYC {
 	@PrimaryGeneratedColumn()
@@ -23,7 +25,11 @@ export class UserKYC {
 	@IsOptional()
 	emailKyc: boolean;
 
-	@Column({ default: false })
+	@Column({
+		type: "enum",
+		enum: ProducerLevel,
+		default: ProducerLevel.User,
+	})
 	@IsOptional()
-	producerKyc: boolean;
+	producerKyc: ProducerLevel;
 }
