@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from "typeorm";
 
@@ -7,7 +7,7 @@ import { pickBy as _pickBy } from "lodash";
 import { UsersService } from "modules/user/user.service";
 
 import { Products } from "./product.entity";
-import { CreateProductDto } from "./product.dto";
+import { CreateUpdateProductDto } from "./product.dto";
 
 @Injectable()
 export class ProductsService {
@@ -28,13 +28,23 @@ export class ProductsService {
 		if (product) {
 			return product;
 		} else {
-			throw new BadRequestException("4000");
+			throw new NotFoundException("");
 		}
 	}
 	// create one
-	async createOne(body: CreateProductDto, userId: number): Promise<Products> {
+	async createOne(body: CreateUpdateProductDto, userId: number): Promise<Products> {
 		const user = await this.usersService.findBy({ id: userId }, true);
 		const product = this.repo.create({ ...body, producer: user });
 		return await this.repo.save(product);
+	}
+	// create one
+	async updateOne(id: string, updatedAttrs: Partial<CreateUpdateProductDto>, userRoles = []): Promise<Products> {
+		const currentProduct = await this.findOne(id);
+		return await this.repo.save({ ...currentProduct, ...updatedAttrs });
+	}
+	// delete one
+	async deleteOne(id: string, userRoles = []): Promise<Products> {
+		const currentProduct = await this.findOne(id);
+		return await this.repo.remove(currentProduct);
 	}
 }

@@ -6,11 +6,11 @@ import { RolesGuard } from "utils/guards/role.guard";
 export const ROLE_KEY = "Roles";
 
 export enum Role {
-	Admin = "admin",
-	Editor = "editor",
-	Author = "author",
-	Producer = "producer",
-	User = "user",
+	Admin = "Admin",
+	Editor = "Editor",
+	Author = "Author",
+	Producer = "Producer",
+	User = "User",
 }
 
 // const Roles = Reflector.createDecorator<string[]>()  // new syntax in v.10.2 for RULES !

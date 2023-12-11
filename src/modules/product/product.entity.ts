@@ -9,7 +9,12 @@ import {
 	OneToOne,
 } from "typeorm";
 
+import { IsOptional } from "class-validator";
+
+import { Role } from "global/guards.decorator";
+
 import { Users } from "modules/user/user.entity";
+import { ProductLevel, ProductStatus } from "./product.enum";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -55,10 +60,27 @@ export class Products extends DefaultEntity {
 	@Column("int", { array: true, default: [] })
 	moodIds: number[];
 
+	@Column({
+		type: "enum",
+		enum: ProductStatus,
+		default: ProductStatus.Inprogress,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+	})
+	status: ProductStatus;
+
+	@Column({
+		type: "enum",
+		enum: ProductLevel,
+		default: ProductLevel.Potential,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+	})
+	level: ProductLevel;
+
 	// *** relations
-	// @OneToOne(() => ProductKYC, { eager: true })
-	// @JoinColumn()
-	// kyc: ProductKYC;
 
 	@OneToOne(() => Users, { eager: true })
 	@JoinColumn()

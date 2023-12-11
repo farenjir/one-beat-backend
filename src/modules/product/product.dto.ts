@@ -1,10 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, Length } from "class-validator";
+import { IsArray, IsOptional, Length } from "class-validator";
 import { Expose } from "class-transformer";
+
+import { Role } from "global/guards.decorator";
 
 import { UserDto } from "modules/user/user.dto";
 
-export { ProductDto, CreateProductDto };
+import { ProductLevel, ProductStatus } from "./product.enum";
+
+export { ProductDto, CreateUpdateProductDto };
 
 class ProductDto {
 	@ApiProperty()
@@ -28,9 +32,11 @@ class ProductDto {
 	enDescription: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
+	@Length(1, 99)
 	coverFileName: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
+	@Length(1, 99)
 	demoFileName: string;
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
@@ -48,11 +54,30 @@ class ProductDto {
 	@IsArray()
 	@Expose()
 	moodIds: number[];
-	// relations
+	// *** enums
+	@ApiProperty({
+		name: "status",
+		enum: ProductStatus,
+		default: ProductStatus.Inprogress,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+	})
+	status?: ProductStatus;
+	@ApiProperty({
+		name: "level",
+		enum: ProductLevel,
+		default: ProductLevel.Potential,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+	})
+	level?: ProductLevel;
+	// *** relations
 	@ApiProperty({ default: UserDto })
 	@Expose()
 	producer?: UserDto;
-	// defaults
+	// *** defaults
 	@ApiProperty({ type: Date })
 	@Expose()
 	createdAt: Date;
@@ -64,7 +89,7 @@ class ProductDto {
 	deletedAt: Date;
 }
 
-class CreateProductDto {
+class CreateUpdateProductDto {
 	@ApiProperty({ default: "faName" })
 	@Expose()
 	@Length(1, 30)
@@ -83,11 +108,34 @@ class CreateProductDto {
 	enDescription: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
+	@Length(1, 99)
 	coverFileName: string;
 	@ApiProperty({ default: "uploadFileName" })
+	@Length(1, 99)
 	@Expose()
 	demoFileName: string;
-	// base relations
+	// *** enums
+	@ApiProperty({
+		name: "status",
+		enum: ProductStatus,
+		default: ProductStatus.Inprogress,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+		// context: "status",
+	})
+	status?: ProductStatus;
+	@ApiProperty({
+		name: "level",
+		enum: ProductLevel,
+		default: ProductLevel.Potential,
+	})
+	@IsOptional({
+		groups: [Role.Admin, Role.Editor],
+		// context: "level",
+	})
+	level?: ProductLevel;
+	// *** relations
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
