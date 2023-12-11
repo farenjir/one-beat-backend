@@ -10,9 +10,9 @@ export class UserKycService {
 	constructor(@InjectRepository(UserKYC) private repo: Repository<UserKYC>) {}
 	// create
 	async create(params: UserKycDto): Promise<UserKYC> {
-		const { userKyc = false, mobileKyc = false, emailKyc = false, googleKyc = false } = params;
+		const { userKyc = false, mobileKyc = false, emailKyc = false, producerKyc = false, googleKyc = false } = params;
 		// create
-		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, googleKyc });
+		const kyc = this.repo.create({ userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
 		return await this.repo.save(kyc);
 	}
 	// findAll
@@ -33,9 +33,9 @@ export class UserKycService {
 	// update
 	async updateById(kycId: number, attrs: Partial<UserKYC> = {}): Promise<UserKYC> {
 		const kyc = await this.findById(kycId, true);
-		const { userKyc, mobileKyc, emailKyc, googleKyc } = attrs;
+		const { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc } = attrs;
 		// update
-		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, googleKyc });
+		Object.assign(kyc, { userKyc, mobileKyc, emailKyc, producerKyc, googleKyc });
 		return await this.repo.save(kyc);
 	}
 	// remove
