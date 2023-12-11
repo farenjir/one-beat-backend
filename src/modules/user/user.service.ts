@@ -64,7 +64,7 @@ export class UsersService {
 		return user;
 	}
 	// update
-	async updateById(id: number, { profile, username, email, password, roles, kyc }: Partial<UserProfileDto>): Promise<Users> {
+	async updateById(id: number, { profile, username, email, password, role, kyc }: Partial<UserProfileDto>): Promise<Users> {
 		const user = await this.findUserWithProfile({ id }, true);
 		const profileId = user?.profile?.id;
 		const kycId = user?.kyc?.id;
@@ -76,7 +76,7 @@ export class UsersService {
 		const kycUpdated = kyc ? await this.kycService.updateById(kycId, kyc) : null;
 		// relations
 		const updatedData = _pickBy<object>(
-			{ password: hashedPassword, email, username, profile: createOrUpdated, kyc: kycUpdated, roles },
+			{ password: hashedPassword, email, username, profile: createOrUpdated, kyc: kycUpdated, role },
 			(isTruthy: unknown) => isTruthy,
 		);
 		// updateUserData

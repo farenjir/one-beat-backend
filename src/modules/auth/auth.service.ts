@@ -175,8 +175,8 @@ export class AuthService {
 		};
 	}
 	// *** handles
-	async generateToken({ roles, id }: UserDto): Promise<string> {
-		return this.jwtService.signAsync({ id, roles }, { secret: this.config.get<string>("JWT_KEY") });
+	async generateToken({ role, id }: UserDto): Promise<string> {
+		return this.jwtService.signAsync({ id, role }, { secret: this.config.get<string>("JWT_KEY") });
 	}
 	async decodeToken(token: string): Promise<Partial<UserDto>> {
 		let user: Partial<UserDto>;

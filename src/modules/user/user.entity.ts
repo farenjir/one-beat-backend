@@ -40,12 +40,11 @@ export class Users extends DefaultEntity {
 	password: string;
 
 	@Column({
-		array: true,
 		type: "enum",
 		enum: Role,
-		default: [Role.User],
+		default: Role.User,
 	})
-	roles!: Role[];
+	role!: Role;
 
 	// *** relations
 	@OneToOne(() => UserKYC, { eager: true })

@@ -70,8 +70,8 @@ export class ProductsService {
 	}
 	// *** handles
 	checkLevel({ user }: Pick<Request, "user">) {
-		const { roles = [] } = user;
-		return [Role.Admin, Role.Editor].some((role) => roles?.includes(role));
+		const { role } = user;
+		return [Role.Admin, Role.Editor].includes(role);
 	}
 	checkCreator({ user }: Pick<Request, "user">, creatorUserId: number) {
 		const { id } = user;

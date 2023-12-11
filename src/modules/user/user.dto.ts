@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsOptional, IsString, Length } from "class-validator";
+import { IsEmail, IsOptional, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
@@ -21,12 +21,12 @@ class UserDto {
 	@ApiProperty({ default: "test@test.com" })
 	email: string;
 	@ApiProperty({
-		name: "roles",
+		name: "role",
 		enum: Role,
-		default: [Role.User],
+		default: Role.User,
 	})
 	@IsOptional()
-	roles?: Role[];
+	role?: Role;
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
 	kyc: UserKycDto;
@@ -56,14 +56,13 @@ class UserProfileDto {
 	@IsString()
 	@Length(8, 100)
 	password: string;
-	@IsArray()
 	@IsOptional()
 	@ApiProperty({
-		name: "roles",
+		name: "role",
 		enum: Role,
-		default: [Role.User],
+		default: Role.User,
 	})
-	roles?: Role[];
+	role?: Role;
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
 	kyc?: UserKycDto;
@@ -80,14 +79,13 @@ class UserProfileResponseDto {
 	@ApiProperty({ default: "test@test.com" })
 	@IsEmail()
 	email: string;
-	@IsArray()
 	@IsOptional()
 	@ApiProperty({
-		name: "roles",
+		name: "role",
 		enum: Role,
-		default: [Role.User],
+		default: Role.User,
 	})
-	roles?: Role[];
+	role?: Role;
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
 	kyc?: UserKycDto;
