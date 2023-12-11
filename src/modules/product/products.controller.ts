@@ -36,26 +36,26 @@ export class ProductsController {
 	}
 	// add new product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.User)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Post("addProduct")
-	@ResponseMessage("")
-	async addNewBase(@Req() { user }: Request, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
-		return await this.productServices.createOne(body, user?.id);
+	@ResponseMessage("2020")
+	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
+		return await this.productServices.createOne(body, req);
 	}
 	// update product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.User)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Put("updateBy/:id")
-	@ResponseMessage("")
-	async updateBase(@Req() { user }: Request, @Param("id") id: string, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
-		return await this.productServices.updateOne(id, body, user?.roles);
+	@ResponseMessage("2021")
+	async updateBase(@Req() req: Request, @Param("id") id: string, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
+		return await this.productServices.updateOne(id, body, req);
 	}
 	// delete product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.User)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Delete("deleteBy/:id")
-	@ResponseMessage("")
-	async deleteBase(@Req() { user }: Request, @Param("id") id: string): Promise<CreateUpdateProductDto> {
-		return await this.productServices.deleteOne(id, user?.roles);
+	@ResponseMessage("2022")
+	async deleteBase(@Req() req: Request, @Param("id") id: string): Promise<CreateUpdateProductDto> {
+		return await this.productServices.deleteOne(id, req);
 	}
 }

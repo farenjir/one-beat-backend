@@ -1,8 +1,11 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from "typeorm";
+import { Request } from "express";
 
 import { pickBy as _pickBy } from "lodash";
+
+import { Role } from "global/guards.decorator";
 
 import { UsersService } from "modules/user/user.service";
 
@@ -28,23 +31,50 @@ export class ProductsService {
 		if (product) {
 			return product;
 		} else {
-			throw new NotFoundException("");
+			throw new NotFoundException("4013");
 		}
 	}
 	// create one
-	async createOne(body: CreateUpdateProductDto, userId: number): Promise<Products> {
-		const user = await this.usersService.findBy({ id: userId }, true);
-		const product = this.repo.create({ ...body, producer: user });
+	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {
+		const user = await this.usersService.findBy({ id: req?.user?.id }, true);
+		if (this.checkLevel(req)) {
+			Object.assign(productAttrs, { level, status });
+		}
+		const product = this.repo.create({ ...productAttrs, producer: user });
 		return await this.repo.save(product);
 	}
 	// create one
-	async updateOne(id: string, updatedAttrs: Partial<CreateUpdateProductDto>, userRoles = []): Promise<Products> {
-		const currentProduct = await this.findOne(id);
-		return await this.repo.save({ ...currentProduct, ...updatedAttrs });
+	async updateOne(
+		id: string,
+		{ level, status, ...updatedAttrs }: Partial<CreateUpdateProductDto>,
+		{ user }: Pick<Request, "user">,
+	): Promise<Products> {
+		const product = await this.findOne(id);
+		if (this.checkLevel({ user })) {
+			Object.assign(updatedAttrs, { level, status });
+		}
+		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
+			return await this.repo.save(product);
+		} else {
+			throw new UnauthorizedException("4012");
+		}
 	}
 	// delete one
-	async deleteOne(id: string, userRoles = []): Promise<Products> {
-		const currentProduct = await this.findOne(id);
-		return await this.repo.remove(currentProduct);
+	async deleteOne(id: string, { user }: Pick<Request, "user">): Promise<Products> {
+		const product = await this.findOne(id);
+		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
+			return await this.repo.remove(product);
+		} else {
+			throw new UnauthorizedException("4012");
+		}
+	}
+	// *** handles
+	checkLevel({ user }: Pick<Request, "user">) {
+		const { roles = [] } = user;
+		return [Role.Admin, Role.Editor].some((role) => roles?.includes(role));
+	}
+	checkCreator({ user }: Pick<Request, "user">, creatorUserId: number) {
+		const { id } = user;
+		return creatorUserId === id;
 	}
 }

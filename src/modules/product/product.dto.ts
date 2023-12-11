@@ -60,15 +60,7 @@ class ProductDto {
 		enum: ProductStatus,
 		default: ProductStatus.Inprogress,
 	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
 	status?: ProductStatus;
-	@ApiProperty({
-		name: "level",
-		enum: ProductLevel,
-		default: ProductLevel.Potential,
-	})
 	@IsOptional({
 		groups: [Role.Admin, Role.Editor],
 	})
@@ -120,19 +112,11 @@ class CreateUpdateProductDto {
 		enum: ProductStatus,
 		default: ProductStatus.Inprogress,
 	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-		// context: "status",
-	})
 	status?: ProductStatus;
 	@ApiProperty({
 		name: "level",
 		enum: ProductLevel,
 		default: ProductLevel.Potential,
-	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-		// context: "level",
 	})
 	level?: ProductLevel;
 	// *** relations
