@@ -82,7 +82,7 @@ class UploadResponseDto {
 
 class FileDto {
 	@IsString()
-	fieldName: string;
+	fieldname: string;
 	@IsString()
 	originalname: string;
 	@IsString()
