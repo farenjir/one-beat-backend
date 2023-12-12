@@ -1,6 +1,6 @@
 import { IsEmail, IsOptional, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
@@ -13,12 +13,15 @@ export { IUserQuery, UserIgnoredDto, UserProfileResponseDto };
 // *** user params
 class UserDto {
 	@ApiProperty()
+	@Expose()
 	id: number;
 	@ApiProperty({ default: "test" })
 	@IsString()
 	@Length(4, 24)
+	@Expose()
 	username: string;
 	@ApiProperty({ default: "test@test.com" })
+	@Expose()
 	email: string;
 	@ApiProperty({
 		name: "role",
@@ -26,9 +29,11 @@ class UserDto {
 		default: Role.User,
 	})
 	@IsOptional()
+	@Expose()
 	role?: Role;
 	@ApiProperty({ default: UserKycDto })
 	@IsOptional()
+	@Expose()
 	kyc: UserKycDto;
 }
 class CreateSaveUserDto {

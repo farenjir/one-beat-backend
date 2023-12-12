@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsOptional, Length } from "class-validator";
-import { Expose } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
-import { UserDto } from "modules/user/user.dto";
+import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 import { ProductLevel, ProductStatus } from "./product.enum";
 
@@ -67,7 +67,7 @@ class ProductDto {
 	level?: ProductLevel;
 	// *** relations
 	@ApiProperty({ default: UserDto })
-	@Expose()
+	@Type(() => UserIgnoredDto)
 	producer?: UserDto;
 	// *** defaults
 	@ApiProperty({ type: Date })
@@ -77,7 +77,7 @@ class ProductDto {
 	@Expose()
 	updatedAt: Date;
 	@ApiProperty({ type: Date })
-	@Expose()
+	@Exclude()
 	deletedAt: Date;
 }
 

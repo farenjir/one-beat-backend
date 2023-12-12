@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req } fr
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
+import { Serialize } from "global/serialize.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
@@ -11,6 +12,7 @@ import { ProductDto, CreateUpdateProductDto } from "./product.dto";
 
 @ApiTags("Products")
 @Controller("product")
+@Serialize(ProductDto)
 export class ProductsController {
 	constructor(private readonly productServices: ProductsService) {}
 	// get all product
@@ -27,20 +29,20 @@ export class ProductsController {
 	async getTopProducts(): Promise<ProductDto[]> {
 		return await this.productServices.findAll();
 	}
-	// find one product
-	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
-	@Get("getProduct")
-	@ResponseMessage("")
-	async getProduct(@Param("id", ParseIntPipe) id: number): Promise<ProductDto> {
-		return await this.productServices.findOne(id);
-	}
 	// add new product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.User)
 	@Post("addProduct")
 	@ResponseMessage("2020")
 	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
 		return await this.productServices.createOne(body, req);
+	}
+	// find one product
+	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
+	@Get("getBy/:id")
+	@ResponseMessage("")
+	async getProduct(@Param("id", ParseIntPipe) id: number): Promise<ProductDto> {
+		return await this.productServices.findOne({ id });
 	}
 	// update product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)

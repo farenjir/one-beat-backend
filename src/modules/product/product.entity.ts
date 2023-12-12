@@ -6,7 +6,7 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
-	OneToOne,
+	ManyToOne,
 } from "typeorm";
 
 import { IsOptional } from "class-validator";
@@ -31,7 +31,7 @@ export class Products extends DefaultEntity {
 	id: number;
 
 	@Column({ unique: true })
-	faName!: string;
+	faName: string;
 
 	@Column({ unique: true })
 	enName: string;
@@ -40,13 +40,13 @@ export class Products extends DefaultEntity {
 	faDescription!: string;
 
 	@Column()
-	enDescription: string;
+	enDescription!: string;
 
 	@Column()
-	coverFileName: string;
+	coverFileName!: string;
 
 	@Column()
-	demoFileName: string;
+	demoFileName!: string;
 
 	@Column("int", { array: true, default: [] })
 	genreIds: number[];
@@ -82,7 +82,7 @@ export class Products extends DefaultEntity {
 
 	// *** relations
 
-	@OneToOne(() => Users, { eager: true })
+	@ManyToOne(() => Users, { eager: true })
 	@JoinColumn()
 	producer: Users;
 
