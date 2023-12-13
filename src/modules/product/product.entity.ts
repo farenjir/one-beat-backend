@@ -81,17 +81,7 @@ export class Products extends DefaultEntity {
 	level: ProductLevel;
 
 	// *** relations
-
 	@ManyToOne(() => Users, { eager: true })
 	@JoinColumn()
 	producer: Users;
-
-	// *** logging
-	// @AfterLoad(){}
-	// @BeforeInsert(){}
-	// @AfterInsert(){}
-	// @BeforeUpdate(){}
-	// @AfterUpdate(){}
-	// @BeforeRemove(){}
-	// @BeforeRemove(){}
 }
