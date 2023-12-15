@@ -1,16 +1,15 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOneOptions, Repository } from "typeorm";
+import { ArrayContains, FindManyOptions, FindOneOptions, Repository } from "typeorm";
 import { Request } from "express";
 
-import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
 
 import { Role } from "global/guards.decorator";
 import { UsersService } from "modules/user/user.service";
 
 import { Products } from "./product.entity";
-import { CreateUpdateProductDto } from "./product.dto";
-import { IFindOneProduct } from "./product.interface";
+import { CreateUpdateProductDto, ProductQuery } from "./product.dto";
 
 @Injectable()
 export class ProductsService {
@@ -23,7 +22,7 @@ export class ProductsService {
 		return await this.repo.find();
 	}
 	// find one
-	async findOne(queryParams: IFindOneProduct, ignoreValidateProduct = false): Promise<Products> {
+	async findOne(queryParams: ProductQuery, ignoreValidateProduct = false): Promise<Products> {
 		const options: FindOneOptions<Products> = {
 			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
 		};
@@ -36,6 +35,33 @@ export class ProductsService {
 		} else {
 			throw new NotFoundException("4013");
 		}
+	}
+	// find by Query
+	async findByQuery(queryParams: ProductQuery): Promise<Products[]> {
+		const { producerId, producerUsername, producerEmail, groupIds, genreIds, moodIds, tempoIds, ...productParams } = queryParams;
+		// arrayQuery
+		const arrayQuery = { groupIds, genreIds, moodIds, tempoIds };
+		const bases = {};
+		_map(arrayQuery, (value, key) => {
+			if (value?.length) {
+				bases[key] = ArrayContains(value);
+			}
+		}); // base params
+		// options
+		const options: FindManyOptions<Products> = {
+			// skip:1,
+			// take: 10,
+			where: {
+				producer: { id: producerId, username: producerUsername, email: producerEmail },
+				...productParams,
+				...bases,
+			},
+		};
+		console.log(options);
+		if (_isEmpty(queryParams)) {
+			throw new BadRequestException("4000");
+		}
+		return await this.repo.find(options);
 	}
 	// create one
 	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {

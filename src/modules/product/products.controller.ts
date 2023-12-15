@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Req } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
@@ -7,8 +7,9 @@ import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
-import { ProductsService } from "./product.service";
-import { ProductDto, CreateUpdateProductDto } from "./product.dto";
+import { ProductsService } from "./products.service";
+import { ProductDto, CreateUpdateProductDto, ProductQuery } from "./product.dto";
+import { productQuerySchema } from "./product.schema";
 
 @ApiTags("Products")
 @Controller("product")
@@ -22,36 +23,32 @@ export class ProductsController {
 	async getProducts(): Promise<ProductDto[]> {
 		return await this.productServices.findAll();
 	}
-	// top products
-	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
-	@Get("topProducts")
+	// find by Query
+	@SwaggerDocumentaryApi(ProductDto, {
+		useAuth: false,
+		query: productQuerySchema,
+	})
+	@Get("queries")
 	@ResponseMessage("")
-	async getTopProducts(): Promise<ProductDto[]> {
-		return await this.productServices.findAll();
+	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<ProductDto[]> {
+		return await this.productServices.findByQuery(queryParams);
 	}
 	// add new product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.User)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
 	@Post("addProduct")
 	@ResponseMessage("2020")
 	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
 		return await this.productServices.createOne(body, req);
 	}
-	// find one product
-	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
-	@Get("getBy/:id")
-	@ResponseMessage("")
-	async getProduct(@Param("id", ParseIntPipe) id: number): Promise<ProductDto> {
-		return await this.productServices.findOne({ id });
-	}
 	// update product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Put("updateBy/:id")
+	@Put("updateBy/:productId")
 	@ResponseMessage("2021")
 	async updateBase(
 		@Req() req: Request,
-		@Param("id", ParseIntPipe) id: number,
+		@Param("productId", ParseIntPipe) id: number,
 		@Body() body: CreateUpdateProductDto,
 	): Promise<ProductDto> {
 		return await this.productServices.updateOne(id, body, req);
@@ -59,9 +56,9 @@ export class ProductsController {
 	// delete product
 	@SwaggerDocumentaryApi(CreateUpdateProductDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Delete("deleteBy/:id")
+	@Delete("deleteBy/:productId")
 	@ResponseMessage("2022")
-	async deleteBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number): Promise<CreateUpdateProductDto> {
+	async deleteBase(@Req() req: Request, @Param("productId", ParseIntPipe) id: number): Promise<CreateUpdateProductDto> {
 		return await this.productServices.deleteOne(id, req);
 	}
 }

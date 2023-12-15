@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiQuery, getSchemaPath } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiQuery, ApiQueryOptions, getSchemaPath } from "@nestjs/swagger";
 
 export interface IClassConstructor<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;
@@ -7,8 +7,8 @@ export interface IClassConstructor<InstanceType = unknown> {
 interface IOptions {
 	responseIsObject?: boolean;
 	useAuth?: boolean;
-	query?: object[];
 	description?: "";
+	query?: Array<ApiQueryOptions>;
 }
 
 export const SwaggerDocumentaryApi = (

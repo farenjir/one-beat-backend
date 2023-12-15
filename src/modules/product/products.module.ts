@@ -7,7 +7,7 @@ import { UsersModule } from "modules/user/user.module";
 
 import { Products } from "./product.entity";
 import { ProductsController } from "./products.controller";
-import { ProductsService } from "./product.service";
+import { ProductsService } from "./products.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([Products]), JwtModule, UsersModule],

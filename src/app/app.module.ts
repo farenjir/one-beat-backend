@@ -36,7 +36,7 @@ import { Upload } from "modules/upload/upload.entity";
 import { UploadModule } from "modules/upload/uploads.module";
 
 import { Products } from "modules/product/product.entity";
-import { ProductModule } from "modules/product/product.module";
+import { ProductModule } from "modules/product/products.module";
 
 @Module({
 	imports: [

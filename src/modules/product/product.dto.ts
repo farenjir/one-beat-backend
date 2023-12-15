@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsOptional, Length } from "class-validator";
-import { Exclude, Expose, Type } from "class-transformer";
+import { IsArray, IsInt, IsOptional, IsString, Length } from "class-validator";
+import { Exclude, Expose, Transform, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
@@ -8,7 +8,7 @@ import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 import { ProductLevel, ProductStatus } from "./product.enum";
 
-export { ProductDto, CreateUpdateProductDto };
+export { ProductDto, CreateUpdateProductDto, ProductQuery };
 
 class ProductDto {
 	@ApiProperty()
@@ -136,4 +136,41 @@ class CreateUpdateProductDto {
 	@IsArray()
 	@Expose()
 	moodIds: number[];
+}
+
+class ProductQuery {
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	id?: number;
+	@IsString()
+	@IsOptional()
+	faName?: string;
+	@IsString()
+	@IsOptional()
+	enName?: string;
+	@IsOptional()
+	status?: ProductStatus;
+	@IsOptional()
+	level?: ProductLevel;
+	// bases
+	@IsOptional()
+	genreIds?: number[];
+	@IsOptional()
+	tempoIds?: number[];
+	@IsOptional()
+	groupIds?: number[];
+	@IsOptional()
+	moodIds?: number[];
+	// relation
+	@IsInt()
+	@Type(() => Number)
+	@IsOptional()
+	producerId?: number;
+	@IsString()
+	@IsOptional()
+	producerUsername?: string;
+	@IsString()
+	@IsOptional()
+	producerEmail?: string;
 }
