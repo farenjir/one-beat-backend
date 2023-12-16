@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { Role } from "global/guards.decorator";
 
 import { Users } from "../user.entity";
-import { UsersService } from "../user.service";
+import { UsersService } from "../users.service";
 import { CreateSaveUserDto } from "../user.dto";
 
 import { UserKYC } from "../kyc/kyc.entity";
@@ -80,7 +80,7 @@ describe("UsersService", () => {
 			// spyOn
 			jest.spyOn(repo, "find").mockResolvedValue(expectedUsers);
 			// Act
-			const result = await usersService.findUsers();
+			const result = await usersService.findUsers({});
 			// Assert
 			expect(repo.find).toHaveBeenCalled();
 			expect(result).toEqual(expectedUsers);

@@ -1,7 +1,29 @@
 import { ProductLevel, ProductStatus } from "./product.enum";
-import { ApiQueryOptions } from "@nestjs/swagger";
 
-export const productQuerySchema: Array<ApiQueryOptions> = [
+export const productPaginationSchema: Array<object> = [
+	{
+		name: "page",
+		required: false,
+		type: Number,
+	},
+	{
+		name: "take",
+		required: false,
+		type: Number,
+	},
+];
+
+export const productQuerySchema: Array<object> = [
+	{
+		name: "page",
+		required: false,
+		type: Number,
+	},
+	{
+		name: "take",
+		required: false,
+		type: Number,
+	},
 	{
 		name: "id",
 		required: false,

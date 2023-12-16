@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { JwtModule } from "@nestjs/jwt";
 
-import { UsersModule } from "modules/user/user.module";
+import { UsersModule } from "modules/user/users.module";
 
 import { Products } from "./product.entity";
 import { ProductsController } from "./products.controller";

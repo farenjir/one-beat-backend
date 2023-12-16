@@ -11,7 +11,7 @@ import { hashPassword, handleHashPassword } from "utils/configs/auth.configs";
 import { MailService } from "modules/mail/mail.service";
 
 import { UserDto } from "modules/user/user.dto";
-import { UsersService } from "modules/user/user.service";
+import { UsersService } from "modules/user/users.service";
 
 import { AuthSignUpDto, AuthExtraDto, SignInDto } from "./auth.dto";
 

@@ -1,6 +1,6 @@
-import { IsEmail, IsOptional, IsString, Length } from "class-validator";
+import { IsEmail, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
@@ -12,6 +12,15 @@ export { IUserQuery, UserIgnoredDto, UserProfileResponseDto };
 
 // *** user params
 class UserDto {
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	@Min(1)
+	page?: number;
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	take?: number;
 	@ApiProperty()
 	@Expose()
 	id: number;

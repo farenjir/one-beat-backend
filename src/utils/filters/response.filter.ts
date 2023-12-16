@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class AppResponseDto<TData> {
+export class AppResponseDto<T> {
 	@ApiProperty()
 	code: number;
 	@ApiProperty()
@@ -10,15 +10,15 @@ export class AppResponseDto<TData> {
 	@ApiProperty()
 	timestamp: string;
 	// TData
-	result: TData[] | TData;
+	result: T[] | T | { data: T[]; total: number };
 }
 
-export const appResponse = <T>(result: T | T[], code: string, descriptionCode: string): AppResponseDto<T> => ({
+export const appResponse = <T>(result: T | T[], code: string, descriptionCode: string, haveTotal?: boolean): AppResponseDto<T> => ({
 	code: Number(code),
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
 	timestamp: new Date().toISOString(),
-	result,
+	result: haveTotal ? { data: result?.[0], total: result?.[1] } : result,
 });
 
 const responseMessage = (statusCode: string) => {

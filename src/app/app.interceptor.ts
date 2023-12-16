@@ -22,6 +22,7 @@ import { RESPONSE_KEY } from "global/response.decorator";
 import { SERIALIZE_KEY } from "global/serialize.decorator";
 
 import { appResponse, AppResponseDto } from "utils/filters/response.filter";
+import { EnumRes } from "global/swagger.decorator";
 
 export interface IClassConstructor<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;
@@ -36,11 +37,12 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
-		const [messageCode, descriptionCode] = this.reflector.get<string>(RESPONSE_KEY, context.getHandler());
+		const [messageCode, descriptionCode, type] = this.reflector.get<string>(RESPONSE_KEY, context.getHandler());
 		// return
+		console.log(type === EnumRes.ArrayWithCount);
 		return next.handle().pipe(
 			rxMap((data) => {
-				return appResponse(data, messageCode, descriptionCode);
+				return appResponse(data, messageCode, descriptionCode, type === EnumRes.ArrayWithCount);
 			}),
 		);
 	}

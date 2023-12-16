@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Express, Request } from "express";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UploadTypes } from "utils/configs/upload.configs";
@@ -58,7 +58,7 @@ export class UploadController {
 	}
 	// getBy Query
 	@SwaggerDocumentaryApi(UploadResponseDto, {
-		responseIsObject: false,
+		response: EnumRes.Array,
 		query: [
 			{
 				name: "userId",

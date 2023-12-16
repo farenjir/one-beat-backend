@@ -6,7 +6,7 @@ import { Request } from "express";
 import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
 
 import { Role } from "global/guards.decorator";
-import { UsersService } from "modules/user/user.service";
+import { UsersService } from "modules/user/users.service";
 
 import { Products } from "./product.entity";
 import { CreateUpdateProductDto, ProductQuery } from "./product.dto";
@@ -18,8 +18,12 @@ export class ProductsService {
 		private usersService: UsersService,
 	) {}
 	// find all
-	async findAll(): Promise<Products[]> {
-		return await this.repo.find();
+	async findAll({ page = 1, take = 10 }: Pick<ProductQuery, "page" | "take">): Promise<[Products[], number]> {
+		const options: FindManyOptions<Products> = {
+			skip: page - 1,
+			take,
+		};
+		return await this.repo.findAndCount(options);
 	}
 	// find one
 	async findOne(queryParams: ProductQuery, ignoreValidateProduct = false): Promise<Products> {
@@ -37,14 +41,27 @@ export class ProductsService {
 		}
 	}
 	// find by Query
-	async findByQuery(queryParams: ProductQuery): Promise<Products[]> {
-		const { producerId, username, email, groupIds, genreIds, moodIds, tempoIds, ...productParams } = queryParams;
+	async findByQuery(queryParams: ProductQuery): Promise<[Products[], number]> {
+		const {
+			page = 1,
+			take = 10,
+			// producer ( user )
+			producerId,
+			username,
+			email,
+			// product
+			groupIds,
+			genreIds,
+			moodIds,
+			tempoIds,
+			...productParams
+		} = queryParams;
 		// arrayQuery
 		const bases = this.queryIdHandler({ groupIds, genreIds, moodIds, tempoIds });
 		// options
 		const options: FindManyOptions<Products> = {
-			// skip:1,
-			// take: 10,
+			skip: page - 1,
+			take,
 			where: {
 				producer: { id: producerId, username, email },
 				...productParams,
@@ -54,7 +71,7 @@ export class ProductsService {
 		if (_isEmpty(queryParams)) {
 			throw new BadRequestException("4000");
 		}
-		return await this.repo.find(options);
+		return await this.repo.findAndCount(options);
 	}
 	// create one
 	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {

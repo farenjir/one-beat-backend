@@ -27,7 +27,7 @@ import { Version } from "modules/version/version.entity";
 import { VersionModule } from "modules/version/versions.module";
 
 import { AuthModule } from "modules/auth/auth.module";
-import { UsersModule } from "modules/user/user.module";
+import { UsersModule } from "modules/user/users.module";
 import { Users } from "modules/user/user.entity";
 import { Profile } from "modules/user/profile/profile.entity";
 import { UserKYC } from "modules/user/kyc/kyc.entity";

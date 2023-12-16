@@ -1,14 +1,15 @@
-import { Controller, Body, Get, Put, Delete, Param, ParseIntPipe, Req } from "@nestjs/common";
+import { Controller, Body, Get, Put, Delete, Param, ParseIntPipe, Req, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
-import { UsersService } from "./user.service";
+import { UsersService } from "./users.service";
 import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto } from "./user.dto";
+import { usersPaginationSchema } from "./user.schema";
 
 @ApiTags("Users")
 @Controller("user")
@@ -40,12 +41,12 @@ export class UsersController {
 		return await this.usersService.updateUserProfile(user?.id, body);
 	}
 	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { responseIsObject: false })
+	@SwaggerDocumentaryApi(UserDto, { response: EnumRes.ArrayWithCount, query: usersPaginationSchema })
 	@AppGuards(Role.Admin)
 	@Get("all")
-	@ResponseMessage("")
-	async findAllUser(): Promise<UserDto[]> {
-		return await this.usersService.findUsers();
+	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	async findAllUser(@Query() queryParams: Pick<UserDto, "page" | "take">): Promise<[UserDto[], number]> {
+		return await this.usersService.findUsers(queryParams);
 	}
 	// findUser
 	@SwaggerDocumentaryApi(UserProfileDto)

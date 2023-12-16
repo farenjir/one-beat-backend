@@ -1,13 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsInt, IsOptional, IsString, Length } from "class-validator";
-import { Exclude, Expose, Transform, Type } from "class-transformer";
+import { IsArray, IsInt, IsOptional, IsString, Length, Min, MinLength } from "class-validator";
+import { Exclude, Expose, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 import { ProductLevel, ProductStatus } from "./product.enum";
-import { ArrayContains } from "typeorm";
 
 export { ProductDto, CreateUpdateProductDto, ProductQuery };
 
@@ -143,6 +142,15 @@ class ProductQuery {
 	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
+	@Min(1)
+	page?: number;
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	take?: number;
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
 	id?: number;
 	@IsString()
 	@IsOptional()
@@ -156,13 +164,13 @@ class ProductQuery {
 	level?: ProductLevel;
 	// bases
 	@IsOptional()
-	genreIds?: number[]
+	genreIds?: number[];
 	@IsOptional()
-	tempoIds?: number[]
+	tempoIds?: number[];
 	@IsOptional()
-	groupIds?: number[]
+	groupIds?: number[];
 	@IsOptional()
-	moodIds?: number[]
+	moodIds?: number[];
 	// relation
 	@IsInt()
 	@Type(() => Number)

@@ -3,13 +3,13 @@ import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { Serialize } from "global/serialize.decorator";
-import { SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
 import { ProductsService } from "./products.service";
 import { ProductDto, CreateUpdateProductDto, ProductQuery } from "./product.dto";
-import { productQuerySchema } from "./product.schema";
+import { productPaginationSchema, productQuerySchema } from "./product.schema";
 
 @ApiTags("Products")
 @Controller("product")
@@ -17,20 +17,17 @@ import { productQuerySchema } from "./product.schema";
 export class ProductsController {
 	constructor(private readonly productServices: ProductsService) {}
 	// get all product
-	@SwaggerDocumentaryApi(ProductDto, { responseIsObject: false, useAuth: false })
+	@SwaggerDocumentaryApi(ProductDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: productPaginationSchema })
 	@Get("all")
-	@ResponseMessage("")
-	async getProducts(): Promise<ProductDto[]> {
-		return await this.productServices.findAll();
+	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	async getProducts(@Query() queryParams: Pick<ProductQuery, "page" | "take">): Promise<[ProductDto[], number]> {
+		return await this.productServices.findAll(queryParams);
 	}
 	// find by Query
-	@SwaggerDocumentaryApi(ProductDto, {
-		useAuth: false,
-		query: productQuerySchema,
-	})
+	@SwaggerDocumentaryApi(ProductDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: productQuerySchema })
 	@Get("queries")
-	@ResponseMessage("")
-	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<ProductDto[]> {
+	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<[ProductDto[], number]> {
 		return await this.productServices.findByQuery(queryParams);
 	}
 	// add new product

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOneOptions, Repository } from "typeorm";
+import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 
@@ -10,7 +10,7 @@ import { ProfileService } from "./profile/profile.service";
 import { UserKycService } from "./kyc/kyc.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UserProfileDto } from "./user.dto";
+import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UserDto, UserProfileDto } from "./user.dto";
 
 @Injectable()
 export class UsersService {
@@ -20,8 +20,12 @@ export class UsersService {
 		private kycService: UserKycService,
 	) {}
 	// findAll
-	async findUsers(): Promise<Users[]> {
-		return await this.repo.find();
+	async findUsers({ page, take }: Pick<UserDto, "page" | "take">): Promise<[Users[], number]> {
+		const options: FindManyOptions<Users> = {
+			skip: page - 1,
+			take,
+		};
+		return await this.repo.findAndCount(options);
 	}
 	// findOne
 	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {

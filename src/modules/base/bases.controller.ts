@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Query, Param } 
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
@@ -14,15 +14,15 @@ import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
-	@SwaggerDocumentaryApi(BaseDto, { responseIsObject: false, useAuth: false })
+	@SwaggerDocumentaryApi(BaseDto, { response: EnumRes.Array, useAuth: false })
 	@Get("all")
-	@ResponseMessage("")
+	@ResponseMessage("", "", EnumRes.Array)
 	async getBases(): Promise<BaseDto[]> {
 		return await this.typeService.findAllBases();
 	}
 	// get children of type
 	@SwaggerDocumentaryApi(BaseDto, {
-		responseIsObject: false,
+		response: EnumRes.ArrayWithCount,
 		useAuth: false,
 		query: [
 			{
