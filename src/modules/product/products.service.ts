@@ -38,26 +38,19 @@ export class ProductsService {
 	}
 	// find by Query
 	async findByQuery(queryParams: ProductQuery): Promise<Products[]> {
-		const { producerId, producerUsername, producerEmail, groupIds, genreIds, moodIds, tempoIds, ...productParams } = queryParams;
+		const { producerId, username, email, groupIds, genreIds, moodIds, tempoIds, ...productParams } = queryParams;
 		// arrayQuery
-		const arrayQuery = { groupIds, genreIds, moodIds, tempoIds };
-		const bases = {};
-		_map(arrayQuery, (value, key) => {
-			if (value?.length) {
-				bases[key] = ArrayContains(value);
-			}
-		}); // base params
+		const bases = this.queryIdHandler({ groupIds, genreIds, moodIds, tempoIds });
 		// options
 		const options: FindManyOptions<Products> = {
 			// skip:1,
 			// take: 10,
 			where: {
-				producer: { id: producerId, username: producerUsername, email: producerEmail },
+				producer: { id: producerId, username, email },
 				...productParams,
 				...bases,
 			},
 		};
-		console.log(options);
 		if (_isEmpty(queryParams)) {
 			throw new BadRequestException("4000");
 		}
@@ -104,6 +97,15 @@ export class ProductsService {
 		}
 	}
 	// *** handles
+	queryIdHandler(arrayQuery: typeof ArrayContains.arguments) {
+		const object = {};
+		_map(arrayQuery, (value: string | string[], key: string) => {
+			if (value?.length) {
+				object[key] = ArrayContains(Array.isArray(value) ? value : [value]);
+			}
+		});
+		return object;
+	}
 	checkLevel({ user }: Pick<Request, "user">) {
 		const { role } = user;
 		return [Role.Admin, Role.Editor].includes(role);

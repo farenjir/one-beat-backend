@@ -7,6 +7,7 @@ import { Role } from "global/guards.decorator";
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 import { ProductLevel, ProductStatus } from "./product.enum";
+import { ArrayContains } from "typeorm";
 
 export { ProductDto, CreateUpdateProductDto, ProductQuery };
 
@@ -155,13 +156,13 @@ class ProductQuery {
 	level?: ProductLevel;
 	// bases
 	@IsOptional()
-	genreIds?: number[];
+	genreIds?: number[]
 	@IsOptional()
-	tempoIds?: number[];
+	tempoIds?: number[]
 	@IsOptional()
-	groupIds?: number[];
+	groupIds?: number[]
 	@IsOptional()
-	moodIds?: number[];
+	moodIds?: number[]
 	// relation
 	@IsInt()
 	@Type(() => Number)
@@ -169,8 +170,8 @@ class ProductQuery {
 	producerId?: number;
 	@IsString()
 	@IsOptional()
-	producerUsername?: string;
+	username?: string;
 	@IsString()
 	@IsOptional()
-	producerEmail?: string;
+	email?: string;
 }

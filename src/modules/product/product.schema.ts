@@ -8,6 +8,16 @@ export const productQuerySchema: Array<ApiQueryOptions> = [
 		type: Number,
 	},
 	{
+		name: "faName",
+		required: false,
+		type: String,
+	},
+	{
+		name: "enName",
+		required: false,
+		type: String,
+	},
+	{
 		name: "status",
 		required: false,
 		enum: ProductStatus,
@@ -21,26 +31,22 @@ export const productQuerySchema: Array<ApiQueryOptions> = [
 	{
 		name: "genreIds",
 		required: false,
-		isArray: true,
-		type: Number,
+		type: [Number],
 	},
 	{
 		name: "tempoIds",
 		required: false,
-		isArray: true,
-		type: Number,
+		type: [Number],
 	},
 	{
 		name: "groupIds",
 		required: false,
-		isArray: true,
-		type: Number,
+		type: [Number],
 	},
 	{
 		name: "moodIds",
 		required: false,
-		isArray: true,
-		type: Number,
+		type: [Number],
 	},
 	// relation
 	{
@@ -49,12 +55,12 @@ export const productQuerySchema: Array<ApiQueryOptions> = [
 		type: Number,
 	},
 	{
-		name: "producerUsername",
+		name: "username",
 		required: false,
 		type: String,
 	},
 	{
-		name: "producerEmail",
+		name: "email",
 		required: false,
 		type: String,
 	},
