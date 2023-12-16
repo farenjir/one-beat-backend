@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Query, Param } 
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
@@ -15,14 +15,14 @@ import { addDescription, getBaseSchema, getChildrenSchema } from "./base.schema"
 export class BaseController {
 	constructor(private readonly typeService: BaseService) {}
 	// get all types
-	@SwaggerDocumentaryApi(BaseDto, { response: EnumRes.Array, useAuth: false })
+	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.Array, useAuth: false })
 	@Get("all")
-	@ResponseMessage("", "", EnumRes.Array)
+	@ResponseMessage("", "", ResEnum.Array)
 	async getBases(): Promise<BaseDto[]> {
 		return await this.typeService.findAllBases();
 	}
 	// get children of type
-	@SwaggerDocumentaryApi(BaseDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: getChildrenSchema })
+	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: getChildrenSchema })
 	@Get("children")
 	@ResponseMessage("")
 	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {

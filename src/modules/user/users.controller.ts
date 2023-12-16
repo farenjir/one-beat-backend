@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
@@ -41,10 +41,10 @@ export class UsersController {
 		return await this.usersService.updateUserProfile(user?.id, body);
 	}
 	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { response: EnumRes.ArrayWithCount, query: usersPaginationSchema })
+	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount, query: usersPaginationSchema })
 	@AppGuards(Role.Admin)
 	@Get("all")
-	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
 	async findAllUser(@Query() queryParams: Pick<UserDto, "page" | "take">): Promise<[UserDto[], number]> {
 		return await this.usersService.findUsers(queryParams);
 	}

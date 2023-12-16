@@ -5,13 +5,13 @@ export interface Dto<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;
 }
 
-export enum EnumRes {
+export enum ResEnum {
 	Object = "Object",
 	Array = "Array",
 	ArrayWithCount = "ArrayWithCount",
 }
 interface IOptions {
-	response?: EnumRes;
+	response?: ResEnum;
 	useAuth?: boolean;
 	query?: Array<ApiQueryOptions>;
 	description?: string;
@@ -19,16 +19,16 @@ interface IOptions {
 
 export const SwaggerDocumentaryApi = (
 	responseDto: Dto,
-	{ response = EnumRes.Object, useAuth = true, query = [], description = "" }: IOptions = {},
+	{ response = ResEnum.Object, useAuth = true, query = [], description = "" }: IOptions = {},
 ) => {
 	const queryArray = query.map(ApiQuery);
 	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// result
-	const result = (type: EnumRes) => {
+	const result = (type: ResEnum) => {
 		switch (type) {
-			case EnumRes.Object:
+			case ResEnum.Object:
 				return { $ref: getSchemaPath(responseDto) };
-			case EnumRes.ArrayWithCount:
+			case ResEnum.ArrayWithCount:
 				return {
 					allOf: [
 						{

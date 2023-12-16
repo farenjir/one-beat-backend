@@ -20,7 +20,7 @@ import { catchError, timeout, tap, map as rxMap } from "rxjs/operators";
 
 import { RESPONSE_KEY } from "global/response.decorator";
 import { SERIALIZE_KEY } from "global/serialize.decorator";
-import { EnumRes } from "global/swagger.decorator";
+import { ResEnum } from "global/swagger.decorator";
 
 import { appResponse, AppResponseDto } from "utils/filters/response.filter";
 
@@ -39,10 +39,10 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
 		const [messageCode, descriptionCode, type] = this.reflector.get<string>(RESPONSE_KEY, context.getHandler());
 		// return
-		console.log(type === EnumRes.ArrayWithCount);
+		console.log(type === ResEnum.ArrayWithCount);
 		return next.handle().pipe(
 			rxMap((data) => {
-				return appResponse(data, messageCode, descriptionCode, type === EnumRes.ArrayWithCount);
+				return appResponse(data, messageCode, descriptionCode, type === ResEnum.ArrayWithCount);
 			}),
 		);
 	}

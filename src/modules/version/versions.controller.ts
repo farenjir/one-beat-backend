@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Param, Query } 
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
-import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { VersionService } from "./versions.service";
@@ -15,9 +15,9 @@ import { versionTypeSchema } from "./version.schema";
 export class VersionController {
 	constructor(private readonly versionServices: VersionService) {}
 	// get all
-	@SwaggerDocumentaryApi(VersionDto, { useAuth: false, response: EnumRes.Array })
+	@SwaggerDocumentaryApi(VersionDto, { useAuth: false, response: ResEnum.Array })
 	@Get("all")
-	@ResponseMessage("", "", EnumRes.Array)
+	@ResponseMessage("", "", ResEnum.Array)
 	async getVersions(): Promise<VersionDto[]> {
 		return await this.versionServices.find();
 	}

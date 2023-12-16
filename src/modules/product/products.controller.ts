@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { Serialize } from "global/serialize.decorator";
-import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
+import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
@@ -17,16 +17,16 @@ import { productPaginationSchema, productQuerySchema } from "./product.schema";
 export class ProductsController {
 	constructor(private readonly productServices: ProductsService) {}
 	// get all product
-	@SwaggerDocumentaryApi(ProductDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: productPaginationSchema })
+	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: productPaginationSchema })
 	@Get("all")
-	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
 	async getProducts(@Query() queryParams: Pick<ProductQuery, "page" | "take">): Promise<[ProductDto[], number]> {
 		return await this.productServices.findAll(queryParams);
 	}
 	// find by Query
-	@SwaggerDocumentaryApi(ProductDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: productQuerySchema })
+	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: productQuerySchema })
 	@Get("queries")
-	@ResponseMessage("", "", EnumRes.ArrayWithCount)
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
 	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<[ProductDto[], number]> {
 		return await this.productServices.findByQuery(queryParams);
 	}
