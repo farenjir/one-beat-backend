@@ -39,7 +39,6 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, AppResponse
 	intercept(context: ExecutionContext, next: CallHandler): Observable<AppResponseDto<T>> {
 		const [messageCode, descriptionCode, type] = this.reflector.get<string>(RESPONSE_KEY, context.getHandler());
 		// return
-		console.log(type === ResEnum.ArrayWithCount);
 		return next.handle().pipe(
 			rxMap((data) => {
 				return appResponse(data, messageCode, descriptionCode, type === ResEnum.ArrayWithCount);

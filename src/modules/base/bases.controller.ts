@@ -17,16 +17,9 @@ export class BaseController {
 	// get all types
 	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.Array, useAuth: false })
 	@Get("all")
-	@ResponseMessage("", "", ResEnum.Array)
+	@ResponseMessage("")
 	async getBases(): Promise<BaseDto[]> {
 		return await this.typeService.findAllBases();
-	}
-	// get children of type
-	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: getChildrenSchema })
-	@Get("children")
-	@ResponseMessage("")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {
-		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// get one type
 	@SwaggerDocumentaryApi(BaseDto, { useAuth: false, query: getBaseSchema })
@@ -34,6 +27,13 @@ export class BaseController {
 	@ResponseMessage("")
 	async getBase(@Query(new ValidationQueryPipe()) { baseId, baseType }: BaseQuery = {}): Promise<BaseDto> {
 		return await this.typeService.findBase(baseId, baseType);
+	}
+	// get children of type
+	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.Array, useAuth: false, query: getChildrenSchema })
+	@Get("children")
+	@ResponseMessage("")
+	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {
+		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// add new types
 	@SwaggerDocumentaryApi(CreateBaseDto, { description: addDescription })

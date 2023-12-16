@@ -26,8 +26,11 @@ export const SwaggerDocumentaryApi = (
 	// result
 	const result = (type: ResEnum) => {
 		switch (type) {
-			case ResEnum.Object:
-				return { $ref: getSchemaPath(responseDto) };
+			case ResEnum.Array:
+				return {
+					type: "array",
+					items: { $ref: getSchemaPath(responseDto) },
+				};
 			case ResEnum.ArrayWithCount:
 				return {
 					allOf: [
@@ -45,10 +48,7 @@ export const SwaggerDocumentaryApi = (
 					],
 				};
 			default:
-				return {
-					type: "array",
-					items: { $ref: getSchemaPath(responseDto) },
-				};
+				return { $ref: getSchemaPath(responseDto) };
 		}
 	};
 	// return

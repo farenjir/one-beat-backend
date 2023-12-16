@@ -17,7 +17,7 @@ export class VersionController {
 	// get all
 	@SwaggerDocumentaryApi(VersionDto, { useAuth: false, response: ResEnum.Array })
 	@Get("all")
-	@ResponseMessage("", "", ResEnum.Array)
+	@ResponseMessage("")
 	async getVersions(): Promise<VersionDto[]> {
 		return await this.versionServices.find();
 	}
