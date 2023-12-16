@@ -6,7 +6,7 @@ import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
 import { ValidationQueryPipe } from "./bases.pipe";
 import { addDescription, getBaseSchema, getChildrenSchema } from "./base.schema";
 

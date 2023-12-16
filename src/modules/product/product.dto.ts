@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsInt, IsOptional, IsString, Length, Min, MinLength } from "class-validator";
+import { IsArray, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
 import { Exclude, Expose, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
