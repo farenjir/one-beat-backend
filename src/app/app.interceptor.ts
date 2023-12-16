@@ -20,9 +20,9 @@ import { catchError, timeout, tap, map as rxMap } from "rxjs/operators";
 
 import { RESPONSE_KEY } from "global/response.decorator";
 import { SERIALIZE_KEY } from "global/serialize.decorator";
+import { EnumRes } from "global/swagger.decorator";
 
 import { appResponse, AppResponseDto } from "utils/filters/response.filter";
-import { EnumRes } from "global/swagger.decorator";
 
 export interface IClassConstructor<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;

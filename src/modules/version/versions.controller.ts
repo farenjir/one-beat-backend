@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Param } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Param, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
@@ -7,50 +7,35 @@ import { ResponseMessage } from "global/response.decorator";
 
 import { VersionService } from "./versions.service";
 import { VersionDto, VersionCreateUpdateDto } from "./version.dto";
+import { VersionType } from "./version.enum";
+import { versionTypeSchema } from "./version.schema";
 
 @ApiTags("Versions")
 @Controller("version")
 export class VersionController {
 	constructor(private readonly versionServices: VersionService) {}
-	// get latest version
-	@SwaggerDocumentaryApi(VersionDto, { useAuth: false })
-	@Get("getLatest")
-	@ResponseMessage("")
-	async getVersion(): Promise<VersionDto> {
-		return await this.versionServices.findLatest();
-	}
 	// get all
 	@SwaggerDocumentaryApi(VersionDto, { useAuth: false, response: EnumRes.Array })
-	@Get("getVersions")
+	@Get("all")
 	@ResponseMessage("", "", EnumRes.Array)
 	async getVersions(): Promise<VersionDto[]> {
 		return await this.versionServices.find();
 	}
-	// get one type
-	@SwaggerDocumentaryApi(VersionDto)
-	@AppGuards(Role.Admin, Role.Editor)
-	@Get("getBy/:id")
+	// get latest version
+	@SwaggerDocumentaryApi(VersionDto, { useAuth: false })
+	@Get("latest")
 	@ResponseMessage("")
-	async getVersionById(@Param("id", ParseIntPipe) id: number): Promise<VersionDto> {
-		return await this.versionServices.findById(id);
+	async getVersion(): Promise<VersionDto> {
+		return await this.versionServices.findLatest();
 	}
 	// extra services
-	@SwaggerDocumentaryApi(VersionDto)
+	@SwaggerDocumentaryApi(VersionDto, { query: versionTypeSchema })
 	@AppGuards(Role.Admin, Role.Editor)
-	@Get("appVersion")
+	@Get("update")
 	@ResponseMessage("2013")
-	async updateAppVersion(): Promise<VersionDto> {
-		const { appVersion: perVersion, id, ...latestVersion } = await this.versionServices.findLatest();
-		Object.assign(latestVersion, { appVersion: perVersion + 1 });
-		return await this.versionServices.updateById(id, latestVersion); // appVersion updated
-	}
-	@SwaggerDocumentaryApi(VersionDto)
-	@AppGuards(Role.Admin, Role.Editor)
-	@Get("baseVersion")
-	@ResponseMessage("2013")
-	async updateBaseVersion(): Promise<VersionDto> {
-		const { baseVersion: perVersion, id, ...latestVersion } = await this.versionServices.findLatest();
-		Object.assign(latestVersion, { baseVersion: perVersion + 1 });
+	async updateBaseVersion(@Query() { type }: { type: VersionType }): Promise<VersionDto> {
+		const { id, ...latestVersion } = await this.versionServices.findLatest();
+		Object.assign(latestVersion, { [type]: latestVersion[type] + 1 });
 		return await this.versionServices.updateById(id, latestVersion); // baseVersion updated
 	}
 	// add new types
@@ -60,6 +45,14 @@ export class VersionController {
 	@ResponseMessage("2012")
 	async addNewBase(@Body() body: VersionCreateUpdateDto): Promise<VersionDto> {
 		return await this.versionServices.create(body);
+	}
+	// get one type
+	@SwaggerDocumentaryApi(VersionDto)
+	@AppGuards(Role.Admin, Role.Editor)
+	@Get("getBy/:id")
+	@ResponseMessage("")
+	async getVersionById(@Param("id", ParseIntPipe) id: number): Promise<VersionDto> {
+		return await this.versionServices.findById(id);
 	}
 	// update pre types
 	@SwaggerDocumentaryApi(VersionDto)

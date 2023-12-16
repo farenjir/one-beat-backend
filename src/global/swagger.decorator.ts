@@ -27,16 +27,19 @@ export const SwaggerDocumentaryApi = (responseDto: Dto, { response = EnumRes.Obj
 				return { $ref: getSchemaPath(responseDto) };
 			case EnumRes.ArrayWithCount:
 				return {
-					type: "object",
-					schema: {
-						data: {
-							type: "array",
-							items: { $ref: getSchemaPath(responseDto) },
+					allOf: [
+						{
+							properties: {
+								total: {
+									type: "number",
+								},
+								data: {
+									type: "array",
+									items: { $ref: getSchemaPath(responseDto) },
+								},
+							},
 						},
-						total: {
-							type: "number",
-						},
-					},
+					],
 				};
 			default:
 				return {

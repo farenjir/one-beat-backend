@@ -78,7 +78,7 @@ export class UploadController {
 		],
 	})
 	@AppGuards(Role.Admin, Role.Editor)
-	@Get("filesList")
+	@Get("fileList")
 	@ResponseMessage("2009")
 	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<UploadResponseDto[]> {
 		return await this.uploadService.findBy(query);

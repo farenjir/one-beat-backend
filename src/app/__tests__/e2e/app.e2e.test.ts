@@ -19,8 +19,8 @@ describe("AppModule", () => {
 
 	describe("AppController", () => {
 		describe("controller", () => {
-			it("should return TEST_AppController", (done) => {
-				expect(appController.getTest()).toBe("TEST_AppController");
+			it("should return AppController", (done) => {
+				expect(appController.getTest()).toBe("AppController");
 				done();
 			});
 		});
@@ -28,8 +28,8 @@ describe("AppModule", () => {
 
 	describe("AppService", () => {
 		describe("service", () => {
-			it("should return TEST_AppService", (done) => {
-				expect(appService.getTest()).toBe("TEST_AppService");
+			it("should return AppService", (done) => {
+				expect(appService.getTest()).toBe("AppService");
 				done();
 			});
 		});
