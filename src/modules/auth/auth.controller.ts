@@ -4,7 +4,6 @@ import { Response } from "express";
 
 import { TOKEN_KEY, cookieOptions } from "utils/configs/main.configs";
 
-import { AppGuards } from "global/guards.decorator";
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
@@ -54,8 +53,7 @@ export class AuthController {
 		return await this.authService.signup(params);
 	}
 	// signOut
-	@SwaggerDocumentaryApi(UserDto)
-	@AppGuards()
+	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("signOut")
 	@ResponseMessage("2004")
 	signOut(@Res({ passthrough: true }) res: Response): void {

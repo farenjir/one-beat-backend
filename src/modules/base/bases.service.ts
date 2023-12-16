@@ -5,7 +5,7 @@ import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
 import { pickBy as _pickBy } from "lodash";
 
 import { Bases } from "./base.entity";
-import { CreateBaseDto, CreateBasesDto, UpdateBaseDto } from "./base.dto";
+import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
 
 @Injectable()
 export class BaseService {
@@ -50,11 +50,6 @@ export class BaseService {
 		const base = this.repo.create(baseParams);
 		return await this.repo.save(base);
 	}
-	async createWithChildren({ type, enName, faName, children = [] }: CreateBasesDto): Promise<Bases> {
-		const createBaseParent = await this.create({ parentId: 0, type, enName, faName });
-		const createChildren = await this.handleSaveChildren(createBaseParent.id, children);
-		return Object.assign({}, createBaseParent, { children: createChildren });
-	}
 	// update
 	async updateById(id: number, { parentId, ...baseParams }: Partial<UpdateBaseDto>): Promise<Bases> {
 		const base = await this.findBase(id);
@@ -78,9 +73,5 @@ export class BaseService {
 			throw new NotFoundException("4004");
 		}
 		return await this.repo.remove(base);
-	}
-	// handles
-	async handleSaveChildren(parentId: number, children: CreateBaseDto[]): Promise<Bases[]> {
-		return await Promise.all(children.map(({ type, enName, faName }) => this.create({ parentId, type, enName, faName })));
 	}
 }

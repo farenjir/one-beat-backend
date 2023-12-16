@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiQuery, ApiQueryOptions, getSchemaPath } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiOperation, ApiQuery, ApiQueryOptions, getSchemaPath } from "@nestjs/swagger";
 
 export interface Dto<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;
@@ -13,11 +13,14 @@ export enum EnumRes {
 interface IOptions {
 	response?: EnumRes;
 	useAuth?: boolean;
-	description?: "";
 	query?: Array<ApiQueryOptions>;
+	description?: string;
 }
 
-export const SwaggerDocumentaryApi = (responseDto: Dto, { response = EnumRes.Object, useAuth = true, query = [] }: IOptions = {}) => {
+export const SwaggerDocumentaryApi = (
+	responseDto: Dto,
+	{ response = EnumRes.Object, useAuth = true, query = [], description = "" }: IOptions = {},
+) => {
 	const queryArray = query.map(ApiQuery);
 	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// result
@@ -56,6 +59,7 @@ export const SwaggerDocumentaryApi = (responseDto: Dto, { response = EnumRes.Obj
 		// 	description,
 		// 	title: description,
 		// }),
+		ApiOperation({ description }),
 		ApiExtraModels(responseDto),
 		ApiOkResponse({
 			schema: {

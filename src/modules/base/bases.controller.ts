@@ -6,8 +6,9 @@ import { EnumRes, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
-import { ValidationQueryPipe } from "./bases.pipe";
 import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, CreateBasesDto } from "./base.dto";
+import { ValidationQueryPipe } from "./bases.pipe";
+import { addDescription, getBaseSchema, getChildrenSchema } from "./base.schema";
 
 @ApiTags("Bases")
 @Controller("base")
@@ -21,62 +22,26 @@ export class BaseController {
 		return await this.typeService.findAllBases();
 	}
 	// get children of type
-	@SwaggerDocumentaryApi(BaseDto, {
-		response: EnumRes.ArrayWithCount,
-		useAuth: false,
-		query: [
-			{
-				name: "parentType",
-				required: false,
-				type: String,
-			},
-			{
-				name: "parentId",
-				required: false,
-				type: Number,
-			},
-		],
-	})
+	@SwaggerDocumentaryApi(BaseDto, { response: EnumRes.ArrayWithCount, useAuth: false, query: getChildrenSchema })
 	@Get("children")
 	@ResponseMessage("")
 	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {
 		return await this.typeService.findBaseChildren(parentId, parentType);
 	}
 	// get one type
-	@SwaggerDocumentaryApi(BaseDto, {
-		useAuth: false,
-		query: [
-			{
-				name: "baseType",
-				required: false,
-				type: String,
-			},
-			{
-				name: "baseId",
-				required: false,
-				type: Number,
-			},
-		],
-	})
+	@SwaggerDocumentaryApi(BaseDto, { useAuth: false, query: getBaseSchema })
 	@Get("getBase")
 	@ResponseMessage("")
 	async getBase(@Query(new ValidationQueryPipe()) { baseId, baseType }: BaseQuery = {}): Promise<BaseDto> {
 		return await this.typeService.findBase(baseId, baseType);
 	}
 	// add new types
-	@SwaggerDocumentaryApi(CreateBaseDto)
-	// @AppGuards(Role.Admin)
+	@SwaggerDocumentaryApi(CreateBaseDto, { description: addDescription })
+	@AppGuards(Role.Admin)
 	@Post("addBase")
 	@ResponseMessage("2007")
 	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
 		return await this.typeService.create(body);
-	}
-	@SwaggerDocumentaryApi(CreateBasesDto)
-	@AppGuards(Role.Admin)
-	@Post("addBase/withChildren")
-	@ResponseMessage("2007")
-	async addNewBaseWithChildren(@Body() body: CreateBasesDto): Promise<BaseDto> {
-		return await this.typeService.createWithChildren(body);
 	}
 	// update pre types
 	@SwaggerDocumentaryApi(BaseDto)
