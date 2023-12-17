@@ -23,6 +23,9 @@ import {
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { Tags } from "modules/tags/tag.entity";
+import { TagsModule } from "modules/tags/tags.module";
+
 import { Version } from "modules/version/version.entity";
 import { VersionModule } from "modules/version/versions.module";
 
@@ -57,7 +60,7 @@ import { ProductModule } from "modules/product/products.module";
 				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities join(__dirname, "../modules/**/*.entity.ts")
-				entities: [Bases, Version, Users, Profile, UserKYC, Products, Upload],
+				entities: [Bases, Tags, Version, Users, Profile, UserKYC, Products, Upload],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -78,6 +81,7 @@ import { ProductModule } from "modules/product/products.module";
 		ScheduleModule.forRoot(),
 		// app modules
 		BasesModule,
+		TagsModule,
 		VersionModule,
 		AuthModule,
 		UsersModule,

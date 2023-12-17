@@ -1,4 +1,17 @@
-import { ProductLevel, ProductStatus } from "./product.enum";
+import { ProductLevel, ProductStatus } from "./blog.enum";
+
+export const productPaginationSchema: Array<object> = [
+	{
+		name: "page",
+		required: false,
+		type: Number,
+	},
+	{
+		name: "take",
+		required: false,
+		type: Number,
+	},
+];
 
 export const productQuerySchema: Array<object> = [
 	{
