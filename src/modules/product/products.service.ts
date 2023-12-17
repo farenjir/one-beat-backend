@@ -127,8 +127,7 @@ export class ProductsService {
 		const { role } = user;
 		return [Role.Admin, Role.Editor].includes(role);
 	}
-	checkCreator({ user }: Pick<Request, "user">, creatorUserId: number) {
-		const { id } = user;
+	checkCreator({ user: { id } }: Pick<Request, "user">, creatorUserId: number) {
 		return creatorUserId === id;
 	}
 	async duplicatedProductName({ faName, enName }: Partial<CreateUpdateProductDto>) {

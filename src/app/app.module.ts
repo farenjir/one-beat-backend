@@ -57,7 +57,7 @@ import { ProductModule } from "modules/product/products.module";
 				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities join(__dirname, "../modules/**/*.entity.ts")
-				entities: [Bases, Version, Users, Profile, UserKYC, Upload, Products],
+				entities: [Bases, Version, Users, Profile, UserKYC, Products, Upload],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -81,8 +81,8 @@ import { ProductModule } from "modules/product/products.module";
 		VersionModule,
 		AuthModule,
 		UsersModule,
-		ProductModule,
 		UploadModule,
+		ProductModule,
 	],
 	controllers: [AppController],
 	providers: [

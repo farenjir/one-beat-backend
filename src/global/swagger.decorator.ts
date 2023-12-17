@@ -21,7 +21,7 @@ export const SwaggerDocumentaryApi = (
 	responseDto: Dto,
 	{ response = ResEnum.Object, useAuth = true, query = [], description = "" }: IOptions = {},
 ) => {
-	const queryArray = query.map(ApiQuery);
+	const queryApi = query.map(ApiQuery);
 	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// result
 	const result = (type: ResEnum) => {
@@ -54,11 +54,9 @@ export const SwaggerDocumentaryApi = (
 	// return
 	return applyDecorators(
 		...auth,
-		...queryArray,
-		// ApiProperty({
-		// 	description,
-		// 	title: description,
-		// }),
+		...queryApi,
+		// ApiProperty(),
+		// ApiBody(),
 		ApiOperation({ description }),
 		ApiExtraModels(responseDto),
 		ApiOkResponse({

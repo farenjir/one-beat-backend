@@ -26,7 +26,7 @@ export class VersionController {
 	@Get("latest")
 	@ResponseMessage("")
 	async getVersion(): Promise<VersionDto> {
-		return await this.versionServices.findLatest();
+		return await this.versionServices.findLatest(true);
 	}
 	// extra services
 	@SwaggerDocumentaryApi(VersionDto, { query: versionTypeSchema })
@@ -34,7 +34,7 @@ export class VersionController {
 	@Get("update")
 	@ResponseMessage("2013")
 	async updateBaseVersion(@Query() { type }: { type: VersionType }): Promise<VersionDto> {
-		const { id, ...latestVersion } = await this.versionServices.findLatest();
+		const { id, ...latestVersion } = await this.versionServices.findLatest(true);
 		Object.assign(latestVersion, { [type]: latestVersion[type] + 1 });
 		return await this.versionServices.updateById(id, latestVersion); // baseVersion updated
 	}

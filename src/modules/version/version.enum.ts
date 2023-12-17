@@ -1,4 +1,4 @@
 export enum VersionType {
-	App = "App",
-	Bases = "Bases",
+	App = "appVersion",
+	Bases = "baseVersion",
 }

@@ -13,12 +13,16 @@ export class VersionService {
 		return await this.repo.find();
 	}
 	// findLatest
-	async findLatest(): Promise<Version> {
+	async findLatest(validationVersion: boolean = false): Promise<Version> {
 		const options: FindOneOptions<Version> = {
 			where: {},
 			order: { id: "DESC" },
 		};
-		return await this.repo.findOne(options);
+		const latest = await this.repo.findOne(options);
+		if (validationVersion && !latest) {
+			throw new NotFoundException("4009");
+		}
+		return latest;
 	}
 	// findOne
 	async findById(id: number, isValidVersion: boolean = false): Promise<Version> {
