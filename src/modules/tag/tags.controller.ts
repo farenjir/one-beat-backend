@@ -21,7 +21,7 @@ export class TagsController {
 		return await this.tagServices.findAll(queryParams);
 	}
 	// findOne
-	@SwaggerDocumentaryApi(TagDto, { useAuth: false, query: getTagSchema })
+	@SwaggerDocumentaryApi(TagDto, { useAuth: false, query: getTagSchema.slice(0, 3) })
 	@Get("getTag")
 	@ResponseMessage("")
 	async getTagByQuery(@Query() queryParams: TagQuery): Promise<TagDto> {

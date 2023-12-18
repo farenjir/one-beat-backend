@@ -23,8 +23,8 @@ import {
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
-import { Tags } from "modules/tags/tag.entity";
-import { TagsModule } from "modules/tags/tags.module";
+import { Tags } from "modules/tag/tag.entity";
+import { TagsModule } from "modules/tag/tags.module";
 
 import { Version } from "modules/version/version.entity";
 import { VersionModule } from "modules/version/versions.module";

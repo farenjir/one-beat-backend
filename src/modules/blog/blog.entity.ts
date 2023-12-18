@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import { IsOptional } from "class-validator";
 
-import { Tags } from "modules/tags/tag.entity";
+import { Tags } from "modules/tag/tag.entity";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 import { Users } from "modules/user/user.entity";

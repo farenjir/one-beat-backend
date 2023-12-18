@@ -3,7 +3,7 @@ import { IsArray, IsInt, IsOptional, IsString, Length, Min } from "class-validat
 import { Exclude, Expose, Type } from "class-transformer";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
-import { TagDto } from "modules/tags/tag.dto";
+import { TagDto } from "modules/tag/tag.dto";
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 export { BlogDto, BlogQuery, CreateUpdateDto };
@@ -125,21 +125,9 @@ class CreateUpdateDto {
 	@IsOptional()
 	level?: BlogLevel;
 	// *** relations
-	@ApiProperty({ default: UserDto })
-	@Type(() => UserIgnoredDto)
-	author?: UserDto;
-	@ApiProperty({ default: [TagDto] })
-	tags?: TagDto[];
-	// *** defaults
-	@ApiProperty({ type: Date })
-	@Expose()
-	createdAt: Date;
-	@ApiProperty({ type: Date })
-	@Expose()
-	updatedAt: Date;
-	@ApiProperty({ type: Date })
-	@Exclude()
-	deletedAt: Date;
+	@ApiProperty({ type: [Number], default: [] })
+	@IsOptional()
+	tagIds?: number[];
 }
 
 class BlogQuery {

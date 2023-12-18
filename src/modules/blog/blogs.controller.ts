@@ -9,6 +9,7 @@ import { AppGuards, Role } from "global/guards.decorator";
 
 import { BlogServices } from "./blogs.service";
 import { BlogDto, BlogQuery, CreateUpdateDto } from "./blog.dto";
+import { blogQuerySchema } from "./blog.schema";
 
 @ApiTags("Blogs")
 @Controller("blog")
@@ -16,14 +17,14 @@ import { BlogDto, BlogQuery, CreateUpdateDto } from "./blog.dto";
 export class BlogsController {
 	constructor(private readonly blogServices: BlogServices) {}
 	// get all by query
-	@SwaggerDocumentaryApi(BlogDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: [] })
+	@SwaggerDocumentaryApi(BlogDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: blogQuerySchema })
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
 	async getProducts(@Query() queryParams: BlogQuery): Promise<[BlogDto[], number]> {
 		return await this.blogServices.findAll(queryParams);
 	}
 	// find by query
-	@SwaggerDocumentaryApi(BlogDto, { useAuth: false, query: [] })
+	@SwaggerDocumentaryApi(BlogDto, { useAuth: false, query: blogQuerySchema.slice(2, 5) })
 	@Get("getProduct")
 	@ResponseMessage("")
 	async getProducerProducts(@Query() queryParams: Pick<BlogQuery, "id" | "enTitle" | "faTitle">): Promise<BlogDto> {
