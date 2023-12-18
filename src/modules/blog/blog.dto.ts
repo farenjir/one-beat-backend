@@ -2,81 +2,69 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
 import { Exclude, Expose, Type } from "class-transformer";
 
-import { Role } from "global/guards.decorator";
-
+import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
+import { TagDto } from "modules/tags/tag.dto";
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
-import { ProductLevel, ProductStatus } from "./blog.enum";
+export { BlogDto, BlogQuery, CreateUpdateDto };
 
-export { ProductDto, CreateUpdateProductDto, ProductQuery };
-
-class ProductDto {
+class BlogDto {
 	@ApiProperty()
 	@Expose()
 	id: number;
-	@ApiProperty({ default: "faName" })
+	@ApiProperty({ default: "faTitle" })
 	@Expose()
 	@Length(1, 30)
-	faName: string;
-	@ApiProperty({ default: "enName" })
+	faTitle: string;
+	@ApiProperty({ default: "enTitle" })
 	@Expose()
 	@Length(1, 30)
-	enName: string;
-	@ApiProperty({ default: "faDescription" })
+	enTitle: string;
+	@ApiProperty({ default: "faContent" })
 	@Expose()
-	@Length(30, 300)
-	faDescription: string;
-	@ApiProperty({ default: "enDescription" })
+	@Length(300)
+	faContent?: string;
+	@ApiProperty({ default: "enContent" })
 	@Expose()
-	@Length(30, 300)
-	enDescription: string;
+	@Length(300)
+	enContent?: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
 	@Length(1, 99)
 	coverFileName: string;
-	@ApiProperty({ default: "uploadFileName" })
-	@Expose()
-	@Length(1, 99)
-	demoFileName: string;
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	genreIds: number[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	tempoIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
 	groupIds: number[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	moodIds: number[];
 	// *** enums
 	@ApiProperty({
+		name: "language",
+		enum: BlogLanguages,
+		default: [BlogLanguages.Farsi],
+	})
+	@IsOptional()
+	language?: BlogLanguages[];
+	@ApiProperty({
 		name: "status",
-		enum: ProductStatus,
-		default: ProductStatus.Inprogress,
+		enum: BlogStatus,
+		default: BlogStatus.Inprogress,
 	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
-	status?: ProductStatus;
+	@IsOptional()
+	status?: BlogStatus;
 	@ApiProperty({
 		name: "level",
-		enum: ProductLevel,
-		default: ProductLevel.Potential,
+		enum: BlogLevel,
+		default: BlogLevel.Potential,
 	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
-	level?: ProductLevel;
+	@IsOptional()
+	level?: BlogLevel;
+	// *** relations
+	@ApiProperty({ default: [TagDto] })
+	tags?: TagDto[];
 	// *** relations
 	@ApiProperty({ default: UserDto })
 	@Type(() => UserIgnoredDto)
-	producer?: UserDto;
+	author?: UserDto;
 	// *** defaults
 	@ApiProperty({ type: Date })
 	@Expose()
@@ -89,64 +77,72 @@ class ProductDto {
 	deletedAt: Date;
 }
 
-class CreateUpdateProductDto {
-	@ApiProperty({ default: "faName" })
+class CreateUpdateDto {
+	@ApiProperty({ default: "faTitle" })
 	@Expose()
 	@Length(1, 30)
-	faName: string;
-	@ApiProperty({ default: "enName" })
+	faTitle: string;
+	@ApiProperty({ default: "enTitle" })
 	@Expose()
 	@Length(1, 30)
-	enName: string;
-	@ApiProperty({ default: "faDescription" })
+	enTitle: string;
+	@ApiProperty({ default: "faContent" })
 	@Expose()
-	@Length(30, 300)
-	faDescription: string;
-	@ApiProperty({ default: "enDescription" })
+	@Length(300)
+	faContent?: string;
+	@ApiProperty({ default: "enContent" })
 	@Expose()
-	@Length(30, 300)
-	enDescription: string;
+	@Length(300)
+	enContent?: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Expose()
 	@Length(1, 99)
 	coverFileName: string;
-	@ApiProperty({ default: "uploadFileName" })
-	@Length(1, 99)
-	@Expose()
-	demoFileName: string;
-	// *** enums
-	@ApiProperty({
-		name: "status",
-		enum: ProductStatus,
-		default: ProductStatus.Inprogress,
-	})
-	status?: ProductStatus;
-	@ApiProperty({
-		name: "level",
-		enum: ProductLevel,
-		default: ProductLevel.Potential,
-	})
-	level?: ProductLevel;
-	// *** relations
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	genreIds: number[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
-	@Expose()
-	tempoIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
 	@Expose()
 	groupIds: number[];
-	@ApiProperty({ type: [Number], default: [] })
-	@IsArray()
+	// *** enums
+	@ApiProperty({
+		name: "language",
+		enum: BlogLanguages,
+		default: [BlogLanguages.Farsi],
+	})
+	@IsOptional()
+	language?: BlogLanguages[];
+	@ApiProperty({
+		name: "status",
+		enum: BlogStatus,
+		default: BlogStatus.Inprogress,
+	})
+	@IsOptional()
+	status?: BlogStatus;
+	@ApiProperty({
+		name: "level",
+		enum: BlogLevel,
+		default: BlogLevel.Potential,
+	})
+	@IsOptional()
+	level?: BlogLevel;
+	// *** relations
+	@ApiProperty({ default: UserDto })
+	@Type(() => UserIgnoredDto)
+	author?: UserDto;
+	@ApiProperty({ default: [TagDto] })
+	tags?: TagDto[];
+	// *** defaults
+	@ApiProperty({ type: Date })
 	@Expose()
-	moodIds: number[];
+	createdAt: Date;
+	@ApiProperty({ type: Date })
+	@Expose()
+	updatedAt: Date;
+	@ApiProperty({ type: Date })
+	@Exclude()
+	deletedAt: Date;
 }
 
-class ProductQuery {
+class BlogQuery {
 	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
@@ -162,28 +158,28 @@ class ProductQuery {
 	id?: number;
 	@IsString()
 	@IsOptional()
-	faName?: string;
+	faTitle?: string;
 	@IsString()
 	@IsOptional()
-	enName?: string;
+	enTitle?: string;
+	// enums
 	@IsOptional()
-	status?: ProductStatus;
+	language?: BlogLanguages[];
 	@IsOptional()
-	level?: ProductLevel;
+	status?: BlogStatus;
+	@IsOptional()
+	level?: BlogLevel;
 	// bases
 	@IsOptional()
-	genreIds?: number[];
-	@IsOptional()
-	tempoIds?: number[];
-	@IsOptional()
 	groupIds?: number[];
+	// relation
 	@IsOptional()
-	moodIds?: number[];
+	tags?: number[];
 	// relation
 	@IsInt()
 	@Type(() => Number)
 	@IsOptional()
-	producerId?: number;
+	authorId?: number;
 	@IsString()
 	@IsOptional()
 	username?: string;

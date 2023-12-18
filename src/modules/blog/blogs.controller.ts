@@ -7,55 +7,50 @@ import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
-import { ProductsService } from "./blogs.service";
-import { ProductDto, CreateUpdateProductDto, ProductQuery } from "./blog.dto";
-import { productPaginationSchema, productQuerySchema } from "./blog.schema";
+import { BlogServices } from "./blogs.service";
+import { BlogDto, BlogQuery, CreateUpdateDto } from "./blog.dto";
 
-@ApiTags("Products")
-@Controller("product")
-@Serialize(ProductDto)
-export class ProductsController {
-	constructor(private readonly productServices: ProductsService) {}
-	// get all product
-	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: productPaginationSchema })
+@ApiTags("Blogs")
+@Controller("blog")
+@Serialize(BlogDto)
+export class BlogsController {
+	constructor(private readonly blogServices: BlogServices) {}
+	// get all by query
+	@SwaggerDocumentaryApi(BlogDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: [] })
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async getProducts(@Query() queryParams: Pick<ProductQuery, "page" | "take">): Promise<[ProductDto[], number]> {
-		return await this.productServices.findAll(queryParams);
+	async getProducts(@Query() queryParams: BlogQuery): Promise<[BlogDto[], number]> {
+		return await this.blogServices.findAll(queryParams);
 	}
-	// find by Query
-	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: productQuerySchema })
-	@Get("queries")
-	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<[ProductDto[], number]> {
-		return await this.productServices.findByQuery(queryParams);
+	// find by query
+	@SwaggerDocumentaryApi(BlogDto, { useAuth: false, query: [] })
+	@Get("getProduct")
+	@ResponseMessage("")
+	async getProducerProducts(@Query() queryParams: Pick<BlogQuery, "id" | "enTitle" | "faTitle">): Promise<BlogDto> {
+		return await this.blogServices.findOne(queryParams);
 	}
-	// add new product
-	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Post("addProduct")
+	// add new
+	@SwaggerDocumentaryApi(CreateUpdateDto)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
+	@Post("addBlog")
 	@ResponseMessage("2020")
-	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateProductDto): Promise<ProductDto> {
-		return await this.productServices.createOne(body, req);
+	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateDto): Promise<BlogDto> {
+		return await this.blogServices.createOne(body, req);
 	}
-	// update product
-	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Put("updateBy/:productId")
+	// update
+	@SwaggerDocumentaryApi(CreateUpdateDto)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
+	@Put("updateBy/:id")
 	@ResponseMessage("2021")
-	async updateBase(
-		@Req() req: Request,
-		@Param("productId", ParseIntPipe) id: number,
-		@Body() body: CreateUpdateProductDto,
-	): Promise<ProductDto> {
-		return await this.productServices.updateOne(id, body, req);
+	async updateBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number, @Body() body: CreateUpdateDto): Promise<BlogDto> {
+		return await this.blogServices.updateOne(id, body, req);
 	}
-	// delete product
-	@SwaggerDocumentaryApi(CreateUpdateProductDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
-	@Delete("deleteBy/:productId")
+	// delete
+	@SwaggerDocumentaryApi(CreateUpdateDto)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
+	@Delete("deleteBy/:id")
 	@ResponseMessage("2022")
-	async deleteBase(@Req() req: Request, @Param("productId", ParseIntPipe) id: number): Promise<CreateUpdateProductDto> {
-		return await this.productServices.deleteOne(id, req);
+	async deleteBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number): Promise<CreateUpdateDto> {
+		return await this.blogServices.deleteOne(id, req);
 	}
 }

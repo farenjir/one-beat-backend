@@ -5,13 +5,13 @@ import { JwtModule } from "@nestjs/jwt";
 
 import { UsersModule } from "modules/user/users.module";
 
-import { Products } from "./blog.entity";
-import { ProductsController } from "./blogs.controller";
-import { ProductsService } from "./blogs.service";
+import { Blogs } from "./blog.entity";
+import { BlogsController } from "./blogs.controller";
+import { BlogServices } from "./blogs.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Products]), JwtModule, UsersModule],
-	controllers: [ProductsController],
-	providers: [ProductsService],
+	imports: [TypeOrmModule.forFeature([Blogs]), JwtModule, UsersModule],
+	controllers: [BlogsController],
+	providers: [BlogServices],
 })
-export class ProductModule {}
+export class BlogsModule {}

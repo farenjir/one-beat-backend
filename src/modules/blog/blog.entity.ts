@@ -6,15 +6,15 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
+	OneToMany,
 	ManyToOne,
 } from "typeorm";
-
 import { IsOptional } from "class-validator";
 
-import { Role } from "global/guards.decorator";
+import { Tags } from "modules/tags/tag.entity";
 
-import { Users } from "modules/user/user.entity";
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
+import { Users } from "modules/user/user.entity";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -46,16 +46,7 @@ export class Blogs extends DefaultEntity {
 	coverFileName!: string;
 
 	@Column("int", { array: true, default: [] })
-	genreIds: number[];
-
-	@Column("int", { array: true, default: [] })
-	tempoIds: number[];
-
-	@Column("int", { array: true, default: [] })
 	groupIds: number[];
-
-	@Column("int", { array: true, default: [] })
-	tags: string[];
 
 	@Column({
 		array: true,
@@ -85,5 +76,9 @@ export class Blogs extends DefaultEntity {
 	// *** relations
 	@ManyToOne(() => Users, { eager: true })
 	@JoinColumn()
-	producer: Users;
+	author: Users;
+
+	@OneToMany(() => Tags, (tag) => tag.id, { eager: true })
+	@JoinColumn()
+	tags: Tags[];
 }

@@ -8,107 +8,94 @@ import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
 import { Role } from "global/guards.decorator";
 import { UsersService } from "modules/user/users.service";
 
-import { Products } from "./blog.entity";
-import { CreateUpdateProductDto, ProductQuery } from "./blog.dto";
+import { Blogs } from "./blog.entity";
+import { BlogQuery, CreateUpdateDto } from "./blog.dto";
 
 @Injectable()
-export class ProductsService {
+export class BlogServices {
 	constructor(
-		@InjectRepository(Products) private repo: Repository<Products>,
+		@InjectRepository(Blogs) private repo: Repository<Blogs>,
 		private usersService: UsersService,
 	) {}
 	// find all
-	async findAll({ page = 1, take = 10 }: Pick<ProductQuery, "page" | "take">): Promise<[Products[], number]> {
-		const options: FindManyOptions<Products> = {
+	async findAll({
+		page = 1,
+		take = 10,
+		// user
+		authorId,
+		username,
+		email,
+		// array
+		groupIds,
+		tags,
+		language,
+		...queryParams
+	}: BlogQuery): Promise<[Blogs[], number]> {
+		// arrayQuery
+		const bases = this.queryIdHandler({ groupIds });
+		// options
+		const options: FindManyOptions<Blogs> = {
 			skip: page - 1,
 			take,
+			where: {
+				author: { id: authorId, username, email },
+				...queryParams,
+				...bases,
+			},
 		};
 		return await this.repo.findAndCount(options);
 	}
 	// find one
-	async findOne(queryParams: ProductQuery, ignoreValidateProduct = false): Promise<Products> {
-		const options: FindOneOptions<Products> = {
+	async findOne(queryParams: Pick<BlogQuery, "id" | "enTitle" | "faTitle">, ignoreValidateProduct = false): Promise<Blogs> {
+		const options: FindOneOptions<Blogs> = {
 			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
 		};
 		if (_isEmpty(options.where)) {
 			throw new BadRequestException("4000");
 		}
-		const product = await this.repo.findOne(options);
-		if (product || ignoreValidateProduct) {
-			return product;
+		const blog = await this.repo.findOne(options);
+		if (blog || ignoreValidateProduct) {
+			return blog;
 		} else {
 			throw new NotFoundException("4013");
 		}
 	}
-	// find by Query
-	async findByQuery(queryParams: ProductQuery): Promise<[Products[], number]> {
-		const {
-			page = 1,
-			take = 10,
-			// producer ( user )
-			producerId,
-			username,
-			email,
-			// product
-			groupIds,
-			genreIds,
-			moodIds,
-			tempoIds,
-			...productParams
-		} = queryParams;
-		// arrayQuery
-		const bases = this.queryIdHandler({ groupIds, genreIds, moodIds, tempoIds });
-		// options
-		const options: FindManyOptions<Products> = {
-			skip: page - 1,
-			take,
-			where: {
-				producer: { id: producerId, username, email },
-				...productParams,
-				...bases,
-			},
-		};
-		if (_isEmpty(queryParams)) {
-			throw new BadRequestException("4000");
-		}
-		return await this.repo.findAndCount(options);
-	}
 	// create one
-	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {
-		const isDuplicated = await this.duplicatedProductName(productAttrs);
+	async createOne({ level, status, ...blogAttrs }: CreateUpdateDto, req: Request): Promise<Blogs> {
+		const isDuplicated = await this.duplicatedProductName(blogAttrs);
 		if (isDuplicated) {
 			throw new BadRequestException("4014");
 		}
 		const user = await this.usersService.findBy({ id: req?.user?.id }, true);
 		if (this.checkLevel(req)) {
-			Object.assign(productAttrs, { level, status });
+			Object.assign(blogAttrs, { level, status });
 		}
-		const product = this.repo.create({ ...productAttrs, producer: user });
-		return await this.repo.save(product);
+		const blog = this.repo.create({ ...blogAttrs, author: user });
+		return await this.repo.save(blog);
 	}
 	// create one
 	async updateOne(
 		id: number,
-		{ level, status, ...updatedAttrs }: Partial<CreateUpdateProductDto>,
+		{ level, status, ...updatedAttrs }: Partial<CreateUpdateDto>,
 		{ user }: Pick<Request, "user">,
-	): Promise<Products> {
-		const product = await this.findOne({ id });
+	): Promise<Blogs> {
+		const blog = await this.findOne({ id });
 		if (this.checkLevel({ user })) {
-			Object.assign(updatedAttrs, product, { level, status });
+			Object.assign(updatedAttrs, blog, { level, status });
 		} else {
-			Object.assign(updatedAttrs, product);
+			Object.assign(updatedAttrs, blog);
 		}
-		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
+		if (this.checkCreator({ user }, blog.author.id) || this.checkLevel({ user })) {
 			return await this.repo.save(updatedAttrs);
 		} else {
 			throw new UnauthorizedException("4012");
 		}
 	}
 	// delete one
-	async deleteOne(id: number, { user }: Pick<Request, "user">): Promise<Products> {
-		const product = await this.findOne({ id });
-		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
-			return await this.repo.remove(product);
+	async deleteOne(id: number, { user }: Pick<Request, "user">): Promise<Blogs> {
+		const blog = await this.findOne({ id });
+		if (this.checkCreator({ user }, blog.author.id) || this.checkLevel({ user })) {
+			return await this.repo.remove(blog);
 		} else {
 			throw new UnauthorizedException("4012");
 		}
@@ -125,12 +112,12 @@ export class ProductsService {
 	}
 	checkLevel({ user }: Pick<Request, "user">) {
 		const { role } = user;
-		return [Role.Admin, Role.Editor].includes(role);
+		return [Role.Admin, Role.Editor, Role.Producer, Role.Author].includes(role);
 	}
 	checkCreator({ user: { id } }: Pick<Request, "user">, creatorUserId: number) {
 		return creatorUserId === id;
 	}
-	async duplicatedProductName({ faName, enName }: Partial<CreateUpdateProductDto>) {
-		return !!((await this.findOne({ faName }, true)) || (await this.findOne({ enName }, true)));
+	async duplicatedProductName({ faTitle, enTitle }: Partial<CreateUpdateDto>) {
+		return !!((await this.findOne({ faTitle }, true)) || (await this.findOne({ enTitle }, true)));
 	}
 }

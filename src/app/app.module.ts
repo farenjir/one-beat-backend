@@ -41,6 +41,9 @@ import { UploadModule } from "modules/upload/uploads.module";
 import { Products } from "modules/product/product.entity";
 import { ProductModule } from "modules/product/products.module";
 
+import { Blogs } from "modules/blog/blog.entity";
+import { BlogsModule } from "modules/blog/blogs.module";
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -60,7 +63,7 @@ import { ProductModule } from "modules/product/products.module";
 				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities join(__dirname, "../modules/**/*.entity.ts")
-				entities: [Bases, Tags, Version, Users, Profile, UserKYC, Products, Upload],
+				entities: [Bases, Tags, Version, Upload, Users, Profile, UserKYC, Products, Blogs],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -83,10 +86,11 @@ import { ProductModule } from "modules/product/products.module";
 		BasesModule,
 		TagsModule,
 		VersionModule,
+		UploadModule,
 		AuthModule,
 		UsersModule,
-		UploadModule,
 		ProductModule,
+		BlogsModule,
 	],
 	controllers: [AppController],
 	providers: [
