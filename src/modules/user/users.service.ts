@@ -54,9 +54,9 @@ export class UsersService {
 		return this.repo.save(user);
 	}
 	// findOne with profile
-	async findUserWithProfile({ id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
+	async findUserWithProfile({ username, email, id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
-			where: { id },
+			where: { username, email, id },
 			relations: ["profile"],
 		};
 		if (_isEmpty(options.where)) {

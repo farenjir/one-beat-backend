@@ -8,8 +8,8 @@ import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./users.service";
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto } from "./user.dto";
-import { usersPaginationSchema } from "./user.schema";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, UserQuery } from "./user.dto";
+import { usersSchema } from "./user.schema";
 
 @ApiTags("Users")
 @Controller("user")
@@ -41,24 +41,24 @@ export class UsersController {
 		return await this.usersService.updateUserProfile(user?.id, body);
 	}
 	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount, query: usersPaginationSchema })
-	@AppGuards(Role.Admin)
+	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount, query: usersSchema })
+	@AppGuards(Role.Admin, Role.Editor)
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async findAllUser(@Query() queryParams: Pick<UserDto, "page" | "take">): Promise<[UserDto[], number]> {
+	async findAllUser(@Query() queryParams: UserQuery): Promise<[UserDto[], number]> {
 		return await this.usersService.findUsers(queryParams);
 	}
 	// findUser
-	@SwaggerDocumentaryApi(UserProfileDto)
-	@AppGuards(Role.Admin, Role.User)
-	@Get("getBy/:id")
+	@SwaggerDocumentaryApi(UserProfileDto, { query: usersSchema.slice(2, 5) })
+	@AppGuards(Role.Admin, Role.Editor)
+	@Get("getUser")
 	@ResponseMessage("")
-	async findUserById(@Param("id", ParseIntPipe) id: number): Promise<UserProfileDto> {
-		return await this.usersService.findUserWithProfile({ id }, true);
+	async findUserById(@Query() { username, id, email }: Pick<UserQuery, "id" | "email" | "username">): Promise<UserProfileDto> {
+		return await this.usersService.findUserWithProfile({ username, id, email }, true);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
-	@AppGuards(Role.Admin, Role.User)
+	@AppGuards(Role.Admin, Role.Editor)
 	@Put("updateBy/:id")
 	@ResponseMessage("2005")
 	async updateUserById(@Param("id", ParseIntPipe) id: number, @Body() body: UserProfileDto): Promise<UserProfileDto> {
@@ -66,7 +66,7 @@ export class UsersController {
 	}
 	// removeUser
 	@SwaggerDocumentaryApi(UserDto)
-	@AppGuards(Role.Admin)
+	@AppGuards(Role.Admin, Role.Editor)
 	@Delete("deleteBy/:id")
 	@ResponseMessage("2006")
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<UserDto> {

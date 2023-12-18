@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
+import { IsEmail, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
 
@@ -7,7 +7,7 @@ import { Role } from "global/guards.decorator";
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
 
-export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto };
+export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto, UserQuery };
 export { IUserQuery, UserIgnoredDto, UserProfileResponseDto };
 
 // *** user params
@@ -17,9 +17,11 @@ class UserDto {
 	@Type(() => Number)
 	@Min(1)
 	page?: number;
-	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
+	@IsInt()
+	@Min(1)
+	@Max(100)
 	take?: number;
 	@ApiProperty()
 	@Expose()
@@ -131,6 +133,40 @@ class UpdateProfileDto {
 	@ApiProperty({ default: CreateSaveProfileDto })
 	@IsOptional()
 	profile?: CreateSaveProfileDto;
+}
+
+class UserQuery {
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	@Min(1)
+	page?: number;
+	@IsOptional()
+	@Type(() => Number)
+	@IsInt()
+	@Min(1)
+	@Max(100)
+	take?: number;
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	id?: number;
+	@IsString()
+	@IsOptional()
+	username?: string;
+	@IsString()
+	@IsOptional()
+	email?: string;
+	@ApiProperty({
+		name: "role",
+		enum: Role,
+		default: Role.User,
+	})
+	@IsOptional()
+	role?: Role;
+	@ApiProperty({ default: UserKycDto })
+	@IsOptional()
+	kyc?: UserKycDto;
 }
 
 // *** response

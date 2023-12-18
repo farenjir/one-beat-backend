@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
+import { IsArray, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
 import { Exclude, Expose, Type } from "class-transformer";
 
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
@@ -139,9 +139,11 @@ class BlogQuery {
 	@Type(() => Number)
 	@Min(1)
 	page?: number;
-	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
+	@IsInt()
+	@Min(1)
+	@Max(100)
 	take?: number;
 	@IsInt()
 	@IsOptional()
