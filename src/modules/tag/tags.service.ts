@@ -2,7 +2,7 @@ import { FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { isEmpty as _isEmpty } from "lodash";
+import { isEmpty as _isEmpty, map as _map } from "lodash";
 
 import { Tags } from "./tag.entity";
 import { CreateDto, TagQuery } from "./tag.dto";
@@ -12,9 +12,10 @@ export class TagsService {
 	constructor(@InjectRepository(Tags) private repo: Repository<Tags>) {}
 	// findAll
 	async findAll({ name, type }: TagQuery = {}): Promise<Tags[]> {
+		const names = this.queryContentHandler({ name });
 		const options: FindManyOptions<Tags> = {
 			order: { id: "DESC" },
-			where: { type, name: name && Like(`%${name}%`) },
+			where: { type, ...names },
 		};
 		return await this.repo.find(options);
 	}
@@ -48,5 +49,15 @@ export class TagsService {
 	async removeBy(queryParams: TagQuery): Promise<Tags> {
 		const tag = await this.findOne(queryParams);
 		return await this.repo.remove(tag);
+	}
+	// handles
+	queryContentHandler(arrayQuery: typeof Like.arguments) {
+		const object = {};
+		_map(arrayQuery, (value: string, key: string) => {
+			if (value?.length) {
+				object[key] = Like(`%${value}%`);
+			}
+		});
+		return object;
 	}
 }
