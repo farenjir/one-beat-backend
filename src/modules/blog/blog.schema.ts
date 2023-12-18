@@ -1,14 +1,14 @@
-import { ProductLevel, ProductStatus } from "./product.enum";
+import { BlogLevel, BlogStatus } from "./blog.enum";
 
-export const productQuerySchema: Array<object> = [
+export const blogQuerySchema: Array<object> = [
 	{
 		name: "page",
-		required: true,
+		required: false,
 		type: Number,
 	},
 	{
 		name: "take",
-		required: true,
+		required: false,
 		type: Number,
 	},
 	{
@@ -17,49 +17,47 @@ export const productQuerySchema: Array<object> = [
 		type: Number,
 	},
 	{
-		name: "faName",
+		name: "faTitle",
 		required: false,
 		type: String,
 	},
 	{
-		name: "enName",
+		name: "enTitle",
 		required: false,
 		type: String,
 	},
+	// enum
 	{
 		name: "status",
 		required: false,
-		enum: ProductStatus,
+		enum: BlogStatus,
 	},
 	{
 		name: "level",
 		required: false,
-		enum: ProductLevel,
+		enum: BlogLevel,
+	},
+	{
+		name: "language",
+		required: false,
+		type: [String],
+		description: "languages includes ('fa' or 'en') of (BlogLanguages)",
+	},
+	// tags
+	{
+		name: "tags",
+		required: false,
+		type: [String],
 	},
 	// bases
-	{
-		name: "genreIds",
-		required: false,
-		type: [Number],
-	},
-	{
-		name: "tempoIds",
-		required: false,
-		type: [Number],
-	},
 	{
 		name: "groupIds",
 		required: false,
 		type: [Number],
 	},
-	{
-		name: "moodIds",
-		required: false,
-		type: [Number],
-	},
 	// relation
 	{
-		name: "producerId",
+		name: "authorId",
 		required: false,
 		type: Number,
 	},

@@ -23,6 +23,9 @@ import {
 import { Bases } from "modules/base/base.entity";
 import { BasesModule } from "modules/base/bases.module";
 
+import { Tags } from "modules/tag/tag.entity";
+import { TagsModule } from "modules/tag/tags.module";
+
 import { Version } from "modules/version/version.entity";
 import { VersionModule } from "modules/version/versions.module";
 
@@ -37,6 +40,9 @@ import { UploadModule } from "modules/upload/uploads.module";
 
 import { Products } from "modules/product/product.entity";
 import { ProductModule } from "modules/product/products.module";
+
+import { Blogs } from "modules/blog/blog.entity";
+import { BlogsModule } from "modules/blog/blogs.module";
 
 @Module({
 	imports: [
@@ -57,7 +63,7 @@ import { ProductModule } from "modules/product/products.module";
 				// autoLoadEntities: true,
 				logger: new CustomDBLoggerOnTypeORM(),
 				// app entities join(__dirname, "../modules/**/*.entity.ts")
-				entities: [Bases, Version, Users, Profile, UserKYC, Products, Upload],
+				entities: [Bases, Tags, Version, Upload, Users, Profile, UserKYC, Products, Blogs],
 			}),
 		}),
 		JwtModule.registerAsync({
@@ -78,11 +84,13 @@ import { ProductModule } from "modules/product/products.module";
 		ScheduleModule.forRoot(),
 		// app modules
 		BasesModule,
+		TagsModule,
 		VersionModule,
+		UploadModule,
 		AuthModule,
 		UsersModule,
-		UploadModule,
 		ProductModule,
+		BlogsModule,
 	],
 	controllers: [AppController],
 	providers: [

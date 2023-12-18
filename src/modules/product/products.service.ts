@@ -17,35 +17,12 @@ export class ProductsService {
 		@InjectRepository(Products) private repo: Repository<Products>,
 		private usersService: UsersService,
 	) {}
-	// find all
-	async findAll({ page = 1, take = 10 }: Pick<ProductQuery, "page" | "take">): Promise<[Products[], number]> {
-		const options: FindManyOptions<Products> = {
-			skip: page - 1,
-			take,
-		};
-		return await this.repo.findAndCount(options);
-	}
-	// find one
-	async findOne(queryParams: ProductQuery, ignoreValidateProduct = false): Promise<Products> {
-		const options: FindOneOptions<Products> = {
-			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
-		};
-		if (_isEmpty(options.where)) {
-			throw new BadRequestException("4000");
-		}
-		const product = await this.repo.findOne(options);
-		if (product || ignoreValidateProduct) {
-			return product;
-		} else {
-			throw new NotFoundException("4013");
-		}
-	}
-	// find by Query
-	async findByQuery(queryParams: ProductQuery): Promise<[Products[], number]> {
+	// find all by Query
+	async findAll(queryParams: ProductQuery = {}): Promise<[Products[], number]> {
 		const {
 			page = 1,
 			take = 10,
-			// producer ( user )
+			// producer
 			producerId,
 			username,
 			email,
@@ -72,6 +49,21 @@ export class ProductsService {
 			throw new BadRequestException("4000");
 		}
 		return await this.repo.findAndCount(options);
+	}
+	// find one
+	async findOne(queryParams: ProductQuery, ignoreValidateProduct = false): Promise<Products> {
+		const options: FindOneOptions<Products> = {
+			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
+		};
+		if (_isEmpty(options.where)) {
+			throw new BadRequestException("4000");
+		}
+		const product = await this.repo.findOne(options);
+		if (product || ignoreValidateProduct) {
+			return product;
+		} else {
+			throw new NotFoundException("4013");
+		}
 	}
 	// create one
 	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {
