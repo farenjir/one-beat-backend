@@ -36,7 +36,6 @@ export class ProductsService {
 				...otherParams,
 			},
 		};
-		console.log(options);
 		return await this.repo.findAndCount(options);
 	}
 	// find one
