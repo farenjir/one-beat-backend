@@ -1,4 +1,4 @@
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -11,9 +11,10 @@ import { CreateDto, TagQuery } from "./tag.dto";
 export class TagsService {
 	constructor(@InjectRepository(Tags) private repo: Repository<Tags>) {}
 	// findAll
-	async findAll(queryParams: TagQuery = {}): Promise<Tags[]> {
+	async findAll({ name, type }: TagQuery = {}): Promise<Tags[]> {
 		const options: FindManyOptions<Tags> = {
-			where: queryParams,
+			order: { id: "DESC" },
+			where: { type, name: name && Like(`%${name}%`) },
 		};
 		return await this.repo.find(options);
 	}

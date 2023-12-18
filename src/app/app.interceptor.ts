@@ -63,7 +63,7 @@ export class SerializeDataInterceptor implements NestInterceptor {
 
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
-	private readonly includePaths: Array<string> = ["base", "version", "product"];
+	private readonly includePaths: Array<string> = ["base", "tag", "version/latest", "product", "blog"];
 	// trackBy
 	trackBy(context: ExecutionContext): string | undefined {
 		const request = context.switchToHttp().getRequest();

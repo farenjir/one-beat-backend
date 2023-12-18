@@ -35,6 +35,7 @@ export class BlogServices {
 		const bases = this.queryIdHandler({ groupIds, tags, language });
 		// options
 		const options: FindManyOptions<Blogs> = {
+			order: { id: "DESC" },
 			skip: page - 1,
 			take,
 			where: {
@@ -57,14 +58,14 @@ export class BlogServices {
 		if (blog || ignoreValidateProduct) {
 			return blog;
 		} else {
-			throw new NotFoundException("4013");
+			throw new NotFoundException("4015");
 		}
 	}
 	// create one
 	async createOne({ level, status, ...blogAttrs }: CreateUpdateDto, req: Request): Promise<Blogs> {
 		const isDuplicated = await this.duplicatedProductName(blogAttrs);
 		if (isDuplicated) {
-			throw new BadRequestException("4014");
+			throw new BadRequestException("4016");
 		}
 		const user = await this.usersService.findBy({ id: req?.user?.id }, true);
 		if (this.checkLevel(req)) {

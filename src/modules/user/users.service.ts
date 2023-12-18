@@ -22,6 +22,7 @@ export class UsersService {
 	// findAll
 	async findUsers({ page, take }: Pick<UserDto, "page" | "take">): Promise<[Users[], number]> {
 		const options: FindManyOptions<Users> = {
+			order: { id: "DESC" },
 			skip: page - 1,
 			take,
 		};

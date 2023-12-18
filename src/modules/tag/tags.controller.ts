@@ -14,7 +14,7 @@ import { getTagSchema } from "./tag.schema";
 export class TagsController {
 	constructor(private readonly tagServices: TagsService) {}
 	// get all byQuery
-	@SwaggerDocumentaryApi(TagDto, { response: ResEnum.Array, useAuth: false, query: getTagSchema })
+	@SwaggerDocumentaryApi(TagDto, { response: ResEnum.Array, useAuth: false, query: getTagSchema.slice(1) })
 	@Get("all")
 	@ResponseMessage("")
 	async getTagsByQuery(@Query() queryParams: TagQuery): Promise<TagDto[]> {

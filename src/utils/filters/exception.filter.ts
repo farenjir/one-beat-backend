@@ -82,6 +82,8 @@ const filterMessages = (messageCode: string | number) => {
 		4012: "You Don't have permission",
 		4013: "Product not Found",
 		4014: "Product 'Name' has Duplicated",
+		4015: "Blog not Found",
+		4016: "Blog 'Name' has Duplicated",
 		// default status http codes
 		100: "CONTINUE",
 		101: "SWITCHING_PROTOCOLS",

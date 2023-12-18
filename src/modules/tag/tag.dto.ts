@@ -71,8 +71,9 @@ class TagQuery {
 	@Type(() => Number)
 	@IsOptional()
 	id?: number;
-	@IsString()
+	// @Transform(({ value = "" }) => Like(`%${value}%`))
 	@IsOptional()
+	@IsString()
 	name?: string;
 	@IsOptional()
 	type?: TagType;

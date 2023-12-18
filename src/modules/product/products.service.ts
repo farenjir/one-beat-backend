@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ArrayContains, FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { ArrayContains, FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 import { Request } from "express";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
@@ -18,36 +18,25 @@ export class ProductsService {
 		private usersService: UsersService,
 	) {}
 	// find all by Query
-	async findAll(queryParams: ProductQuery = {}): Promise<[Products[], number]> {
-		const {
-			page = 1,
-			take = 10,
-			// producer
-			producerId,
-			username,
-			email,
-			// product
-			groupIds,
-			genreIds,
-			moodIds,
-			tempoIds,
-			...productParams
-		} = queryParams;
+	async findAll({ producerId: id, username, email, ...productParams }: ProductQuery = {}): Promise<[Products[], number]> {
+		const { page = 1, take = 10, groupIds, genreIds, moodIds, tempoIds, faName, enName, ...otherParams } = productParams;
 		// arrayQuery
 		const bases = this.queryIdHandler({ groupIds, genreIds, moodIds, tempoIds });
+		const names = this.queryContentHandler({ faName, enName });
+		const producer = { id, ...this.queryContentHandler({ username, email }) };
 		// options
 		const options: FindManyOptions<Products> = {
+			order: { id: "DESC" },
 			skip: page - 1,
 			take,
 			where: {
-				producer: { id: producerId, username, email },
-				...productParams,
+				producer,
+				...names,
 				...bases,
+				...otherParams,
 			},
 		};
-		if (_isEmpty(queryParams)) {
-			throw new BadRequestException("4000");
-		}
+		console.log(options);
 		return await this.repo.findAndCount(options);
 	}
 	// find one
@@ -111,6 +100,15 @@ export class ProductsService {
 		_map(arrayQuery, (value: string | string[], key: string) => {
 			if (value?.length) {
 				object[key] = ArrayContains(Array.isArray(value) ? value : [value]);
+			}
+		});
+		return object;
+	}
+	queryContentHandler(arrayQuery: typeof Like.arguments) {
+		const object = {};
+		_map(arrayQuery, (value: string, key: string) => {
+			if (value?.length) {
+				object[key] = Like(`%${value}%`);
 			}
 		});
 		return object;

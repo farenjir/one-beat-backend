@@ -89,10 +89,12 @@ class CreateUpdateDto {
 	enTitle: string;
 	@ApiProperty({ default: "faContent" })
 	@Expose()
+	@IsString()
 	@Length(300)
 	faContent?: string;
 	@ApiProperty({ default: "enContent" })
 	@Expose()
+	@IsString()
 	@Length(300)
 	enContent?: string;
 	@ApiProperty({ default: "uploadFileName" })

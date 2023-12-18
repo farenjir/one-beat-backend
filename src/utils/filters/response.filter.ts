@@ -48,6 +48,9 @@ const responseMessage = (statusCode: string) => {
 		2020: "Product has been Created",
 		2021: "Product has been Updated",
 		2022: "Product has been Deleted",
+		2023: "Blog has been Created",
+		2024: "Blog has been Updated",
+		2025: "Blog has been Deleted",
 	};
 	// return
 	return messages[statusCode] || messages["2000"];

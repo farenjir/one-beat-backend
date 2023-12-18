@@ -33,11 +33,13 @@ export class Blogs extends DefaultEntity {
 	@Column({ unique: true })
 	enTitle: string;
 
-	@Column()
-	faContent!: string;
+	@Column({ default: "" })
+	@IsOptional()
+	faContent: string;
 
-	@Column()
-	enContent!: string;
+	@Column({ default: "" })
+	@IsOptional()
+	enContent: string;
 
 	@Column()
 	coverFileName!: string;
