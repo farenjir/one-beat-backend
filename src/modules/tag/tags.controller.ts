@@ -21,7 +21,7 @@ export class TagsController {
 		return await this.tagServices.findAll(queryParams);
 	}
 	// findOne
-	@SwaggerDocumentaryApi(TagDto, { useAuth: false, query: getTagSchema.slice(0, 3) })
+	@SwaggerDocumentaryApi(TagDto, { useAuth: false, query: getTagSchema.slice(0, 2) })
 	@Get("getTag")
 	@ResponseMessage("")
 	async getTagByQuery(@Query() queryParams: TagQuery): Promise<TagDto> {
@@ -29,7 +29,7 @@ export class TagsController {
 	}
 	// add new
 	@SwaggerDocumentaryApi(CreateDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Post("addNew")
 	@ResponseMessage("2020")
 	async addNewBase(@Body() body: CreateDto): Promise<TagDto> {
@@ -37,7 +37,7 @@ export class TagsController {
 	}
 	// update
 	@SwaggerDocumentaryApi(CreateDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Put("updateBy/:id")
 	@ResponseMessage("2021")
 	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: CreateDto): Promise<TagDto> {
@@ -45,7 +45,7 @@ export class TagsController {
 	}
 	// delete
 	@SwaggerDocumentaryApi(CreateDto)
-	@AppGuards(Role.Admin, Role.Editor, Role.Producer)
+	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Delete("deleteBy/:id")
 	@ResponseMessage("2022")
 	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<CreateDto> {

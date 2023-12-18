@@ -32,7 +32,7 @@ export class BlogServices {
 		...queryParams
 	}: BlogQuery): Promise<[Blogs[], number]> {
 		// arrayQuery
-		const bases = this.queryIdHandler({ groupIds });
+		const bases = this.queryIdHandler({ groupIds, tags, language });
 		// options
 		const options: FindManyOptions<Blogs> = {
 			skip: page - 1,

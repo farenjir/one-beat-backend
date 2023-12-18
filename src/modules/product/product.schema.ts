@@ -3,12 +3,12 @@ import { ProductLevel, ProductStatus } from "./product.enum";
 export const productQuerySchema: Array<object> = [
 	{
 		name: "page",
-		required: false,
+		required: true,
 		type: Number,
 	},
 	{
 		name: "take",
-		required: false,
+		required: true,
 		type: Number,
 	},
 	{

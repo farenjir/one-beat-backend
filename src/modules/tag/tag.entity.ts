@@ -7,10 +7,7 @@ export class Tags {
 	id: number;
 
 	@Column({ unique: true })
-	faName!: string;
-
-	@Column({ unique: true })
-	enName!: string;
+	name!: string;
 
 	@Column({
 		type: "enum",

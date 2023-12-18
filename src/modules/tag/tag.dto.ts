@@ -10,14 +10,10 @@ class TagDto {
 	@ApiProperty()
 	@Expose()
 	id: number;
-	@ApiProperty({ default: "faName" })
+	@ApiProperty({ default: "name" })
 	@Expose()
 	@Length(1, 30)
-	faName: string;
-	@ApiProperty({ default: "enName" })
-	@Expose()
-	@Length(1, 30)
-	enName: string;
+	name: string;
 	@Expose()
 	@ApiProperty({
 		name: "type",
@@ -29,14 +25,10 @@ class TagDto {
 }
 
 class CreateDto {
-	@ApiProperty({ default: "faName" })
+	@ApiProperty({ default: "name" })
 	@IsString()
 	@Length(1, 30)
-	faName: string;
-	@ApiProperty({ default: "enName" })
-	@IsString()
-	@Length(1, 30)
-	enName: string;
+	name: string;
 	@ApiProperty({
 		name: "type",
 		enum: TagType,
@@ -47,14 +39,10 @@ class CreateDto {
 }
 
 class UpdateDto {
-	@ApiProperty({ default: "faName" })
+	@ApiProperty({ default: "name" })
 	@IsString()
 	@IsOptional()
-	faName: string;
-	@ApiProperty({ default: "enName" })
-	@IsString()
-	@IsOptional()
-	enName: string;
+	name: string;
 	@ApiProperty({
 		name: "type",
 		enum: TagType,
@@ -65,14 +53,10 @@ class UpdateDto {
 }
 
 class CreateTagsDto {
-	@ApiProperty({ default: "faName" })
+	@ApiProperty({ default: "name" })
 	@IsString()
 	@Length(1, 30)
-	faName: string;
-	@ApiProperty({ default: "enName" })
-	@IsString()
-	@Length(1, 30)
-	enName: string;
+	name: string;
 	@ApiProperty({
 		name: "type",
 		enum: TagType,
@@ -89,10 +73,7 @@ class TagQuery {
 	id?: number;
 	@IsString()
 	@IsOptional()
-	faName?: string;
-	@IsString()
-	@IsOptional()
-	enName?: string;
+	name?: string;
 	@IsOptional()
 	type?: TagType;
 }

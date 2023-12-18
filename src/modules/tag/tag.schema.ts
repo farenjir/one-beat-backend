@@ -7,12 +7,7 @@ export const getTagSchema: Array<object> = [
 		type: Number,
 	},
 	{
-		name: "faName",
-		required: false,
-		type: String,
-	},
-	{
-		name: "enName",
+		name: "name",
 		required: false,
 		type: String,
 	},

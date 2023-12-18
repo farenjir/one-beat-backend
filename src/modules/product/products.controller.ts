@@ -24,7 +24,7 @@ export class ProductsController {
 		return await this.productServices.findAll(queryParams);
 	}
 	// find by Query
-	@SwaggerDocumentaryApi(ProductDto, { useAuth: false, query: productQuerySchema.slice(2, 6) })
+	@SwaggerDocumentaryApi(ProductDto, { useAuth: false, query: productQuerySchema.slice(2, 5) })
 	@Get("getProduct")
 	@ResponseMessage("")
 	async getProducerProducts(@Query() queryParams: Pick<ProductQuery, "id" | "faName" | "enName">): Promise<ProductDto> {

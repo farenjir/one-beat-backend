@@ -80,7 +80,7 @@ const filterMessages = (messageCode: string | number) => {
 		4010: "User Kyc not Found",
 		4011: "Your account is Inactive",
 		4012: "You Don't have permission",
-		4013: "Product not available",
+		4013: "Product not Found",
 		4014: "Product 'Name' has Duplicated",
 		// default status http codes
 		100: "CONTINUE",

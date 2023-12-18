@@ -6,12 +6,9 @@ import {
 	UpdateDateColumn,
 	DeleteDateColumn,
 	JoinColumn,
-	OneToMany,
 	ManyToOne,
 } from "typeorm";
 import { IsOptional } from "class-validator";
-
-import { Tags } from "modules/tag/tag.entity";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 import { Users } from "modules/user/user.entity";
@@ -48,11 +45,14 @@ export class Blogs extends DefaultEntity {
 	@Column("int", { array: true, default: [] })
 	groupIds: number[];
 
+	@Column("text", { array: true, default: [] })
+	tags: string[];
+
 	@Column({
 		array: true,
 		type: "enum",
 		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi],
+		default: [BlogLanguages.Farsi, BlogLanguages.English],
 	})
 	@IsOptional()
 	language: BlogLanguages[];
@@ -77,8 +77,4 @@ export class Blogs extends DefaultEntity {
 	@ManyToOne(() => Users, { eager: true })
 	@JoinColumn()
 	author: Users;
-
-	@OneToMany(() => Tags, (tag) => tag.id, { eager: true })
-	@JoinColumn()
-	tags: Tags[];
 }

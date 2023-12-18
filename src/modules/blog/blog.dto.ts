@@ -2,9 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
 import { Exclude, Expose, Type } from "class-transformer";
 
-import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
-import { TagDto } from "modules/tag/tag.dto";
 import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
+
+import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 
 export { BlogDto, BlogQuery, CreateUpdateDto };
 
@@ -36,11 +36,15 @@ class BlogDto {
 	@IsArray()
 	@Expose()
 	groupIds: number[];
+	@ApiProperty({ type: [String], default: [] })
+	@IsArray()
+	@Expose()
+	tags?: string[];
 	// *** enums
 	@ApiProperty({
 		name: "language",
 		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi],
+		default: [BlogLanguages.Farsi, BlogLanguages.English],
 	})
 	@IsOptional()
 	language?: BlogLanguages[];
@@ -58,9 +62,6 @@ class BlogDto {
 	})
 	@IsOptional()
 	level?: BlogLevel;
-	// *** relations
-	@ApiProperty({ default: [TagDto] })
-	tags?: TagDto[];
 	// *** relations
 	@ApiProperty({ default: UserDto })
 	@Type(() => UserIgnoredDto)
@@ -102,11 +103,15 @@ class CreateUpdateDto {
 	@IsArray()
 	@Expose()
 	groupIds: number[];
+	@ApiProperty({ type: [String], default: [] })
+	@IsArray()
+	@Expose()
+	tags: string[];
 	// *** enums
 	@ApiProperty({
 		name: "language",
 		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi],
+		default: [BlogLanguages.Farsi, BlogLanguages.English],
 	})
 	@IsOptional()
 	language?: BlogLanguages[];
@@ -124,10 +129,6 @@ class CreateUpdateDto {
 	})
 	@IsOptional()
 	level?: BlogLevel;
-	// *** relations
-	@ApiProperty({ type: [Number], default: [] })
-	@IsOptional()
-	tagIds?: number[];
 }
 
 class BlogQuery {
@@ -152,17 +153,17 @@ class BlogQuery {
 	enTitle?: string;
 	// enums
 	@IsOptional()
-	language?: BlogLanguages[];
-	@IsOptional()
 	status?: BlogStatus;
 	@IsOptional()
 	level?: BlogLevel;
+	@IsOptional()
+	language?: BlogLanguages[];
 	// bases
 	@IsOptional()
 	groupIds?: number[];
 	// relation
 	@IsOptional()
-	tags?: number[];
+	tags?: string[];
 	// relation
 	@IsInt()
 	@Type(() => Number)

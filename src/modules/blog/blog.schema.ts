@@ -47,7 +47,7 @@ export const blogQuerySchema: Array<object> = [
 	{
 		name: "tags",
 		required: false,
-		type: [Number],
+		type: [String],
 	},
 	// bases
 	{
