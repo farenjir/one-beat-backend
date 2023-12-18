@@ -1,4 +1,4 @@
-import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
+import { BlogLevel, BlogStatus } from "./blog.enum";
 
 export const blogQuerySchema: Array<object> = [
 	{
