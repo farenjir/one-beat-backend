@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
+import { FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 
-import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
 
 import { handleHashPassword, hashPassword } from "utils/configs/auth.configs";
 
@@ -20,12 +20,26 @@ export class UsersService {
 		private kycService: UserKycService,
 	) {}
 	// findAll
-	async findUsers({ page, take, ...queryParams }: UsersQuery): Promise<[Users[], number]> {
+	async findUsers({
+		page,
+		take,
+		email,
+		username,
+		// kyc
+		userKyc,
+		emailKyc,
+		googleKyc,
+		mobileKyc,
+		producerKyc,
+		...queryParams
+	}: UsersQuery): Promise<[Users[], number]> {
+		const kyc = { userKyc, emailKyc, googleKyc, mobileKyc, producerKyc };
+		// options
 		const options: FindManyOptions<Users> = {
 			order: { id: "DESC" },
 			skip: page - 1,
 			take,
-			where: queryParams,
+			where: { kyc, ...this.queryContentHandler({ username, email }), ...queryParams },
 		};
 		return await this.repo.findAndCount(options);
 	}
@@ -110,5 +124,15 @@ export class UsersService {
 	async removeById(id: number): Promise<Users> {
 		const user = await this.findOne({ id }, true);
 		return await this.repo.remove(user);
+	}
+	// handles
+	queryContentHandler(arrayQuery: typeof Like.arguments) {
+		const object = {};
+		_map(arrayQuery, (value: string, key: string) => {
+			if (value?.length) {
+				object[key] = Like(`%${value}%`);
+			}
+		});
+		return object;
 	}
 }

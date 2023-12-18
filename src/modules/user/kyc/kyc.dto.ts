@@ -1,5 +1,7 @@
-import { IsBoolean, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+
+import { IsOptional } from "class-validator";
+
 import { ProducerLevel } from "./kyc.enum";
 
 export { UserKycDto };
@@ -8,22 +10,18 @@ export { UserKycDto };
 
 class UserKycDto {
 	@ApiProperty({ type: Boolean, required: false })
-	@IsBoolean()
 	@IsOptional()
 	userKyc?: boolean;
 
 	@ApiProperty({ type: Boolean, required: false })
-	@IsBoolean()
 	@IsOptional()
 	mobileKyc?: boolean;
 
 	@ApiProperty({ type: Boolean, required: false })
-	@IsBoolean()
 	@IsOptional()
 	googleKyc?: boolean;
 
 	@ApiProperty({ type: Boolean, required: false })
-	@IsBoolean()
 	@IsOptional()
 	emailKyc?: boolean;
 

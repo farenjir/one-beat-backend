@@ -135,7 +135,7 @@ class UpdateProfileDto {
 	profile?: CreateSaveProfileDto;
 }
 
-class UsersQuery {
+class UsersQuery extends UserKycDto {
 	@ApiProperty({ type: Number })
 	@IsInt()
 	@IsOptional()
@@ -149,11 +149,6 @@ class UsersQuery {
 	@Min(1)
 	@Max(100)
 	take?: number;
-	@ApiProperty({ type: Number, required: false })
-	@IsInt()
-	@IsOptional()
-	@Type(() => Number)
-	id?: number;
 	@ApiProperty({ type: String, required: false })
 	@IsString()
 	@IsOptional()
@@ -170,9 +165,6 @@ class UsersQuery {
 	})
 	@IsOptional()
 	role?: Role;
-	@ApiProperty({ default: UserKycDto, required: false })
-	@IsOptional()
-	kyc?: UserKycDto;
 }
 
 class UserQuery {
