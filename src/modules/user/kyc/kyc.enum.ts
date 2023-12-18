@@ -1,5 +1,5 @@
 export enum ProducerLevel {
-	User = "User",
+	NotRequested = "NotRequested",
 	Inprogress = "Inprogress",
 	Accepted = "Accepted",
 	Rejected = "Rejected",

@@ -7,22 +7,22 @@ export { UserKycDto };
 // *** params
 
 class UserKycDto {
-	@ApiProperty({ default: false })
+	@ApiProperty({ type: Boolean, required: false })
 	@IsBoolean()
 	@IsOptional()
 	userKyc?: boolean;
 
-	@ApiProperty({ default: false })
+	@ApiProperty({ type: Boolean, required: false })
 	@IsBoolean()
 	@IsOptional()
 	mobileKyc?: boolean;
 
-	@ApiProperty({ default: false })
+	@ApiProperty({ type: Boolean, required: false })
 	@IsBoolean()
 	@IsOptional()
 	googleKyc?: boolean;
 
-	@ApiProperty({ default: false })
+	@ApiProperty({ type: Boolean, required: false })
 	@IsBoolean()
 	@IsOptional()
 	emailKyc?: boolean;
@@ -30,7 +30,8 @@ class UserKycDto {
 	@ApiProperty({
 		name: "producerKyc",
 		enum: ProducerLevel,
-		default: ProducerLevel.User,
+		default: ProducerLevel.NotRequested,
+		required: false,
 	})
 	@IsOptional()
 	producerKyc?: ProducerLevel;

@@ -7,8 +7,8 @@ import { Role } from "global/guards.decorator";
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
 
-export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto, UserQuery };
-export { IUserQuery, UserIgnoredDto, UserProfileResponseDto };
+export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto, UserQuery, UsersQuery };
+export { UserIgnoredDto, UserProfileResponseDto };
 
 // *** user params
 class UserDto {
@@ -135,25 +135,30 @@ class UpdateProfileDto {
 	profile?: CreateSaveProfileDto;
 }
 
-class UserQuery {
+class UsersQuery {
+	@ApiProperty({ type: Number })
 	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
 	@Min(1)
 	page?: number;
+	@ApiProperty({ type: Number })
 	@IsOptional()
 	@Type(() => Number)
 	@IsInt()
 	@Min(1)
 	@Max(100)
 	take?: number;
+	@ApiProperty({ type: Number, required: false })
 	@IsInt()
 	@IsOptional()
 	@Type(() => Number)
 	id?: number;
+	@ApiProperty({ type: String, required: false })
 	@IsString()
 	@IsOptional()
 	username?: string;
+	@ApiProperty({ type: String, required: false })
 	@IsString()
 	@IsOptional()
 	email?: string;
@@ -161,12 +166,29 @@ class UserQuery {
 		name: "role",
 		enum: Role,
 		default: Role.User,
+		required: false,
 	})
 	@IsOptional()
 	role?: Role;
-	@ApiProperty({ default: UserKycDto })
+	@ApiProperty({ default: UserKycDto, required: false })
 	@IsOptional()
 	kyc?: UserKycDto;
+}
+
+class UserQuery {
+	@ApiProperty({ type: Number, required: false })
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	id?: number;
+	@ApiProperty({ type: String, required: false })
+	@IsString()
+	@IsOptional()
+	username?: string;
+	@ApiProperty({ type: String, required: false })
+	@IsString()
+	@IsOptional()
+	email?: string;
 }
 
 // *** response
@@ -175,11 +197,4 @@ class UserIgnoredDto {
 	password: string;
 	@Exclude()
 	deletedAt: Date;
-}
-
-// *** interfaces
-interface IUserQuery {
-	id?: number;
-	username?: string;
-	email?: string;
 }

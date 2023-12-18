@@ -10,7 +10,7 @@ import { ProfileService } from "./profile/profile.service";
 import { UserKycService } from "./kyc/kyc.service";
 
 import { Users } from "./user.entity";
-import { CreateSaveUserDto, IUserQuery, UpdateProfileDto, UserDto, UserProfileDto } from "./user.dto";
+import { CreateSaveUserDto, UpdateProfileDto, UserProfileDto, UserQuery, UsersQuery } from "./user.dto";
 
 @Injectable()
 export class UsersService {
@@ -20,18 +20,22 @@ export class UsersService {
 		private kycService: UserKycService,
 	) {}
 	// findAll
-	async findUsers({ page, take }: Pick<UserDto, "page" | "take">): Promise<[Users[], number]> {
+	async findUsers({ page, take, ...queryParams }: UsersQuery): Promise<[Users[], number]> {
 		const options: FindManyOptions<Users> = {
 			order: { id: "DESC" },
 			skip: page - 1,
 			take,
+			where: queryParams,
 		};
 		return await this.repo.findAndCount(options);
 	}
 	// findOne
-	async findBy({ id, email, username }: IUserQuery, checkValidUser = false): Promise<Users> {
+	async findOne({ id, email, username }: UserQuery, checkValidUser = false, withRelation = false): Promise<Users> {
 		const options: FindOneOptions<Users> = {
 			where: _pickBy<object>({ id, email, username }, (isTruthy: unknown) => isTruthy),
+			relations: {
+				profile: withRelation,
+			},
 		};
 		if (_isEmpty(options.where)) {
 			throw new BadRequestException("4000");
@@ -53,24 +57,9 @@ export class UsersService {
 		const user = this.repo.create({ ...params, profile: {}, kyc });
 		return this.repo.save(user);
 	}
-	// findOne with profile
-	async findUserWithProfile({ username, email, id }: Partial<IUserQuery>, checkValidUser = false): Promise<Users> {
-		const options: FindOneOptions<Users> = {
-			where: { username, email, id },
-			relations: ["profile"],
-		};
-		if (_isEmpty(options.where)) {
-			throw new BadRequestException("4000");
-		}
-		const user = await this.repo.findOne(options);
-		if (checkValidUser && !user) {
-			throw new NotFoundException("4001");
-		}
-		return user;
-	}
 	// update
 	async updateById(id: number, { profile, username, email, password, role, kyc }: Partial<UserProfileDto>): Promise<Users> {
-		const user = await this.findUserWithProfile({ id }, true);
+		const user = await this.findOne({ id }, true, true);
 		const profileId = user?.profile?.id;
 		const kycId = user?.kyc?.id;
 		// profile
@@ -93,7 +82,7 @@ export class UsersService {
 		id: number,
 		{ profile, username, email, password, currentPassword }: Partial<UpdateProfileDto>,
 	): Promise<Users> {
-		const user = await this.findUserWithProfile({ id }, true);
+		const user = await this.findOne({ id }, true, true);
 		const profileId = user?.profile?.id;
 		// profile
 		const createOrUpdated = profile ? await this.profileService.createOrUpdate(profileId, profile) : null;
@@ -119,7 +108,7 @@ export class UsersService {
 	}
 	// remove
 	async removeById(id: number): Promise<Users> {
-		const user = await this.findBy({ id }, true);
+		const user = await this.findOne({ id }, true);
 		return await this.repo.remove(user);
 	}
 }

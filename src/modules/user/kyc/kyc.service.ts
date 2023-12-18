@@ -17,12 +17,12 @@ export class UserKycService {
 		return await this.repo.find();
 	}
 	// findOne
-	async findById(kycId: number, isValidKyc: boolean = false): Promise<UserKYC> {
+	async findById(kycId: number, checkValidKyc: boolean = false): Promise<UserKYC> {
 		const options: FindOneOptions<UserKYC> = {
 			where: { id: kycId },
 		};
 		const kyc = await this.repo.findOne(options);
-		if (isValidKyc && !kyc) {
+		if (checkValidKyc && !kyc) {
 			throw new NotFoundException("4010");
 		}
 		return kyc;

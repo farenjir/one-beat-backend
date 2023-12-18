@@ -26,7 +26,7 @@ export class AuthService {
 	async signin({ username, email, password }: SignInDto): Promise<UserDto & AuthExtraDto> {
 		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
 		// get
-		const user = await this.usersService.findBy(params, true);
+		const user = await this.usersService.findOne(params, true);
 		// stored password
 		const [salt, storedHash] = user.password.split(".");
 		const hash = await handleHashPassword(password, salt);
@@ -47,11 +47,11 @@ export class AuthService {
 	async signup(userParams: AuthSignUpDto): Promise<UserDto> {
 		const { email, password, username } = userParams;
 		// validation unique params
-		const emailInUse = await this.usersService.findBy({ email });
+		const emailInUse = await this.usersService.findOne({ email });
 		if (emailInUse) {
 			throw new BadRequestException("4002");
 		}
-		const usernameInUse = await this.usersService.findBy({ username });
+		const usernameInUse = await this.usersService.findOne({ username });
 		if (usernameInUse) {
 			throw new BadRequestException("4002");
 		}
@@ -77,7 +77,7 @@ export class AuthService {
 	}
 	async forgetPassword({ email, username }: Partial<UserDto>): Promise<UserDto> {
 		const params = _pickBy<object>({ username, email }, (isTruthy: unknown) => isTruthy);
-		const user = await this.usersService.findBy(params, true);
+		const user = await this.usersService.findOne(params, true);
 		// send new password
 		const token = await this.generateToken(user);
 		await this.mailService.sendUserPassword(user, token);
@@ -109,7 +109,7 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 		// user auth with google
-		let user = await this.usersService.findBy({ email: googleUser.email.toLowerCase() });
+		let user = await this.usersService.findOne({ email: googleUser.email.toLowerCase() });
 		if (!user) {
 			user = await this.usersService.create(
 				{
@@ -156,7 +156,7 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 		// user auth with apple
-		let user = await this.usersService.findBy({ email: appleUser.email.toLowerCase() });
+		let user = await this.usersService.findOne({ email: appleUser.email.toLowerCase() });
 		if (!user) {
 			const [username] = appleUser.email.split("@");
 			user = await this.usersService.create(

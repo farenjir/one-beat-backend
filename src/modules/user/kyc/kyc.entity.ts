@@ -9,26 +9,26 @@ export class UserKYC {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({ default: true })
+	@Column()
 	@IsOptional()
 	userKyc: boolean;
 
-	@Column({ default: false })
+	@Column()
 	@IsOptional()
 	mobileKyc: boolean;
 
-	@Column({ default: false })
+	@Column()
 	@IsOptional()
 	googleKyc: boolean;
 
-	@Column({ default: false })
+	@Column()
 	@IsOptional()
 	emailKyc: boolean;
 
 	@Column({
 		type: "enum",
 		enum: ProducerLevel,
-		default: ProducerLevel.User,
+		default: ProducerLevel.NotRequested,
 	})
 	@IsOptional()
 	producerKyc: ProducerLevel;

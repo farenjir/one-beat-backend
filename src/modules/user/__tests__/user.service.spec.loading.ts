@@ -105,7 +105,7 @@ describe("UsersService", () => {
 			};
 			jest.spyOn(repo, "findOne").mockResolvedValue(expectedUser);
 			// Act
-			const result = await usersService.findBy(query);
+			const result = await usersService.findOne(query);
 			// Assert
 			expect(repo.findOne).toHaveBeenCalledWith({ where: { id: query.id } });
 			expect(result).toEqual(expectedUser);
@@ -115,14 +115,14 @@ describe("UsersService", () => {
 			// Arrange
 			const query = {};
 			// Act & Assert
-			await expect(usersService.findBy(query)).rejects.toThrowError(BadRequestException);
+			await expect(usersService.findOne(query)).rejects.toThrowError(BadRequestException);
 		});
 
 		it("should throw NotFoundException if checkValidUser is true and no user is found", async () => {
 			// Arrange
 			const query = {};
 			// Act & Assert
-			await expect(usersService.findBy(query, true)).rejects.toThrowError(NotFoundException);
+			await expect(usersService.findOne(query, true)).rejects.toThrowError(NotFoundException);
 		});
 	});
 });

@@ -59,7 +59,7 @@ export class ProductsService {
 		if (isDuplicated) {
 			throw new BadRequestException("4014");
 		}
-		const user = await this.usersService.findBy({ id: req?.user?.id }, true);
+		const user = await this.usersService.findOne({ id: req?.user?.id }, true);
 		if (this.checkLevel(req)) {
 			Object.assign(productAttrs, { level, status });
 		}

@@ -8,8 +8,7 @@ import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./users.service";
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, UserQuery } from "./user.dto";
-import { usersSchema } from "./user.schema";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, UserQuery, UsersQuery } from "./user.dto";
 
 @ApiTags("Users")
 @Controller("user")
@@ -22,7 +21,7 @@ export class UsersController {
 	@Get("whoAmI")
 	@ResponseMessage("")
 	async whoAmI(@Req() { user }: Request): Promise<UserDto> {
-		return await this.usersService.findBy({ id: user?.id }, true);
+		return await this.usersService.findOne({ id: user?.id }, true);
 	}
 	// profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
@@ -30,7 +29,7 @@ export class UsersController {
 	@Get("profile")
 	@ResponseMessage("")
 	async findProfile(@Req() { user }: Request): Promise<UserProfileDto> {
-		return await this.usersService.findUserWithProfile({ id: user?.id }, true);
+		return await this.usersService.findOne({ id: user?.id }, true, true);
 	}
 	// updateUser with profile
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
@@ -41,20 +40,20 @@ export class UsersController {
 		return await this.usersService.updateUserProfile(user?.id, body);
 	}
 	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount, query: usersSchema })
+	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async findAllUser(@Query() queryParams: UserQuery): Promise<[UserDto[], number]> {
+	async findAllUser(@Query() queryParams: UsersQuery): Promise<[UserDto[], number]> {
 		return await this.usersService.findUsers(queryParams);
 	}
 	// findUser
-	@SwaggerDocumentaryApi(UserProfileDto, { query: usersSchema.slice(2, 5) })
+	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("getUser")
 	@ResponseMessage("")
-	async findUserById(@Query() { username, id, email }: Pick<UserQuery, "id" | "email" | "username">): Promise<UserProfileDto> {
-		return await this.usersService.findUserWithProfile({ username, id, email }, true);
+	async findUserById(@Query() { username, id, email }: UserQuery): Promise<UserProfileDto> {
+		return await this.usersService.findOne({ username, id, email }, true, true);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
