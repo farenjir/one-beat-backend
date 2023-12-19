@@ -16,10 +16,7 @@ interface IOptions {
 	description?: string;
 }
 
-export const SwaggerDocumentaryApi = (
-	responseDto: Dto,
-	{ response = ResEnum.Object, useAuth = true, description = "" }: IOptions = {},
-) => {
+export const SwaggerDocumentaryApi = (dto: Dto, { response = ResEnum.Object, useAuth = true, description = "" }: IOptions = {}) => {
 	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// result
 	const result = (type: ResEnum) => {
@@ -27,7 +24,7 @@ export const SwaggerDocumentaryApi = (
 			case ResEnum.Array:
 				return {
 					type: "array",
-					items: { $ref: getSchemaPath(responseDto) },
+					items: { $ref: getSchemaPath(dto) },
 				};
 			case ResEnum.ArrayWithCount:
 				return {
@@ -39,14 +36,14 @@ export const SwaggerDocumentaryApi = (
 								},
 								data: {
 									type: "array",
-									items: { $ref: getSchemaPath(responseDto) },
+									items: { $ref: getSchemaPath(dto) },
 								},
 							},
 						},
 					],
 				};
 			default:
-				return { $ref: getSchemaPath(responseDto) };
+				return { $ref: getSchemaPath(dto) };
 		}
 	};
 	// return
@@ -56,7 +53,7 @@ export const SwaggerDocumentaryApi = (
 		// ApiProperty(),
 		// ApiBody(),
 		ApiOperation({ description }),
-		ApiExtraModels(responseDto),
+		ApiExtraModels(dto),
 		ApiOkResponse({
 			schema: {
 				allOf: [

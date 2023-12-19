@@ -42,14 +42,6 @@ export class VersionController {
 	async addNewBase(@Body() body: VersionCreateUpdateDto): Promise<VersionDto> {
 		return await this.versionServices.create(body);
 	}
-	// get one type
-	@SwaggerDocumentaryApi(VersionDto)
-	@AppGuards(Role.Admin, Role.Editor)
-	@Get("getBy/:id")
-	@ResponseMessage("")
-	async getVersionById(@Param("id", ParseIntPipe) id: number): Promise<VersionDto> {
-		return await this.versionServices.findById(id);
-	}
 	// update pre types
 	@SwaggerDocumentaryApi(VersionDto)
 	@AppGuards(Role.Admin, Role.Editor)

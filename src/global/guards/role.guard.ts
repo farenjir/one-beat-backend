@@ -5,7 +5,7 @@ import { Role, ROLE_KEY } from "global/guards.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-	constructor(private readonly reflector: Reflector) {}
+	constructor(private reflector: Reflector) {}
 	// canActivate
 	canActivate(context: ExecutionContext): boolean {
 		const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLE_KEY, [context.getHandler(), context.getClass()]);

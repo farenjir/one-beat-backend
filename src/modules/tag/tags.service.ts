@@ -21,21 +21,24 @@ export class TagsService {
 	}
 	// findOne
 	async findOne(queryParams: TagQuery = {}, ignoreValidateTag = false): Promise<Tags> {
-		if (_isEmpty(queryParams)) {
-			throw new BadRequestException("4000");
-		}
 		const options: FindOneOptions<Tags> = {
 			where: queryParams,
 		};
-		const tag = await this.repo.findOne(options);
-		if (tag || ignoreValidateTag) {
-			return tag;
-		} else {
-			throw new NotFoundException("4009");
+		if (_isEmpty(options.where)) {
+			throw new BadRequestException("4000");
 		}
+		const tag = await this.repo.findOne(options);
+		if (!ignoreValidateTag && !tag) {
+			throw new NotFoundException("4018");
+		}
+		return tag;
 	}
 	// create
 	async createOne(params: CreateDto): Promise<Tags> {
+		const alreadyExists = await this.findOne({ name: params.name }, true);
+		if (alreadyExists) {
+			throw new BadRequestException("4017");
+		}
 		const tag = this.repo.create(params);
 		return await this.repo.save(tag);
 	}

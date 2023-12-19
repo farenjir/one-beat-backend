@@ -18,7 +18,7 @@ declare module "express" {
 export class AuthGuard implements CanActivate {
 	constructor(
 		private jwtService: JwtService,
-		private readonly config: ConfigService,
+		private config: ConfigService,
 	) {}
 	// canActivate
 	async canActivate(context: ExecutionContext): Promise<boolean> {
