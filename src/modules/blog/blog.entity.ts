@@ -8,7 +8,6 @@ import {
 	JoinColumn,
 	ManyToOne,
 } from "typeorm";
-import { IsOptional } from "class-validator";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 import { Users } from "modules/user/user.entity";
@@ -34,11 +33,9 @@ export class Blogs extends DefaultEntity {
 	enTitle: string;
 
 	@Column({ default: "" })
-	@IsOptional()
 	faContent: string;
 
 	@Column({ default: "" })
-	@IsOptional()
 	enContent: string;
 
 	@Column()
@@ -50,29 +47,13 @@ export class Blogs extends DefaultEntity {
 	@Column("text", { array: true, default: [] })
 	tags: string[];
 
-	@Column({
-		array: true,
-		type: "enum",
-		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi, BlogLanguages.English],
-	})
-	@IsOptional()
+	@Column({ array: true, type: "enum", enum: BlogLanguages, default: [BlogLanguages.Farsi, BlogLanguages.English] })
 	language: BlogLanguages[];
 
-	@Column({
-		type: "enum",
-		enum: BlogStatus,
-		default: BlogStatus.Inprogress,
-	})
-	@IsOptional()
+	@Column({ type: "enum", enum: BlogStatus, default: BlogStatus.Inprogress })
 	status: BlogStatus;
 
-	@Column({
-		type: "enum",
-		enum: BlogLevel,
-		default: BlogLevel.Potential,
-	})
-	@IsOptional()
+	@Column({ type: "enum", enum: BlogLevel, default: BlogLevel.Potential })
 	level: BlogLevel;
 
 	// *** relations

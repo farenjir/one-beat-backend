@@ -9,10 +9,6 @@ export class Tags {
 	@Column({ unique: true })
 	name!: string;
 
-	@Column({
-		type: "enum",
-		enum: TagType,
-		default: TagType.Blog,
-	})
+	@Column({ type: "enum", enum: TagType, default: TagType.Blog })
 	type!: TagType;
 }

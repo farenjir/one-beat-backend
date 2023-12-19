@@ -9,10 +9,6 @@ import {
 	ManyToOne,
 } from "typeorm";
 
-import { IsOptional } from "class-validator";
-
-import { Role } from "global/guards.decorator";
-
 import { Users } from "modules/user/user.entity";
 import { ProductLevel, ProductStatus } from "./product.enum";
 
@@ -60,24 +56,10 @@ export class Products extends DefaultEntity {
 	@Column("int", { array: true, default: [] })
 	moodIds: number[];
 
-	@Column({
-		type: "enum",
-		enum: ProductStatus,
-		default: ProductStatus.Inprogress,
-	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
+	@Column({ type: "enum", enum: ProductStatus, default: ProductStatus.Inprogress })
 	status: ProductStatus;
 
-	@Column({
-		type: "enum",
-		enum: ProductLevel,
-		default: ProductLevel.Potential,
-	})
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
+	@Column({ type: "enum", enum: ProductLevel, default: ProductLevel.Potential })
 	level: ProductLevel;
 
 	// *** relations

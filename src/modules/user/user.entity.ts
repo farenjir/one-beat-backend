@@ -1,4 +1,3 @@
-import { UserKYC } from "./kyc/kyc.entity";
 import {
 	Entity,
 	Column,
@@ -12,8 +11,8 @@ import {
 
 import { Role } from "global/guards.decorator";
 
+import { UserKYC } from "./kyc/kyc.entity";
 import { Profile } from "./profile/profile.entity";
-import { IsOptional } from "class-validator";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()
@@ -35,16 +34,11 @@ export class Users extends DefaultEntity {
 	@Column({ unique: true })
 	email!: string;
 
-	@Column()
-	@IsOptional()
+	@Column({ nullable: true })
 	password: string;
 
-	@Column({
-		type: "enum",
-		enum: Role,
-		default: Role.User,
-	})
-	role!: Role;
+	@Column({ type: "enum", enum: Role, default: Role.User })
+	role: Role;
 
 	// *** relations
 	@OneToOne(() => UserKYC, { eager: true })
