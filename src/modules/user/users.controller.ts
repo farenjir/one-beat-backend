@@ -45,7 +45,6 @@ export class UsersController {
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
 	async findAllUser(@Query() queryParams: UsersQuery): Promise<[UserDto[], number]> {
-		console.log({queryParams});
 		return await this.usersService.findUsers(queryParams);
 	}
 	// findUser
