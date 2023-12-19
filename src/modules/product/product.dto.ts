@@ -55,15 +55,11 @@ class ProductDto {
 	@Expose()
 	moodIds: number[];
 	// *** enums
-	@ApiProperty({
-		name: "status",
-		enum: ProductStatus,
-		default: ProductStatus.Inprogress,
-	})
+	@ApiProperty({ name: "status", enum: ProductStatus, default: ProductStatus.Inprogress })
+	@IsOptional({ groups: [Role.Admin, Role.Editor] })
 	status?: ProductStatus;
-	@IsOptional({
-		groups: [Role.Admin, Role.Editor],
-	})
+	@ApiProperty({ name: "level", enum: ProductLevel, default: ProductLevel.Potential })
+	@IsOptional({ groups: [Role.Admin, Role.Editor] })
 	level?: ProductLevel;
 	// *** relations
 	@ApiProperty({ default: UserDto })
@@ -83,58 +79,40 @@ class ProductDto {
 
 class CreateUpdateProductDto {
 	@ApiProperty({ default: "faName" })
-	@Expose()
 	@Length(1, 30)
 	faName: string;
 	@ApiProperty({ default: "enName" })
-	@Expose()
 	@Length(1, 30)
 	enName: string;
 	@ApiProperty({ default: "faDescription" })
-	@Expose()
 	@Length(30, 300)
 	faDescription: string;
 	@ApiProperty({ default: "enDescription" })
-	@Expose()
 	@Length(30, 300)
 	enDescription: string;
 	@ApiProperty({ default: "uploadFileName" })
-	@Expose()
 	@Length(1, 99)
 	coverFileName: string;
 	@ApiProperty({ default: "uploadFileName" })
 	@Length(1, 99)
-	@Expose()
 	demoFileName: string;
 	// *** enums
-	@ApiProperty({
-		name: "status",
-		enum: ProductStatus,
-		default: ProductStatus.Inprogress,
-	})
+	@ApiProperty({ name: "status", enum: ProductStatus, default: ProductStatus.Inprogress })
 	status?: ProductStatus;
-	@ApiProperty({
-		name: "level",
-		enum: ProductLevel,
-		default: ProductLevel.Potential,
-	})
+	@ApiProperty({ name: "level", enum: ProductLevel, default: ProductLevel.Potential })
 	level?: ProductLevel;
 	// *** relations
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
-	@Expose()
 	genreIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
-	@Expose()
 	tempoIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
-	@Expose()
 	groupIds: number[];
 	@ApiProperty({ type: [Number], default: [] })
 	@IsArray()
-	@Expose()
 	moodIds: number[];
 }
 

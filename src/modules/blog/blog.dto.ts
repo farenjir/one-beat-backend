@@ -41,25 +41,13 @@ class BlogDto {
 	@Expose()
 	tags?: string[];
 	// *** enums
-	@ApiProperty({
-		name: "language",
-		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi, BlogLanguages.English],
-	})
+	@ApiProperty({ name: "language", enum: BlogLanguages, default: [BlogLanguages.Farsi, BlogLanguages.English] })
 	@IsOptional()
 	language?: BlogLanguages[];
-	@ApiProperty({
-		name: "status",
-		enum: BlogStatus,
-		default: BlogStatus.Inprogress,
-	})
+	@ApiProperty({ name: "status", enum: BlogStatus, default: BlogStatus.Inprogress })
 	@IsOptional()
 	status?: BlogStatus;
-	@ApiProperty({
-		name: "level",
-		enum: BlogLevel,
-		default: BlogLevel.Potential,
-	})
+	@ApiProperty({ name: "level", enum: BlogLevel, default: BlogLevel.Potential })
 	@IsOptional()
 	level?: BlogLevel;
 	// *** relations
@@ -110,25 +98,13 @@ class CreateUpdateDto {
 	@Expose()
 	tags: string[];
 	// *** enums
-	@ApiProperty({
-		name: "language",
-		enum: BlogLanguages,
-		default: [BlogLanguages.Farsi, BlogLanguages.English],
-	})
+	@ApiProperty({ name: "language", enum: BlogLanguages, default: [BlogLanguages.Farsi, BlogLanguages.English] })
 	@IsOptional()
 	language?: BlogLanguages[];
-	@ApiProperty({
-		name: "status",
-		enum: BlogStatus,
-		default: BlogStatus.Inprogress,
-	})
+	@ApiProperty({ name: "status", enum: BlogStatus, default: BlogStatus.Inprogress })
 	@IsOptional()
 	status?: BlogStatus;
-	@ApiProperty({
-		name: "level",
-		enum: BlogLevel,
-		default: BlogLevel.Potential,
-	})
+	@ApiProperty({ name: "level", enum: BlogLevel, default: BlogLevel.Potential })
 	@IsOptional()
 	level?: BlogLevel;
 }
@@ -162,9 +138,9 @@ class BlogsQuery {
 	@ApiProperty({ name: "level", enum: BlogLevel, required: false })
 	@IsOptional()
 	level?: BlogLevel;
-	@ApiProperty({ name: "language", enum: [BlogLevel], required: false })
+	@ApiProperty({ type: [String], required: false, description: "use 'fa' or 'en' or both" })
 	@IsOptional()
-	language?: BlogLanguages[];
+	language?: string[];
 	// bases
 	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()

@@ -15,11 +15,7 @@ class TagDto {
 	@Length(1, 30)
 	name: string;
 	@Expose()
-	@ApiProperty({
-		name: "type",
-		enum: TagType,
-		default: TagType.Blog,
-	})
+	@ApiProperty({ name: "type", enum: TagType, default: TagType.Blog })
 	@IsOptional()
 	type?: TagType;
 }
@@ -29,11 +25,7 @@ class CreateDto {
 	@IsString()
 	@Length(1, 30)
 	name: string;
-	@ApiProperty({
-		name: "type",
-		enum: TagType,
-		default: TagType.Blog,
-	})
+	@ApiProperty({ name: "type", enum: TagType, default: TagType.Blog })
 	@IsOptional()
 	type?: TagType;
 }
@@ -43,11 +35,7 @@ class UpdateDto {
 	@IsString()
 	@IsOptional()
 	name: string;
-	@ApiProperty({
-		name: "type",
-		enum: TagType,
-		default: TagType.Blog,
-	})
+	@ApiProperty({ name: "type", enum: TagType, default: TagType.Blog })
 	@IsOptional()
 	type?: TagType;
 }
@@ -72,7 +60,6 @@ class TagQuery {
 	@IsOptional()
 	@IsString()
 	name?: string;
-
 }
 
 class TagsQuery {

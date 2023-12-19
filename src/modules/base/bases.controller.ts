@@ -30,7 +30,7 @@ export class BaseController {
 	@SwaggerDocumentaryApi(BaseDto, {
 		response: ResEnum.Array,
 		useAuth: false,
-		description: "get one base with it's children",
+		description: "get Children of one base with parent id or type",
 	})
 	@Get("getBases")
 	@ResponseMessage("")
