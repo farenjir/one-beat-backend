@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsInt, IsOptional, IsString, Length } from "class-validator";
 import { Expose, Type } from "class-transformer";
 
-export { BaseDto, CreateBaseDto, CreateBasesDto, UpdateBaseDto, BaseQuery };
+export { BaseDto, CreateBaseDto, CreateBasesDto, UpdateBaseDto, BaseQuery, BasesQuery };
 
 class BaseDto {
 	@ApiProperty()
@@ -28,7 +28,10 @@ class BaseDto {
 }
 
 class CreateBaseDto {
-	@ApiProperty({ default: 0 })
+	@ApiProperty({
+		default: 0,
+		description: "Create a new Base with ( parentId : 0 ) and Create a new Child with ( target Base parentId )",
+	})
 	@IsInt()
 	parentId: number;
 	@ApiProperty({ default: "type" })
@@ -81,19 +84,26 @@ class UpdateBaseDto {
 	faName: string;
 }
 
-class BaseQuery {
+class BasesQuery {
+	@ApiProperty({ type: Number, required: false })
+	@IsOptional()
 	@Type(() => Number)
 	@IsInt()
-	@IsOptional()
-	baseId?: number;
-	@IsString()
-	@IsOptional()
-	baseType?: string;
-	@Type(() => Number)
-	@IsInt()
-	@IsOptional()
 	parentId?: number;
-	@IsString()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
+	@IsString()
 	parentType?: string;
+}
+
+class BaseQuery {
+	@ApiProperty({ type: Number, required: false })
+	@IsOptional()
+	@Type(() => Number)
+	@IsInt()
+	id?: number;
+	@ApiProperty({ type: String, required: false })
+	@IsOptional()
+	@IsString()
+	type?: string;
 }

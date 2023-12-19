@@ -9,7 +9,7 @@ import { Role } from "global/guards.decorator";
 import { UsersService } from "modules/user/users.service";
 
 import { Products } from "./product.entity";
-import { CreateUpdateProductDto, ProductQuery } from "./product.dto";
+import { CreateUpdateProductDto, ProductQuery, ProductsQuery } from "./product.dto";
 
 @Injectable()
 export class ProductsService {
@@ -18,7 +18,7 @@ export class ProductsService {
 		private usersService: UsersService,
 	) {}
 	// find all by Query
-	async findAll({ producerId: id, username, email, ...productParams }: ProductQuery = {}): Promise<[Products[], number]> {
+	async findAll({ producerId: id, username, email, ...productParams }: ProductsQuery = {}): Promise<[Products[], number]> {
 		const { page = 1, take = 10, groupIds, genreIds, moodIds, tempoIds, faName, enName, ...otherParams } = productParams;
 		// arrayQuery
 		const bases = this.queryIdHandler({ groupIds, genreIds, moodIds, tempoIds });

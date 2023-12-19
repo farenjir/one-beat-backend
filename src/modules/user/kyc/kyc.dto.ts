@@ -25,12 +25,7 @@ class UserKycDto {
 	@IsOptional()
 	emailKyc?: boolean;
 
-	@ApiProperty({
-		name: "producerKyc",
-		enum: ProducerLevel,
-		default: ProducerLevel.NotRequested,
-		required: false,
-	})
+	@ApiProperty({ name: "producerKyc", enum: ProducerLevel, required: false })
 	@IsOptional()
 	producerKyc?: ProducerLevel;
 }

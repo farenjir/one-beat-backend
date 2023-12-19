@@ -6,22 +6,21 @@ import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
 import { TagsService } from "./tags.service";
-import { CreateDto, TagDto, TagQuery } from "./tag.dto";
-import { getTagSchema } from "./tag.schema";
+import { CreateDto, TagDto, TagQuery, TagsQuery } from "./tag.dto";
 
 @ApiTags("Tags")
 @Controller("tag")
 export class TagsController {
 	constructor(private readonly tagServices: TagsService) {}
 	// get all byQuery
-	@SwaggerDocumentaryApi(TagDto, { response: ResEnum.Array, useAuth: false, query: getTagSchema.slice(1) })
+	@SwaggerDocumentaryApi(TagDto, { response: ResEnum.Array, useAuth: false })
 	@Get("all")
 	@ResponseMessage("")
-	async getTagsByQuery(@Query() queryParams: TagQuery): Promise<TagDto[]> {
+	async getTagsByQuery(@Query() queryParams: TagsQuery): Promise<TagDto[]> {
 		return await this.tagServices.findAll(queryParams);
 	}
 	// findOne
-	@SwaggerDocumentaryApi(TagDto, { useAuth: false, query: getTagSchema.slice(0, 2) })
+	@SwaggerDocumentaryApi(TagDto, { useAuth: false })
 	@Get("getTag")
 	@ResponseMessage("")
 	async getTagByQuery(@Query() queryParams: TagQuery): Promise<TagDto> {

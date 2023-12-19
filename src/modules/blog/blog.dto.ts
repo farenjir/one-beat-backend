@@ -6,7 +6,7 @@ import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 
-export { BlogDto, BlogQuery, CreateUpdateDto };
+export { BlogDto, CreateUpdateDto, BlogQuery, BlogsQuery };
 
 class BlogDto {
 	@ApiProperty()
@@ -133,50 +133,74 @@ class CreateUpdateDto {
 	level?: BlogLevel;
 }
 
-class BlogQuery {
-	@IsInt()
+class BlogsQuery {
+	@ApiProperty({ type: Number })
 	@IsOptional()
 	@Type(() => Number)
+	@IsInt()
 	@Min(1)
 	page?: number;
+	@ApiProperty({ type: Number })
 	@IsOptional()
 	@Type(() => Number)
 	@IsInt()
 	@Min(1)
 	@Max(100)
 	take?: number;
-	@IsInt()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
-	@Type(() => Number)
-	id?: number;
 	@IsString()
-	@IsOptional()
 	faTitle?: string;
-	@IsString()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
+	@IsString()
 	enTitle?: string;
 	// enums
+	@ApiProperty({ name: "status", enum: BlogStatus, required: false })
 	@IsOptional()
 	status?: BlogStatus;
+	@ApiProperty({ name: "level", enum: BlogLevel, required: false })
 	@IsOptional()
 	level?: BlogLevel;
+	@ApiProperty({ name: "language", enum: [BlogLevel], required: false })
 	@IsOptional()
 	language?: BlogLanguages[];
 	// bases
+	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()
 	groupIds?: number[];
 	// relation
+	@ApiProperty({ type: [String], required: false })
 	@IsOptional()
 	tags?: string[];
 	// relation
-	@IsInt()
+	@ApiProperty({ type: Number, required: false })
+	@IsOptional()
 	@Type(() => Number)
-	@IsOptional()
+	@IsInt()
 	authorId?: number;
-	@IsString()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
+	@IsString()
 	username?: string;
-	@IsString()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
+	@IsString()
 	email?: string;
+}
+
+class BlogQuery {
+	@ApiProperty({ type: Number, required: false })
+	@IsOptional()
+	@Type(() => Number)
+	@IsInt()
+	id?: number;
+	@ApiProperty({ type: String, required: false })
+	@IsOptional()
+	@IsString()
+	faTitle?: string;
+	@ApiProperty({ type: String, required: false })
+	@IsOptional()
+	@IsString()
+	enTitle?: string;
 }

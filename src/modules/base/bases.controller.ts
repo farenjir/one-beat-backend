@@ -6,9 +6,7 @@ import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery } from "./base.dto";
-import { ValidationQueryPipe } from "./bases.pipe";
-import { addDescription, getBaseSchema, getChildrenSchema } from "./base.schema";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, BasesQuery } from "./base.dto";
 
 @ApiTags("Bases")
 @Controller("base")
@@ -19,24 +17,30 @@ export class BaseController {
 	@Get("all")
 	@ResponseMessage("")
 	async getBases(): Promise<BaseDto[]> {
-		return await this.typeService.findAllBases();
+		return await this.typeService.findAll();
 	}
 	// get one type
-	@SwaggerDocumentaryApi(BaseDto, { useAuth: false, query: getBaseSchema })
+	@SwaggerDocumentaryApi(BaseDto, { useAuth: false })
 	@Get("getBase")
 	@ResponseMessage("")
-	async getBase(@Query(new ValidationQueryPipe()) { baseId, baseType }: BaseQuery = {}): Promise<BaseDto> {
-		return await this.typeService.findBase(baseId, baseType);
+	async getBase(@Query() queryParams: BaseQuery): Promise<BaseDto> {
+		return await this.typeService.findOne(queryParams);
 	}
 	// get children of type
-	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.Array, useAuth: false, query: getChildrenSchema })
-	@Get("children")
+	@SwaggerDocumentaryApi(BaseDto, {
+		response: ResEnum.Array,
+		useAuth: false,
+		description: "get one base with it's children",
+	})
+	@Get("getBases")
 	@ResponseMessage("")
-	async getChildrenOfParent(@Query(new ValidationQueryPipe()) { parentId, parentType }: BaseQuery = {}): Promise<BaseDto[]> {
-		return await this.typeService.findBaseChildren(parentId, parentType);
+	async getChildrenOfParent(@Query() queryParams: BasesQuery): Promise<BaseDto[]> {
+		return await this.typeService.findBaseChildren(queryParams);
 	}
 	// add new types
-	@SwaggerDocumentaryApi(CreateBaseDto, { description: addDescription })
+	@SwaggerDocumentaryApi(CreateBaseDto, {
+		description: "Create a new Base with ( parentId : 0 ) and Create a new Child with ( target Base parentId )",
+	})
 	@AppGuards(Role.Admin)
 	@Post("addBase")
 	@ResponseMessage("2007")

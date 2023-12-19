@@ -2,7 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsInt, IsOptional, Max, Min } from "class-validator";
 import { Expose, Type } from "class-transformer";
 
-export { VersionDto, VersionCreateUpdateDto };
+import { VersionType } from "./version.enum";
+
+export { VersionDto, VersionCreateUpdateDto, VersionQuery };
 
 class VersionDto {
 	@ApiProperty()
@@ -34,4 +36,10 @@ class VersionCreateUpdateDto {
 	@ApiProperty({ default: ["feature", "description"] })
 	@IsArray()
 	description?: string[];
+}
+
+class VersionQuery {
+	@ApiProperty({ name: "type", enum: VersionType, required: false })
+	@IsOptional()
+	type?: VersionType;
 }

@@ -8,8 +8,7 @@ import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
 import { ProductsService } from "./products.service";
-import { ProductDto, CreateUpdateProductDto, ProductQuery } from "./product.dto";
-import { productQuerySchema } from "./product.schema";
+import { ProductDto, CreateUpdateProductDto, ProductQuery, ProductsQuery } from "./product.dto";
 
 @ApiTags("Products")
 @Controller("product")
@@ -17,17 +16,17 @@ import { productQuerySchema } from "./product.schema";
 export class ProductsController {
 	constructor(private readonly productServices: ProductsService) {}
 	// get all product
-	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: productQuerySchema })
+	@SwaggerDocumentaryApi(ProductDto, { response: ResEnum.ArrayWithCount, useAuth: false })
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async getProducts(@Query() queryParams: ProductQuery): Promise<[ProductDto[], number]> {
+	async getProducts(@Query() queryParams: ProductsQuery): Promise<[ProductDto[], number]> {
 		return await this.productServices.findAll(queryParams);
 	}
 	// find by Query
-	@SwaggerDocumentaryApi(ProductDto, { useAuth: false, query: productQuerySchema.slice(2, 5) })
+	@SwaggerDocumentaryApi(ProductDto, { useAuth: false })
 	@Get("getProduct")
 	@ResponseMessage("")
-	async getProducerProducts(@Query() queryParams: Pick<ProductQuery, "id" | "faName" | "enName">): Promise<ProductDto> {
+	async getProducerProducts(@Query() queryParams: ProductQuery): Promise<ProductDto> {
 		return await this.productServices.findOne(queryParams);
 	}
 	// add new product

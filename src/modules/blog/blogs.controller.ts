@@ -8,8 +8,7 @@ import { ResponseMessage } from "global/response.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 
 import { BlogServices } from "./blogs.service";
-import { BlogDto, BlogQuery, CreateUpdateDto } from "./blog.dto";
-import { blogQuerySchema } from "./blog.schema";
+import { BlogDto, CreateUpdateDto, BlogQuery, BlogsQuery } from "./blog.dto";
 
 @ApiTags("Blogs")
 @Controller("blog")
@@ -17,17 +16,17 @@ import { blogQuerySchema } from "./blog.schema";
 export class BlogsController {
 	constructor(private readonly blogServices: BlogServices) {}
 	// get all by query
-	@SwaggerDocumentaryApi(BlogDto, { response: ResEnum.ArrayWithCount, useAuth: false, query: blogQuerySchema })
+	@SwaggerDocumentaryApi(BlogDto, { response: ResEnum.ArrayWithCount, useAuth: false })
 	@Get("all")
 	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async getProducts(@Query() queryParams: BlogQuery): Promise<[BlogDto[], number]> {
+	async getProducts(@Query() queryParams: BlogsQuery): Promise<[BlogDto[], number]> {
 		return await this.blogServices.findAll(queryParams);
 	}
 	// find by query
-	@SwaggerDocumentaryApi(BlogDto, { useAuth: false, query: blogQuerySchema.slice(2, 5) })
+	@SwaggerDocumentaryApi(BlogDto, { useAuth: false })
 	@Get("getProduct")
 	@ResponseMessage("")
-	async getProducerProducts(@Query() queryParams: Pick<BlogQuery, "id" | "enTitle" | "faTitle">): Promise<BlogDto> {
+	async getProducerProducts(@Query() queryParams: BlogQuery): Promise<BlogDto> {
 		return await this.blogServices.findOne(queryParams);
 	}
 	// add new

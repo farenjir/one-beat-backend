@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiOperation, ApiQuery, ApiQueryOptions, getSchemaPath } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiExtraModels, ApiOkResponse, ApiOperation, getSchemaPath } from "@nestjs/swagger";
 
 export interface Dto<InstanceType = unknown> {
 	new (...args: unknown[]): InstanceType;
@@ -13,15 +13,13 @@ export enum ResEnum {
 interface IOptions {
 	response?: ResEnum;
 	useAuth?: boolean;
-	query?: Array<ApiQueryOptions>;
 	description?: string;
 }
 
 export const SwaggerDocumentaryApi = (
 	responseDto: Dto,
-	{ response = ResEnum.Object, useAuth = true, query = [], description = "" }: IOptions = {},
+	{ response = ResEnum.Object, useAuth = true, description = "" }: IOptions = {},
 ) => {
-	const queryApi = query.map(ApiQuery);
 	const auth = useAuth ? [ApiCookieAuth()] : [];
 	// result
 	const result = (type: ResEnum) => {
@@ -54,7 +52,7 @@ export const SwaggerDocumentaryApi = (
 	// return
 	return applyDecorators(
 		...auth,
-		...queryApi,
+		// ApiQuery()
 		// ApiProperty(),
 		// ApiBody(),
 		ApiOperation({ description }),

@@ -8,7 +8,7 @@ import { ResponseMessage } from "global/response.decorator";
 
 import { UploadTypes } from "utils/configs/upload.configs";
 import { FileUploadConfig } from "./upload.interceptor";
-import { FileValidationPipe, ValidationQueryPipe } from "./uploads.pipe";
+import { FileValidationPipe } from "./uploads.pipe";
 
 import { UploadService } from "./uploads.service";
 import { UploadDto, UploadQueryDto, UploadResponseDto } from "./upload.dto";
@@ -57,30 +57,11 @@ export class UploadController {
 		return await this.uploadService.create(body, file, user);
 	}
 	// getBy Query
-	@SwaggerDocumentaryApi(UploadResponseDto, {
-		response: ResEnum.Array,
-		query: [
-			{
-				name: "userId",
-				required: false,
-				type: Number,
-			},
-			{
-				name: "type",
-				required: false,
-				type: String,
-			},
-			{
-				name: "category",
-				required: false,
-				type: String,
-			},
-		],
-	})
+	@SwaggerDocumentaryApi(UploadResponseDto, { response: ResEnum.Array })
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("fileList")
 	@ResponseMessage("2009")
-	async getFiles(@Query(new ValidationQueryPipe()) query: UploadQueryDto = {}): Promise<UploadResponseDto[]> {
+	async getFiles(@Query() query: UploadQueryDto): Promise<UploadResponseDto[]> {
 		return await this.uploadService.findBy(query);
 	}
 	// Streamable File class

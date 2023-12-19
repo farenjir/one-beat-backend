@@ -157,12 +157,7 @@ class UsersQuery extends UserKycDto {
 	@IsString()
 	@IsOptional()
 	email?: string;
-	@ApiProperty({
-		name: "role",
-		enum: Role,
-		default: Role.User,
-		required: false,
-	})
+	@ApiProperty({ name: "role", enum: Role, required: false })
 	@IsOptional()
 	role?: Role;
 }

@@ -2,22 +2,22 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, FindTreeOptions, TreeRepository } from "typeorm";
 
-import { pickBy as _pickBy } from "lodash";
+import { pickBy as _pickBy, isEmpty as _isEmpty } from "lodash";
 
 import { Bases } from "./base.entity";
-import { CreateBaseDto, UpdateBaseDto } from "./base.dto";
+import { CreateBaseDto, UpdateBaseDto, BaseQuery, BasesQuery } from "./base.dto";
 
 @Injectable()
 export class BaseService {
 	constructor(@InjectRepository(Bases) private repo: TreeRepository<Bases>) {}
 	// findAll
-	async findAllBases(): Promise<Bases[]> {
+	async findAll(): Promise<Bases[]> {
 		const options: FindTreeOptions = { relations: ["children"] };
 		return await this.repo.findTrees(options);
 	}
 	// findOne
-	async findBase(id?: number, type?: string): Promise<Bases> {
-		if (!id && !type) {
+	async findOne({ id, type }: BaseQuery): Promise<Bases> {
+		if (_isEmpty({ id, type })) {
 			throw new BadRequestException("4000");
 		}
 		const options: FindOneOptions<Bases> = {
@@ -26,22 +26,21 @@ export class BaseService {
 		return await this.repo.findOne(options);
 	}
 	// findChildren
-	async findBaseChildren(parentId?: number, parentType?: string): Promise<Bases[]> {
-		if (!parentId && !parentType) {
+	async findBaseChildren({ parentId: id, parentType: type }: BasesQuery): Promise<Bases[]> {
+		if (_isEmpty({ id, type })) {
 			throw new BadRequestException("4000");
 		}
-		const parent = await this.findBase(parentId, parentType);
+		const parent = await this.findOne({ id, type });
 		if (!parent) {
 			throw new NotFoundException("4008");
 		}
 		const options: FindTreeOptions = { relations: ["parent", "children"] };
-		const { children } = (await this.repo.findDescendantsTree(parent, options)) || {};
-		return children;
+		return (await this.repo.findDescendantsTree(parent, options))?.children;
 	}
 	// create
 	async create({ parentId = 0, ...baseParams }: CreateBaseDto): Promise<Bases> {
 		if (parentId) {
-			const parent = await this.findBase(parentId);
+			const parent = await this.findOne({ id: parentId });
 			if (!parent) {
 				throw new NotFoundException("4008");
 			}
@@ -52,12 +51,12 @@ export class BaseService {
 	}
 	// update
 	async updateById(id: number, { parentId, ...baseParams }: Partial<UpdateBaseDto>): Promise<Bases> {
-		const base = await this.findBase(id);
+		const base = await this.findOne({ id });
 		if (!base) {
 			throw new NotFoundException("4004");
 		}
 		if (parentId) {
-			const parent = await this.findBase(parentId);
+			const parent = await this.findOne({ id: parentId });
 			if (!parent) {
 				throw new NotFoundException("4008");
 			}
@@ -68,7 +67,7 @@ export class BaseService {
 	}
 	// remove
 	async removeById(id: number): Promise<Bases> {
-		const base = await this.findBase(id);
+		const base = await this.findOne({ id });
 		if (!base) {
 			throw new NotFoundException("4004");
 		}

@@ -9,7 +9,7 @@ import { Role } from "global/guards.decorator";
 import { UsersService } from "modules/user/users.service";
 
 import { Blogs } from "./blog.entity";
-import { BlogQuery, CreateUpdateDto } from "./blog.dto";
+import { CreateUpdateDto, BlogQuery, BlogsQuery } from "./blog.dto";
 
 @Injectable()
 export class BlogServices {
@@ -18,19 +18,8 @@ export class BlogServices {
 		private usersService: UsersService,
 	) {}
 	// find all
-	async findAll({
-		page = 1,
-		take = 10,
-		// user
-		authorId,
-		username,
-		email,
-		// array
-		groupIds,
-		tags,
-		language,
-		...queryParams
-	}: BlogQuery): Promise<[Blogs[], number]> {
+	async findAll({ page = 1, take = 10, authorId, username, email, ...queryParams }: BlogsQuery): Promise<[Blogs[], number]> {
+		const { groupIds, tags, language, ...otherParams } = queryParams;
 		// arrayQuery
 		const bases = this.queryIdHandler({ groupIds, tags, language });
 		// options
@@ -39,15 +28,15 @@ export class BlogServices {
 			skip: page - 1,
 			take,
 			where: {
-				author: { id: authorId, username, email },
-				...queryParams,
+				author: _pickBy<object>({ id: authorId, username, email }, (isTruthy: unknown) => isTruthy),
+				...otherParams,
 				...bases,
 			},
 		};
 		return await this.repo.findAndCount(options);
 	}
 	// find one
-	async findOne(queryParams: Pick<BlogQuery, "id" | "enTitle" | "faTitle">, ignoreValidateProduct = false): Promise<Blogs> {
+	async findOne(queryParams: BlogQuery, ignoreValidateProduct = false): Promise<Blogs> {
 		const options: FindOneOptions<Blogs> = {
 			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
 		};

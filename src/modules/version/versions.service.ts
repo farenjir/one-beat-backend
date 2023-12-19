@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Version } from "./version.entity";
-import { VersionCreateUpdateDto } from "./version.dto";
+import { VersionCreateUpdateDto, VersionQuery } from "./version.dto";
 
 @Injectable()
 export class VersionService {
@@ -47,6 +47,11 @@ export class VersionService {
 		const version = await this.findById(id, true);
 		Object.assign(version, paramsObject);
 		return await this.repo.save(version);
+	}
+	async updateVersion({ type }: VersionQuery): Promise<Version> {
+		const { id, ...latestVersion } = await this.findLatest(true);
+		Object.assign(latestVersion, { [type]: latestVersion[type] + 1 });
+		return await this.updateById(id, latestVersion); // baseVersion updated
 	}
 	// remove
 	async removeById(id: number): Promise<Version> {

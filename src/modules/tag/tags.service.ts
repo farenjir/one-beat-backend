@@ -5,13 +5,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { isEmpty as _isEmpty, map as _map } from "lodash";
 
 import { Tags } from "./tag.entity";
-import { CreateDto, TagQuery } from "./tag.dto";
+import { CreateDto, TagQuery, TagsQuery } from "./tag.dto";
 
 @Injectable()
 export class TagsService {
 	constructor(@InjectRepository(Tags) private repo: Repository<Tags>) {}
 	// findAll
-	async findAll({ name, type }: TagQuery = {}): Promise<Tags[]> {
+	async findAll({ name, type }: TagsQuery = {}): Promise<Tags[]> {
 		const names = this.queryContentHandler({ name });
 		const options: FindManyOptions<Tags> = {
 			order: { id: "DESC" },

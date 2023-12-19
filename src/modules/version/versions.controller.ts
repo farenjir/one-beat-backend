@@ -6,9 +6,7 @@ import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { VersionService } from "./versions.service";
-import { VersionDto, VersionCreateUpdateDto } from "./version.dto";
-import { VersionType } from "./version.enum";
-import { versionTypeSchema } from "./version.schema";
+import { VersionDto, VersionCreateUpdateDto, VersionQuery } from "./version.dto";
 
 @ApiTags("Versions")
 @Controller("version")
@@ -29,14 +27,12 @@ export class VersionController {
 		return await this.versionServices.findLatest(true);
 	}
 	// extra services
-	@SwaggerDocumentaryApi(VersionDto, { query: versionTypeSchema })
+	@SwaggerDocumentaryApi(VersionDto)
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("update")
 	@ResponseMessage("2013")
-	async updateBaseVersion(@Query() { type }: { type: VersionType }): Promise<VersionDto> {
-		const { id, ...latestVersion } = await this.versionServices.findLatest(true);
-		Object.assign(latestVersion, { [type]: latestVersion[type] + 1 });
-		return await this.versionServices.updateById(id, latestVersion); // baseVersion updated
+	async updateBaseVersion(@Query() { type }: VersionQuery): Promise<VersionDto> {
+		return await this.versionServices.updateVersion({ type });
 	}
 	// add new types
 	@SwaggerDocumentaryApi(VersionCreateUpdateDto)

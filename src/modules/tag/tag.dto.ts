@@ -4,7 +4,7 @@ import { Expose, Type } from "class-transformer";
 
 import { TagType } from "./tag.enum";
 
-export { TagDto, CreateDto, UpdateDto, CreateTagsDto, TagQuery };
+export { TagDto, CreateDto, UpdateDto, CreateTagsDto, TagQuery, TagsQuery };
 
 class TagDto {
 	@ApiProperty()
@@ -57,24 +57,30 @@ class CreateTagsDto {
 	@IsString()
 	@Length(1, 30)
 	name: string;
-	@ApiProperty({
-		name: "type",
-		enum: TagType,
-		default: TagType.Blog,
-	})
+	@ApiProperty({ name: "type", enum: TagType, default: TagType.Blog })
 	@IsOptional()
 	type?: TagType;
 }
 
 class TagQuery {
-	@IsInt()
-	@Type(() => Number)
+	@ApiProperty({ type: Number, required: false })
 	@IsOptional()
+	@Type(() => Number)
+	@IsInt()
 	id?: number;
-	// @Transform(({ value = "" }) => Like(`%${value}%`))
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
 	@IsString()
 	name?: string;
+
+}
+
+class TagsQuery {
+	@ApiProperty({ type: String, required: false })
+	@IsOptional()
+	@IsString()
+	name?: string;
+	@ApiProperty({ name: "type", enum: TagType, required: false })
 	@IsOptional()
 	type?: TagType;
 }

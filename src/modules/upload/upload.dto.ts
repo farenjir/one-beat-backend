@@ -33,14 +33,17 @@ class UploadDto {
 }
 
 class UploadQueryDto {
-	@IsString()
+	@ApiProperty({ type: Number, required: false })
 	@IsOptional()
+	@IsString()
 	userId?: number;
-	@IsString()
+	@ApiProperty({ type: String, required: false })
 	@IsOptional()
+	@IsString()
 	type?: string;
-	@IsString()
+	@ApiProperty({ name: "category", enum: UploadEnum, required: false })
 	@IsOptional()
+	@IsString()
 	category?: UploadEnum;
 }
 
