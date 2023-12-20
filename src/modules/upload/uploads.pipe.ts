@@ -3,7 +3,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
-import { ItemUploadType } from "utils/configs/upload.configs";
+import { ItemUploadType } from "modules/upload/upload.configs";
 import { UploadQueryDto } from "./upload.dto";
 
 type AllowedTypes = string | boolean | number | Array<unknown> | object;

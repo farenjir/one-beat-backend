@@ -4,12 +4,6 @@ export type ItemUploadType = {
 	maxFileSize: number;
 };
 
-export enum UploadEnum {
-	Image = "image",
-	Music = "music",
-	Zip = "zip",
-}
-
 export const UploadTypes = {
 	Image: { name: "Image", types: ["image/jpeg", "image/jpg", "image/png"], maxFileSize: 5000000 }, // 5mb
 	Music: { name: "Music", types: ["mp3", "wave"], maxFileSize: 10000000 }, // 10mb

@@ -30,7 +30,7 @@ export class TagsController {
 	@SwaggerDocumentaryApi(CreateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Post("addNew")
-	@ResponseMessage("2020")
+	@ResponseMessage("2026")
 	async addNewBase(@Body() body: CreateDto): Promise<TagDto> {
 		return await this.tagServices.createOne(body);
 	}
@@ -38,7 +38,7 @@ export class TagsController {
 	@SwaggerDocumentaryApi(CreateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Put("updateBy/:id")
-	@ResponseMessage("2021")
+	@ResponseMessage("2027")
 	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: CreateDto): Promise<TagDto> {
 		return await this.tagServices.updateBy({ id }, body);
 	}
@@ -46,7 +46,7 @@ export class TagsController {
 	@SwaggerDocumentaryApi(CreateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Delete("deleteBy/:id")
-	@ResponseMessage("2022")
+	@ResponseMessage("2028")
 	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<CreateDto> {
 		return await this.tagServices.removeBy({ id });
 	}

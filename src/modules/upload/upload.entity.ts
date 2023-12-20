@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
-import { UploadEnum } from "utils/configs/upload.configs";
+import { UploadEnum } from "modules/upload/upload.enum";
 
 abstract class DefaultEntity {
 	@CreateDateColumn()

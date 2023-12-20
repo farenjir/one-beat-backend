@@ -52,8 +52,8 @@ export class UsersController {
 	@AppGuards(Role.Admin, Role.Editor)
 	@Get("getUser")
 	@ResponseMessage("")
-	async findUserById(@Query() { username, id, email }: UserQuery): Promise<UserProfileDto> {
-		return await this.usersService.findOne({ username, id, email }, true, true);
+	async findUserById(@Query() queryParams: UserQuery): Promise<UserProfileDto> {
+		return await this.usersService.findOne(queryParams, true, true);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)

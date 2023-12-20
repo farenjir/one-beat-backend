@@ -4,7 +4,7 @@ import { FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 
 import { pickBy as _pickBy, isEmpty as _isEmpty, map as _map } from "lodash";
 
-import { handleHashPassword, hashPassword } from "utils/configs/auth.configs";
+import { handleHashPassword, hashPassword } from "modules/auth/auth.configs";
 
 import { ProfileService } from "./profile/profile.service";
 import { UserKycService } from "./kyc/kyc.service";
@@ -110,6 +110,8 @@ export class UsersService {
 				throw new BadRequestException("2018");
 			}
 			hashedPassword = await hashPassword(password);
+		} else {
+			throw new BadRequestException("2018");
 		}
 		// relations
 		const updatedData = _pickBy<object>(

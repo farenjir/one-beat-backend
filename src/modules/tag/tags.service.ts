@@ -2,7 +2,7 @@ import { FindManyOptions, FindOneOptions, Like, Repository } from "typeorm";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { isEmpty as _isEmpty, map as _map } from "lodash";
+import { isEmpty as _isEmpty, map as _map, pickBy as _pickBy } from "lodash";
 
 import { Tags } from "./tag.entity";
 import { CreateDto, TagQuery, TagsQuery } from "./tag.dto";
@@ -15,14 +15,14 @@ export class TagsService {
 		const names = this.queryContentHandler({ name });
 		const options: FindManyOptions<Tags> = {
 			order: { id: "DESC" },
-			where: { type, ...names },
+			where: _pickBy<object>({ type, ...names }, (isTruthy: unknown) => isTruthy),
 		};
 		return await this.repo.find(options);
 	}
 	// findOne
 	async findOne(queryParams: TagQuery = {}, ignoreValidateTag = false): Promise<Tags> {
 		const options: FindOneOptions<Tags> = {
-			where: queryParams,
+			where: _pickBy<object>(queryParams, (isTruthy: unknown) => isTruthy),
 		};
 		if (_isEmpty(options.where)) {
 			throw new BadRequestException("4000");
@@ -35,8 +35,8 @@ export class TagsService {
 	}
 	// create
 	async createOne(params: CreateDto): Promise<Tags> {
-		const alreadyExists = await this.findOne({ name: params.name }, true);
-		if (alreadyExists) {
+		const nameAlreadyExists = await this.findOne({ name: params.name }, true);
+		if (nameAlreadyExists) {
 			throw new BadRequestException("4017");
 		}
 		const tag = this.repo.create(params);

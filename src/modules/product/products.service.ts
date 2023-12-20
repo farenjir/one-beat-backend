@@ -47,16 +47,15 @@ export class ProductsService {
 			throw new BadRequestException("4000");
 		}
 		const product = await this.repo.findOne(options);
-		if (product || ignoreValidateProduct) {
-			return product;
-		} else {
+		if (!ignoreValidateProduct && !product) {
 			throw new NotFoundException("4013");
 		}
+		return product;
 	}
 	// create one
 	async createOne({ level, status, ...productAttrs }: CreateUpdateProductDto, req: Request): Promise<Products> {
-		const isDuplicated = await this.duplicatedProductName(productAttrs);
-		if (isDuplicated) {
+		const nameAlreadyExists = await this.duplicatedProductName(productAttrs);
+		if (nameAlreadyExists) {
 			throw new BadRequestException("4014");
 		}
 		const user = await this.usersService.findOne({ id: req?.user?.id }, true);
@@ -67,27 +66,23 @@ export class ProductsService {
 		return await this.repo.save(product);
 	}
 	// create one
-	async updateOne(
-		id: number,
-		{ level, status, ...updatedAttrs }: Partial<CreateUpdateProductDto>,
-		{ user }: Pick<Request, "user">,
-	): Promise<Products> {
+	async updateOne(id: number, { level, status, ...updatedAttrs }: Partial<CreateUpdateProductDto>, req: Request): Promise<Products> {
 		const product = await this.findOne({ id });
-		if (this.checkLevel({ user })) {
+		if (this.checkLevel(req)) {
 			Object.assign(updatedAttrs, product, { level, status });
 		} else {
 			Object.assign(updatedAttrs, product);
 		}
-		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
+		if (this.checkCreator(req, product.producer.id) || this.checkLevel(req)) {
 			return await this.repo.save(updatedAttrs);
 		} else {
 			throw new UnauthorizedException("4012");
 		}
 	}
 	// delete one
-	async deleteOne(id: number, { user }: Pick<Request, "user">): Promise<Products> {
+	async deleteOne(id: number, req: Request): Promise<Products> {
 		const product = await this.findOne({ id });
-		if (this.checkCreator({ user }, product.producer.id) || this.checkLevel({ user })) {
+		if (this.checkCreator(req, product.producer.id) || this.checkLevel(req)) {
 			return await this.repo.remove(product);
 		} else {
 			throw new UnauthorizedException("4012");
