@@ -10,5 +10,6 @@ import { VersionService } from "./versions.service";
 	imports: [TypeOrmModule.forFeature([Version]), JwtModule],
 	controllers: [VersionController],
 	providers: [VersionService],
+	exports: [VersionService],
 })
 export class VersionModule {}

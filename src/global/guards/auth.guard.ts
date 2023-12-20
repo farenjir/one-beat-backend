@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { TOKEN_KEY } from "utils/configs/main.configs";
+import { TOKEN_KEY } from "utils/main.configs";
 
 import { Role } from "global/guards.decorator";
 

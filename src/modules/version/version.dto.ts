@@ -39,7 +39,7 @@ class VersionCreateUpdateDto {
 }
 
 class VersionQuery {
-	@ApiProperty({ name: "type", enum: VersionType, required: false })
+	@ApiProperty({ name: "type", enum: VersionType, required: false, default: VersionType.Bases })
 	@IsOptional()
 	type?: VersionType;
 }

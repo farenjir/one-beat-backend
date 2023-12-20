@@ -33,7 +33,7 @@ class CreateBaseDto {
 		description: "Create a new Base with ( parentId : 0 ) and Create a new Child with ( target Base parentId )",
 	})
 	@IsInt()
-	parentId: number;
+	parentId?: number;
 	@ApiProperty({ default: "type" })
 	@IsString()
 	@Length(1, 30)
@@ -67,9 +67,6 @@ class CreateBasesDto {
 }
 
 class UpdateBaseDto {
-	@ApiProperty({ default: 0 })
-	@IsInt()
-	parentId?: number;
 	@ApiProperty({ default: "type" })
 	@IsString()
 	@IsOptional()

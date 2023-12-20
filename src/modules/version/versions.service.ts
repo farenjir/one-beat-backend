@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Version } from "./version.entity";
 import { VersionCreateUpdateDto, VersionQuery } from "./version.dto";
+import { VersionType } from "./version.enum";
 
 @Injectable()
 export class VersionService {
@@ -48,7 +49,7 @@ export class VersionService {
 		Object.assign(version, paramsObject);
 		return await this.repo.save(version);
 	}
-	async updateVersion({ type }: VersionQuery): Promise<Version> {
+	async updateVersion({ type = VersionType.Bases }: VersionQuery = {}): Promise<Version> {
 		const { id, ...latestVersion } = await this.findLatest(true);
 		Object.assign(latestVersion, { [type]: latestVersion[type] + 1 });
 		return await this.updateById(id, latestVersion); // baseVersion updated

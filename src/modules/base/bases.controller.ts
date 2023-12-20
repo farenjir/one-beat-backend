@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Query, Param } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
@@ -11,20 +12,20 @@ import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, BasesQuery } from "./
 @ApiTags("Bases")
 @Controller("base")
 export class BaseController {
-	constructor(private readonly typeService: BaseService) {}
+	constructor(private readonly baseService: BaseService) {}
 	// get all types
 	@SwaggerDocumentaryApi(BaseDto, { response: ResEnum.Array, useAuth: false })
 	@Get("all")
 	@ResponseMessage("")
 	async getBases(): Promise<BaseDto[]> {
-		return await this.typeService.findAll();
+		return await this.baseService.findAll();
 	}
 	// get one type
 	@SwaggerDocumentaryApi(BaseDto, { useAuth: false })
 	@Get("getBase")
 	@ResponseMessage("")
 	async getBase(@Query() queryParams: BaseQuery): Promise<BaseDto> {
-		return await this.typeService.findOne(queryParams);
+		return await this.baseService.findOne(queryParams);
 	}
 	// get children of type
 	@SwaggerDocumentaryApi(BaseDto, {
@@ -35,7 +36,7 @@ export class BaseController {
 	@Get("getBases")
 	@ResponseMessage("")
 	async getChildrenOfParent(@Query() queryParams: BasesQuery): Promise<BaseDto[]> {
-		return await this.typeService.findBaseChildren(queryParams);
+		return await this.baseService.findBaseChildren(queryParams);
 	}
 	// add new types
 	@SwaggerDocumentaryApi(CreateBaseDto, {
@@ -45,7 +46,7 @@ export class BaseController {
 	@Post("addBase")
 	@ResponseMessage("2007")
 	async addNewBase(@Body() body: CreateBaseDto): Promise<BaseDto> {
-		return await this.typeService.create(body);
+		return await this.baseService.createOne(body);
 	}
 	// update pre types
 	@SwaggerDocumentaryApi(BaseDto)
@@ -53,7 +54,7 @@ export class BaseController {
 	@Put("updateBy/:id")
 	@ResponseMessage("2008")
 	async updateBase(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateBaseDto): Promise<BaseDto> {
-		return await this.typeService.updateById(id, body);
+		return await this.baseService.updateById(id, body);
 	}
 	// delete types
 	@SwaggerDocumentaryApi(BaseDto)
@@ -61,6 +62,11 @@ export class BaseController {
 	@Delete("deleteBy/:id")
 	@ResponseMessage("2008")
 	async deleteBase(@Param("id", ParseIntPipe) id: number): Promise<BaseDto> {
-		return await this.typeService.removeById(id);
+		return await this.baseService.removeById(id);
+	}
+	// *** schedule to make default bases ***
+	@Cron(CronExpression.EVERY_WEEKEND)
+	async scheduleToDefaultBases() {
+		return await this.baseService.scheduleDefaultBases();
 	}
 }

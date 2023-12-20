@@ -8,7 +8,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 
 import { AppExceptionsFilter } from "utils/filters/exception.filter";
-import { CustomDBLoggerOnTypeORM } from "utils/logs/db.logger";
+import { CustomDBLoggerOnTypeORM } from "utils/db.logger";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
@@ -71,7 +71,7 @@ import { BlogsModule } from "modules/blog/blogs.module";
 			useFactory: (config: ConfigService): JwtModuleOptions => ({
 				global: true,
 				secret: config.get<string>("JWT_KEY"),
-				signOptions: { expiresIn: "1d" },
+				signOptions: { expiresIn: config.get<string>("JWT_ExpiresIn") },
 			}),
 		}),
 		CacheModule.registerAsync({
@@ -97,9 +97,7 @@ import { BlogsModule } from "modules/blog/blogs.module";
 		AppService,
 		{
 			provide: APP_PIPE,
-			useValue: new ValidationPipe({
-				whitelist: true,
-			}),
+			useValue: new ValidationPipe({ whitelist: true }),
 		},
 		{
 			provide: APP_FILTER,
