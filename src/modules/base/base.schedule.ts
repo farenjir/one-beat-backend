@@ -17,5 +17,4 @@ export const defaultEnumAndBaseApp = [
 	{ type: "BlogLevel", children: BlogLevel },
 	{ type: "ProductLevel", children: ProductLevel },
 	{ type: "ProductStatus", children: ProductStatus },
-	{ type: "ProductStatus", children: ProductStatus },
 ];
