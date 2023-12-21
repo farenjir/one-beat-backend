@@ -26,14 +26,14 @@ class VersionDto {
 	@Min(1)
 	@Max(999)
 	baseVersion: number;
-	@ApiProperty({ default: ["feature", "description"] })
+	@ApiProperty({ default: ["FEATURE", "description"] })
 	@Expose()
 	@IsArray()
 	description: string[];
 }
 
 class VersionCreateUpdateDto {
-	@ApiProperty({ default: ["feature", "description"] })
+	@ApiProperty({ default: ["FEATURE", "description"] })
 	@IsArray()
 	description?: string[];
 }

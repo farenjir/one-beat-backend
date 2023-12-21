@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Query, Param } from "@nestjs/common";
-import { Cron, CronExpression } from "@nestjs/schedule";
+import { Timeout } from "@nestjs/schedule";
 import { ApiTags } from "@nestjs/swagger";
 
 import { AppGuards, Role } from "global/guards.decorator";
@@ -65,8 +65,9 @@ export class BaseController {
 		return await this.baseService.removeById(id);
 	}
 	// *** schedule to make default bases ***
-	@Cron(CronExpression.EVERY_WEEKEND)
-	async scheduleToDefaultBases() {
-		return await this.baseService.scheduleDefaultBases();
+	@Timeout("INIT_BASES", 5000)
+	// @Cron(CronExpression.EVERY_WEEKEND, { name: "INIT_BASES",timeZone:"Iran/Tehran" })
+	scheduleToDefaultBases() {
+		return this.baseService.scheduleDefaultBases();
 	}
 }
