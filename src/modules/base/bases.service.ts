@@ -84,15 +84,7 @@ export class BaseService {
 			// createNewType
 			typeNames.forEach(async (value) => {
 				if (!baseChildrenTypes.includes(value)) {
-					const newBase = await this.createOne({ type: value, faName: value, enName: value, parentId: parent.id });
-					if (newBase) {
-						try {
-							await this.versionServices.updateVersion(); // update version of the appBases
-						} catch (err) {
-							await this.versionServices.create({ description: ["FEATURE", "default bases created"] });
-							await this.versionServices.updateVersion(); // update version of the appBases
-						}
-					}
+					await this.createOne({ type: value, faName: value, enName: value, parentId: parent.id });
 				}
 			});
 		});
