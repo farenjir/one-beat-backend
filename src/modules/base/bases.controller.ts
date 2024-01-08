@@ -2,12 +2,13 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Put, Post, Query, Param } 
 import { Timeout } from "@nestjs/schedule";
 import { ApiTags } from "@nestjs/swagger";
 
+import { Serialize } from "global/serialize.decorator";
 import { AppGuards, Role } from "global/guards.decorator";
 import { ResEnum, SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { BaseService } from "./bases.service";
-import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, BasesQuery } from "./base.dto";
+import { CreateBaseDto, BaseDto, UpdateBaseDto, BaseQuery, BasesQuery, BaseIgnoredDto } from "./base.dto";
 
 @ApiTags("Bases")
 @Controller("base")
@@ -33,6 +34,7 @@ export class BaseController {
 		useAuth: false,
 		description: "get Children of one base with parent id or type",
 	})
+	@Serialize(BaseIgnoredDto)
 	@Get("getBases")
 	@ResponseMessage("")
 	async getChildrenOfParent(@Query() queryParams: BasesQuery): Promise<BaseDto[]> {

@@ -33,7 +33,7 @@ export class BlogsController {
 	@SwaggerDocumentaryApi(CreateUpdateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Post("addBlog")
-	@ResponseMessage("2023")
+	@ResponseMessage("2020")
 	async addNewBase(@Req() req: Request, @Body() body: CreateUpdateDto): Promise<BlogDto> {
 		return await this.blogServices.createOne(body, req);
 	}
@@ -41,7 +41,7 @@ export class BlogsController {
 	@SwaggerDocumentaryApi(CreateUpdateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Put("updateBy/:id")
-	@ResponseMessage("2024")
+	@ResponseMessage("2021")
 	async updateBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number, @Body() body: CreateUpdateDto): Promise<BlogDto> {
 		return await this.blogServices.updateOne(id, body, req);
 	}
@@ -49,7 +49,7 @@ export class BlogsController {
 	@SwaggerDocumentaryApi(CreateUpdateDto)
 	@AppGuards(Role.Admin, Role.Editor, Role.Producer, Role.Author)
 	@Delete("deleteBy/:id")
-	@ResponseMessage("2025")
+	@ResponseMessage("2022")
 	async deleteBase(@Req() req: Request, @Param("id", ParseIntPipe) id: number): Promise<CreateUpdateDto> {
 		return await this.blogServices.deleteOne(id, req);
 	}

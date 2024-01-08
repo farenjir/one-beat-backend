@@ -45,15 +45,9 @@ const responseMessage = (statusCode: string) => {
 		2017: "Sign with Google",
 		2018: "Current password or Password is not correct",
 		2019: "Sign with Apple",
-		2020: "Product has been Created",
-		2021: "Product has been Updated",
-		2022: "Product has been Deleted",
-		2023: "Blog has been Created",
-		2024: "Blog has been Updated",
-		2025: "Blog has been Deleted",
-		2026: "Tag has been Created",
-		2027: "Tag has been Updated",
-		2028: "Tag has been Deleted",
+		2020: "It has been Created",
+		2021: "It has been Updated",
+		2022: "It has been Deleted",
 	};
 	// return
 	return messages[statusCode] || messages["2000"];

@@ -52,7 +52,10 @@ export class SerializeDataInterceptor implements NestInterceptor {
 	constructor(private reflector: Reflector) {}
 	// intercept
 	intercept(context: ExecutionContext, handler: CallHandler): Observable<unknown> {
-		const { dto, exclude = false } = this.reflector.get<ISerialize>(SERIALIZE_KEY, context.getClass()) || {};
+		const { dto, exclude = false } = this.reflector.getAllAndOverride<ISerialize>(SERIALIZE_KEY, [
+			context.getHandler(),
+			context.getClass(),
+		]) || {}
 		return handler.handle().pipe(
 			rxMap((data) => {
 				return plainToClass(dto, data, { excludeExtraneousValues: exclude });
