@@ -1,13 +1,5 @@
-import { NestApplicationOptions } from "@nestjs/common/interfaces/nest-application-options.interface";
+import type { NestApplicationOptions } from "@nestjs/common";
 import { HelmetOptions } from "helmet";
-import { DocumentBuilder } from "@nestjs/swagger";
-
-export const swaggerConfig = new DocumentBuilder()
-	.setTitle("1BEAT")
-	.setDescription("api of 1BEAT")
-	.setVersion("1.0")
-	.addCookieAuth("app-token")
-	.build();
 
 export const mainConfigs: NestApplicationOptions = {
 	cors: {
@@ -39,7 +31,14 @@ export const sessionConfigs = {
 	saveUninitialized: false,
 };
 
-export const TOKEN_KEY = "app-token";
+export const COOKIE_SECRET = "cookie_secret_key";
+export const cookieConfigs = {
+	path: "/",
+	maxAge: 24 * 24 * 3600,
+	httpOnly: true,
+	secure: true,
+};
+export const COOKIE_TOKEN_KEY = "app-token";
 export const cookieOptions = {
 	path: "/",
 	maxAge: 24 * 24 * 3600,

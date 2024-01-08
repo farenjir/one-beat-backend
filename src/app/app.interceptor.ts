@@ -55,6 +55,7 @@ export class SerializeDataInterceptor implements NestInterceptor {
 		const { dto, exclude = false } = this.reflector.getAllAndOverride<ISerialize>(SERIALIZE_KEY, [
 			context.getHandler(),
 			context.getClass(),
+			// get , getAllAndOverride , getAllAndMerge
 		]) || {}
 		return handler.handle().pipe(
 			rxMap((data) => {

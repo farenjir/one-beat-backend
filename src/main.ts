@@ -1,25 +1,36 @@
-import type { INestApplication } from "@nestjs/common";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { NestFactory } from "@nestjs/core";
-import { SwaggerModule } from "@nestjs/swagger";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 import helmet from "helmet";
 import * as cookieParser from "cookie-parser";
 import * as session from "express-session";
 
-import { helmetConfigs, mainConfigs, sessionConfigs, swaggerConfig } from "utils/main.configs";
+import { COOKIE_SECRET, helmetConfigs, mainConfigs, sessionConfigs } from "utils/main.configs";
 
 import { AppModule } from "app/app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create<INestApplication<unknown>>(AppModule, mainConfigs);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, mainConfigs);
 	// cookie
-	app.use(cookieParser());
+	app.use(cookieParser(COOKIE_SECRET));
 	// session
 	app.use(session(sessionConfigs));
 	// headers
 	app.use(helmet(helmetConfigs));
 	// swagger apply on app
-	SwaggerModule.setup("api", app, SwaggerModule.createDocument(app, swaggerConfig));
+	SwaggerModule.setup(
+		"app-api",
+		app,
+		SwaggerModule.createDocument(
+			app,
+			new DocumentBuilder()
+			.setTitle("1BEAT")
+			.setDescription("api of 1BEAT")
+			.setVersion("1.0")
+			.build(),
+		),
+	);
 	// etag setup options
 	// (<any>app).set("etag", false);
 	// listen
