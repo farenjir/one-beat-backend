@@ -4,7 +4,7 @@ import { Exclude, Expose, Type } from "class-transformer";
 
 import { Role } from "global/guards.decorator";
 
-import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
+import { UserDto, UserIgnoredKycDto } from "modules/user/user.dto";
 
 import { PackageLevel, PackageStatus } from "./package.enum";
 
@@ -63,7 +63,7 @@ class PackageDto {
 	level?: PackageLevel;
 	// *** relations
 	@ApiProperty({ default: UserDto })
-	@Type(() => UserIgnoredDto)
+	@Type(() => UserIgnoredKycDto)
 	producer?: UserDto;
 	// *** defaults
 	@ApiProperty({ type: Date })

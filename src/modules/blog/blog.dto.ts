@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
 import { Exclude, Expose, Type } from "class-transformer";
 
-import { UserDto, UserIgnoredDto } from "modules/user/user.dto";
+import { UserDto, UserIgnoredKycDto } from "modules/user/user.dto";
 
 import { BlogLanguages, BlogLevel, BlogStatus } from "./blog.enum";
 
@@ -52,7 +52,7 @@ class BlogDto {
 	level?: BlogLevel;
 	// *** relations
 	@ApiProperty({ default: UserDto })
-	@Type(() => UserIgnoredDto)
+	@Type(() => UserIgnoredKycDto)
 	author?: UserDto;
 	// *** defaults
 	@ApiProperty({ type: Date })

@@ -8,7 +8,7 @@ import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
 
 export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto, UserQuery, UsersQuery };
-export { UserIgnoredDto, UserProfileResponseDto };
+export { UserIgnoredDto, UserIgnoredKycDto, UserProfileResponseDto };
 
 // *** user params
 class UserDto {
@@ -184,4 +184,17 @@ class UserIgnoredDto {
 	password: string;
 	@Exclude()
 	deletedAt: Date;
+}
+
+class UserIgnoredKycDto {
+	@Exclude()
+	id: number;
+	@Exclude()
+	password: string;
+	@Exclude()
+	kyc: UserKycDto;
+	@Exclude()
+	deletedAt: Date;
+	@Exclude()
+	role: Role;
 }
