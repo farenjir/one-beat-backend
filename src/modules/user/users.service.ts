@@ -21,8 +21,8 @@ export class UsersService {
 	) {}
 	// findAll
 	async findUsers({
-		page,
-		take,
+		page = 1,
+		take = 10,
 		email,
 		username,
 		// kyc

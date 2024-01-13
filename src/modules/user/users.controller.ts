@@ -1,3 +1,4 @@
+import { Roles } from "./../../../.idea/nest-master/nest-master/sample/01-cats-app/src/common/decorators/roles.decorator";
 import { Controller, Body, Get, Put, Delete, Param, ParseIntPipe, Req, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
@@ -9,6 +10,7 @@ import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./users.service";
 import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, UserQuery, UsersQuery } from "./user.dto";
+import { ProducerStatus } from "./kyc/kyc.enum";
 
 @ApiTags("Users")
 @Controller("user")
@@ -38,6 +40,14 @@ export class UsersController {
 	@ResponseMessage("2005")
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
 		return await this.usersService.updateUserProfile(user?.id, body);
+	}
+	// findAllUsers
+	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
+	@Get("topProducers")
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
+	async findTopProducers(@Query() queryParams: Pick<UsersQuery, "page" | "take">): Promise<[UserDto[], number]> {
+		const query = { producerKyc: ProducerStatus.TopProducer, userKyc: true, role: Role.Producer, ...queryParams };
+		return await this.usersService.findUsers(query);
 	}
 	// findAllUsers
 	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
