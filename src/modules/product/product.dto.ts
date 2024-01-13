@@ -147,19 +147,15 @@ class ProductsQuery {
 	// bases
 	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()
-	@IsArray()
 	genreIds?: number[];
 	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()
-	@IsArray()
 	tempoIds?: number[];
 	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()
-	@IsArray()
 	groupIds?: number[];
 	@ApiProperty({ type: [Number], required: false })
 	@IsOptional()
-	@IsArray()
 	moodIds?: number[];
 	// relation
 	@ApiProperty({ type: Number, required: false })
