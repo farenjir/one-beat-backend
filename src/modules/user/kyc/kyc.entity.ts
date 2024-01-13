@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 import { IsOptional } from "class-validator";
 
-import { ProducerLevel } from "./kyc.enum";
+import { ProducerStatus } from "./kyc.enum";
 
 @Entity()
 export class UserKYC {
@@ -27,9 +27,9 @@ export class UserKYC {
 
 	@Column({
 		type: "enum",
-		enum: ProducerLevel,
-		default: ProducerLevel.NotRequested,
+		enum: ProducerStatus,
+		default: ProducerStatus.NotRequested,
 	})
 	@IsOptional()
-	producerKyc: ProducerLevel;
+	producerKyc: ProducerStatus;
 }

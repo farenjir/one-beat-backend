@@ -1,5 +1,5 @@
 import { Role } from "global/guards.decorator";
-import { ProducerLevel } from "modules/user/kyc/kyc.enum";
+import { ProducerStatus } from "modules/user/kyc/kyc.enum";
 import { TagType } from "modules/tag/tag.enum";
 import { UploadEnum } from "modules/upload/upload.enum";
 import { VersionType } from "modules/version/version.enum";
@@ -9,7 +9,7 @@ import { PackageLevel, PackageStatus } from "modules/package/package.enum";
 
 export const defaultEnumAndBaseApp = [
 	{ type: "Role", children: Role },
-	{ type: "ProducerLevel", children: ProducerLevel },
+	{ type: "ProducerStatus", children: ProducerStatus },
 	{ type: "TagType", children: TagType },
 	{ type: "VersionType", children: VersionType },
 	{ type: "UploadEnum", children: UploadEnum },

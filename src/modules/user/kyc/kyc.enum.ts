@@ -1,7 +1,7 @@
-export enum ProducerLevel {
+export enum ProducerStatus {
 	NotRequested = "NotRequested",
 	Inprogress = "Inprogress",
 	Accepted = "Accepted",
 	Rejected = "Rejected",
-	TopProduct = "TopProducer",
+	TopProducer = "TopProducer",
 }

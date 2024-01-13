@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { IsOptional } from "class-validator";
 
-import { ProducerLevel } from "./kyc.enum";
+import { ProducerStatus } from "./kyc.enum";
 
 export { UserKycDto };
 
@@ -25,7 +25,7 @@ class UserKycDto {
 	@IsOptional()
 	emailKyc?: boolean;
 
-	@ApiProperty({ name: "producerKyc", enum: ProducerLevel, required: false })
+	@ApiProperty({ name: "producerKyc", enum: ProducerStatus, required: false })
 	@IsOptional()
-	producerKyc?: ProducerLevel;
+	producerKyc?: ProducerStatus;
 }
