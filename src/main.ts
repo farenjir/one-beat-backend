@@ -24,11 +24,7 @@ async function bootstrap() {
 		app,
 		SwaggerModule.createDocument(
 			app,
-			new DocumentBuilder()
-			.setTitle("1BEAT")
-			.setDescription("api of 1BEAT")
-			.setVersion("1.0")
-			.build(),
+			new DocumentBuilder().setTitle("1BEAT").setDescription("api of 1BEAT").setVersion("1.0").build(),
 		),
 	);
 	// etag setup options

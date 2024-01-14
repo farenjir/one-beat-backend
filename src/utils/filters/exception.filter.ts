@@ -86,6 +86,7 @@ const filterMessages = (messageCode: string | number) => {
 		4016: "Blog 'Name' has Duplicated",
 		4017: "Tag name has Duplicated",
 		4018: "Tag not Found",
+		4019: "Nickname must be unique",
 		// default status http codes
 		100: "CONTINUE",
 		101: "SWITCHING_PROTOCOLS",

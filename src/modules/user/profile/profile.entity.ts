@@ -7,6 +7,10 @@ export class Profile {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Column({ default: "", unique: true })
+	@IsOptional()
+	nickname: string;
+
 	@Column({ default: "" })
 	@IsOptional()
 	firstName: string;

@@ -5,6 +5,9 @@ export { UpdateProfileDto, ProfileDto, CreateSaveProfileDto };
 
 // *** params
 class CreateSaveProfileDto {
+	@ApiProperty({ default: "nickname" })
+	@Length(4, 24)
+	nickname: string;
 	@ApiProperty({ default: "test" })
 	@Length(4, 24)
 	firstName: string;
@@ -42,6 +45,9 @@ class ProfileDto extends CreateSaveProfileDto {
 }
 
 class UpdateProfileDto {
+	@ApiProperty({ default: "nickname" })
+	@Length(4, 24)
+	nickname: string;
 	@ApiProperty({ default: "test" })
 	@Length(4, 24)
 	firstName?: string;
