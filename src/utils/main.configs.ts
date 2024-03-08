@@ -38,7 +38,7 @@ export const cookieConfigs = {
 	httpOnly: true,
 	secure: true,
 };
-export const COOKIE_TOKEN_KEY = "app-token";
+export const COOKIE_TOKEN_KEY = "access_token";
 export const cookieOptions = {
 	path: "/",
 	maxAge: 24 * 24 * 3600,
