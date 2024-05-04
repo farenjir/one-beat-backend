@@ -9,19 +9,19 @@ export class UserKYC {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ default: false })
 	@IsOptional()
 	userKyc: boolean;
 
-	@Column()
+	@Column({ default: false })
 	@IsOptional()
 	mobileKyc: boolean;
 
-	@Column()
+	@Column({ default: false })
 	@IsOptional()
 	googleKyc: boolean;
 
-	@Column()
+	@Column({ default: false })
 	@IsOptional()
 	emailKyc: boolean;
 
