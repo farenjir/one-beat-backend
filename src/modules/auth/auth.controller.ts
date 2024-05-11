@@ -36,8 +36,8 @@ export class AuthController {
 			username: body?.username?.toLowerCase(),
 			password: body.password,
 		};
-		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.signin(params);
-		res.cookie(COOKIE_TOKEN_KEY, token, cookieOptions);
+		const user: UserDto & AuthExtraDto = await this.authService.signin(params);
+		res.cookie(COOKIE_TOKEN_KEY, user.token, cookieOptions);
 		return user;
 	}
 	// signUp
@@ -63,20 +63,17 @@ export class AuthController {
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("google")
 	@ResponseMessage("2017")
-	async signInWithGoogle(
-		@Body() { token: gToken }: SignInWithGoogleDto,
-		@Res({ passthrough: true }) res: Response,
-	): Promise<UserDto> {
-		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithGoogle(gToken);
-		res.cookie(COOKIE_TOKEN_KEY, token, cookieOptions);
+	async signInWithGoogle(@Body() { token }: SignInWithGoogleDto, @Res({ passthrough: true }) res: Response): Promise<UserDto> {
+		const user: UserDto & AuthExtraDto = await this.authService.authWithGoogle(token);
+		res.cookie(COOKIE_TOKEN_KEY, user.token, cookieOptions);
 		return user;
 	}
 	@SwaggerDocumentaryApi(UserDto, { useAuth: false })
 	@Post("apple")
 	@ResponseMessage("2019")
 	async signInWithApple(@Body() { code }: SignInWithAppleDto, @Res({ passthrough: true }) res: Response): Promise<UserDto> {
-		const { token, ...user }: UserDto & AuthExtraDto = await this.authService.authWithApple(code);
-		res.cookie(COOKIE_TOKEN_KEY, token, cookieOptions);
+		const user: UserDto & AuthExtraDto = await this.authService.authWithApple(code);
+		res.cookie(COOKIE_TOKEN_KEY, user.token, cookieOptions);
 		return user;
 	}
 	// confirm email
