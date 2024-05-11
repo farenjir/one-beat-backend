@@ -32,12 +32,6 @@ export const sessionConfigs = {
 };
 
 export const COOKIE_SECRET = "cookie_secret_key";
-export const cookieConfigs = {
-	path: "/",
-	maxAge: 24 * 24 * 3600,
-	httpOnly: true,
-	secure: true,
-};
 export const COOKIE_TOKEN_KEY = "access_token";
 export const cookieOptions = {
 	path: "/",
