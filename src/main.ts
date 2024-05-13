@@ -6,7 +6,7 @@ import helmet from "helmet";
 import * as cookieParser from "cookie-parser";
 import * as session from "express-session";
 
-import { COOKIE_SECRET, helmetConfigs, mainConfigs, sessionConfigs } from "utils/main.configs";
+import { COOKIE_SECRET, helmetConfigs, mainConfigs, sessionConfigs } from "app/app.configs";
 
 import { AppModule } from "app/app.module";
 

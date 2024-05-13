@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logge
 import { HttpArgumentsHost } from "@nestjs/common/interfaces";
 
 import { Request, Response } from "express";
-import { get } from "lodash";
+import { get as _get } from "lodash";
 
 import { getCode, getErrorMessage } from "./exception.error";
 
@@ -27,13 +27,13 @@ export class AppExceptionsFilter implements ExceptionFilter {
 			code = getCode(exception.getResponse());
 			message = getErrorMessage(exception.getResponse());
 			exceptionStack = "stack" in exception ? exception.stack : "";
-		} else if (get(exception, "type") === "entity.too.large") {
+		} else if (_get(exception, "type") === "entity.too.large") {
 			status = HttpStatus.PAYLOAD_TOO_LARGE;
 			code = HttpStatus[HttpStatus.PAYLOAD_TOO_LARGE];
 			message = `
 							Your request entity size is too big for the server to process it:
-									- request size: ${get(exception, "length")};
-									- request limit: ${get(exception, "limit")}.`;
+									- request size: ${_get(exception, "length")};
+									- request limit: ${_get(exception, "limit")}.`;
 		}
 		// error and warning
 		if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {

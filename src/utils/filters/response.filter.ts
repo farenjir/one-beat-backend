@@ -20,7 +20,7 @@ export const appResponse = <T>(result: Result<T>, code: string, descriptionCode:
 	message: responseMessage(code),
 	description: descriptionMessage(descriptionCode),
 	timestamp: new Date().toISOString(),
-	result: haveTotal ? { total: result?.[1], data: result?.[0] } : result,
+	result: haveTotal ? { total: result[1], data: result[0] } : result,
 });
 
 const responseMessage = (statusCode: string) => {

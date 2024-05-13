@@ -1,5 +1,5 @@
 import type { NestApplicationOptions } from "@nestjs/common";
-import { HelmetOptions } from "helmet";
+import type { HelmetOptions } from "helmet";
 
 export const mainConfigs: NestApplicationOptions = {
 	cors: {

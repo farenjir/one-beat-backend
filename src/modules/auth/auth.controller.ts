@@ -2,7 +2,7 @@ import { Controller, Body, Post, Res, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
-import { COOKIE_TOKEN_KEY, cookieOptions } from "utils/main.configs";
+import { COOKIE_TOKEN_KEY, cookieOptions } from "app/app.configs";
 
 import { SwaggerDocumentaryApi } from "global/swagger.decorator";
 import { Serialize } from "global/serialize.decorator";

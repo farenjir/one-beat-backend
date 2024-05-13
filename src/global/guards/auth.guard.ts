@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { COOKIE_TOKEN_KEY } from "utils/main.configs";
+import { COOKIE_TOKEN_KEY } from "app/app.configs";
 
 import { Role } from "global/guards.decorator";
 
