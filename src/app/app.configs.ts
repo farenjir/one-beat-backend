@@ -3,7 +3,7 @@ import type { HelmetOptions } from "helmet";
 
 export const mainConfigs: NestApplicationOptions = {
 	cors: {
-		origin: ["http://localhost:3000"],
+		origin: ["'self'", "http://localhost:3003"],
 		methods: ["GET", "POST", "PUT", "DELETE"],
 		credentials: true,
 	},
@@ -18,7 +18,7 @@ export const helmetConfigs: Readonly<HelmetOptions> = {
 	crossOriginEmbedderPolicy: { policy: "credentialless" },
 	contentSecurityPolicy: {
 		directives: {
-			"script-src": ["'self'", "http://localhost:3000"],
+			"script-src": ["'self'", "http://localhost:3003"],
 		},
 	},
 	xXssProtection: true,
