@@ -34,7 +34,7 @@ async function bootstrap() {
 	// etag setup options
 	// (<any>app).set("etag", false);
 	// listen
-	await app.listen(3010);
+	await app.listen(3010, "0.0.0.0");
 }
 // launcher
 bootstrap();
