@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
+import { IsEmail, IsEnum, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
 
@@ -6,9 +6,12 @@ import { Role } from "global/guards.decorator";
 
 import { CreateSaveProfileDto } from "./profile/profile.dto";
 import { UserKycDto } from "./kyc/kyc.dto";
+import { ProducerStatus } from "./kyc/kyc.enum";
 
 export { UserDto, CreateSaveUserDto, UserProfileDto, UpdateProfileDto, UserQuery, UsersQuery };
 export { UserIgnoredDto, UserIgnoredKycDto, UserProfileResponseDto };
+
+export { ProducerDto, ProducerQuery, ProducerIgnoredKycDto };
 
 // *** user params
 class UserDto {
@@ -189,6 +192,45 @@ class UserIgnoredDto {
 class UserIgnoredKycDto {
 	@Exclude()
 	id: number;
+	@Exclude()
+	password: string;
+	@Exclude()
+	kyc: UserKycDto;
+	@Exclude()
+	deletedAt: Date;
+	@Exclude()
+	role: Role;
+}
+
+class ProducerDto {
+	@ApiProperty()
+	@Expose()
+	id: number;
+	@ApiProperty({ default: "test" })
+	@IsString()
+	@Length(4, 24)
+	@Expose()
+	username: string;
+}
+class ProducerQuery {
+	@ApiProperty({ type: () => Number })
+	@IsInt()
+	@Type(() => Number)
+	@Min(1)
+	page: number;
+	@ApiProperty({ type: () => Number })
+	@IsInt()
+	@Type(() => Number)
+	@Min(1)
+	@Max(100)
+	take: number;
+	@ApiProperty({ name: "producerKyc", enum: [ProducerStatus.Accepted, ProducerStatus.TopProducer], required: true })
+	@IsEnum(ProducerStatus)
+	producerKyc: ProducerStatus.Accepted | ProducerStatus.TopProducer;
+}
+class ProducerIgnoredKycDto {
+	@Exclude()
+	email: string;
 	@Exclude()
 	password: string;
 	@Exclude()

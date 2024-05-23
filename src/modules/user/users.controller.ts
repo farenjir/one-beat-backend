@@ -8,8 +8,8 @@ import { Serialize } from "global/serialize.decorator";
 import { ResponseMessage } from "global/response.decorator";
 
 import { UsersService } from "./users.service";
-import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, UserQuery, UsersQuery } from "./user.dto";
-import { ProducerStatus } from "./kyc/kyc.enum";
+import { UserDto, UserIgnoredDto, UserProfileDto, UpdateProfileDto, UserProfileResponseDto, ProducerDto } from "./user.dto";
+import { UserQuery, UsersQuery, ProducerQuery, ProducerIgnoredKycDto } from "./user.dto";
 
 @ApiTags("Users")
 @Controller("user")
@@ -40,22 +40,6 @@ export class UsersController {
 	async updateUserWithProfileById(@Req() { user }: Request, @Body() body: UpdateProfileDto): Promise<UserDto> {
 		return await this.usersService.updateUserProfile(user?.id, body);
 	}
-	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
-	@Get("topProducers")
-	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async findTopProducers(@Query() queryParams: Pick<UsersQuery, "page" | "take">): Promise<[UserDto[], number]> {
-		const query = { producerKyc: ProducerStatus.TopProducer, userKyc: true, role: Role.Producer, ...queryParams };
-		return await this.usersService.findUsers(query);
-	}
-	// findAllUsers
-	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
-	@AppGuards(Role.Admin, Role.Editor)
-	@Get("all")
-	@ResponseMessage("", "", ResEnum.ArrayWithCount)
-	async findAllUser(@Query() queryParams: UsersQuery): Promise<[UserDto[], number]> {
-		return await this.usersService.findUsers(queryParams);
-	}
 	// findUser
 	@SwaggerDocumentaryApi(UserProfileDto)
 	@AppGuards(Role.Admin, Role.Editor)
@@ -63,6 +47,14 @@ export class UsersController {
 	@ResponseMessage("")
 	async findUserById(@Query() queryParams: UserQuery): Promise<UserProfileDto> {
 		return await this.usersService.findOne(queryParams, true, true);
+	}
+	// findAllUsers
+	@SwaggerDocumentaryApi(UserDto, { response: ResEnum.ArrayWithCount })
+	@AppGuards(Role.Admin, Role.Editor)
+	@Get("getUsers")
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
+	async findAllUser(@Query() queryParams: UsersQuery): Promise<[UserDto[], number]> {
+		return await this.usersService.findUsers(queryParams);
 	}
 	// updateUser
 	@SwaggerDocumentaryApi(UserProfileResponseDto)
@@ -79,5 +71,14 @@ export class UsersController {
 	@ResponseMessage("2006")
 	async removeUserById(@Param("id", ParseIntPipe) id: number): Promise<UserDto> {
 		return await this.usersService.removeById(id);
+	}
+	// *** producers
+	@Serialize(ProducerIgnoredKycDto)
+	@SwaggerDocumentaryApi(ProducerDto, { response: ResEnum.ArrayWithCount, useAuth: false })
+	@Get("producers")
+	@ResponseMessage("", "", ResEnum.ArrayWithCount)
+	async findTopProducers(@Query() queryParams: ProducerQuery): Promise<[ProducerDto[], number]> {
+		const query = { ...queryParams, userKyc: true, role: Role.Admin };
+		return await this.usersService.findUsers(query);
 	}
 }
